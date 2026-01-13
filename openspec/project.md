@@ -10,6 +10,7 @@ An e-commerce website for selling products.
 - Tailwind CSS
 - Pinia
 - Supabase
+- Motion for Vue (https://motion.dev/docs/vue)
 
 ## Project Conventions
 
@@ -87,9 +88,12 @@ An e-commerce website for selling products.
 
 ## Important Constraints
 
-- components should not take multiple responsibilities.
+- UI and logic are separated. No `.vue` file should contain logic. `.vue` file imports composables.
+- Components should not take multiple responsibilities.
+- Always show loader/skeleton-loader while data fetching or something happening.
 - Do not duplicate business logic across API endpoints
 - Shared logic (e.g. fetching a single user, existence checks, authorization) must live in `utils/` or `services/`
+- Always use try-catch to avoid unhandled exceptions where no error handler exist.
 - API handlers should only orchestrate flow, not implement core logic
 - If multiple endpoints require the same validation or data-fetching, extract it into a reusable helper
 - Never fetch or validate the same entity (e.g. user) differently in different endpoints
