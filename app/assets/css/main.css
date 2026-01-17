@@ -1,1 +1,37 @@
 @import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
+@tailwind utilities;
+
+@theme {
+  /* ---------- Colors ---------- */
+  --color-luxury-charcoal: #2C2C2C;
+
+  /* Light mode */
+  --color-luxury-bg: #ffffff;
+  --color-luxury-surface: #ffffff;
+  --color-luxury-text: #2c2c2c;
+  --color-luxury-text-muted: rgba(44, 44, 44, 0.7);
+  --color-luxury-border: rgba(44, 44, 44, 0.1);
+
+  /* Dark mode */
+  --color-luxury-dark-bg: #121212;
+  --color-luxury-dark-surface: #1a1a1a;
+  --color-luxury-dark-text: #f5f5f5;
+  --color-luxury-dark-text-muted: #b3b3b3;
+  --color-luxury-dark-border: #2a2a2a;
+
+  /* Accent */
+  --color-luxury-gold: #af8f6f;
+  --color-luxury-gold-hover: #c6a57e;
+  --color-luxury-gold-muted: #8a7a68;
+
+  /* ---------- Radius ---------- */
+  --radius-luxury: 1.5rem;
+
+  /* ---------- Shadow ---------- */
+  --shadow-luxury: 0 10px 30px rgba(0,0,0,0.08);
+  --shadow-luxury-dark: 0 10px 30px rgba(0,0,0,0.4);
+
+  /* ---------- Letter spacing ---------- */
+  --tracking-luxury: 0.18em;
+}

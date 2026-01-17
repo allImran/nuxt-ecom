@@ -3,7 +3,8 @@ import { ref, watch } from 'vue'
 
 export const useThemeStore = defineStore('theme', () => {
     // Initialize from localStorage or default to false (light mode)
-    const isDark = ref(localStorage.getItem('theme') === 'dark')
+    const isDark = ref(localStorage.theme === "dark" || (!("theme" in localStorage) && window.matchMedia("(prefers-color-scheme: dark)").matches))
+    // console.log((!("theme" in localStorage)))
 
     const toggleTheme = () => {
         isDark.value = !isDark.value
