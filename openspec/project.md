@@ -71,15 +71,14 @@ An e-commerce website frontend for selling products.
 ## Domain Context
 
 - User e-commerce website best practices.
-- Brand coolor #304f5c
 - The application is UI-driven and data-centric
 - UX clarity and responsiveness are more important than visual effects
-- The application is mobile-first and responsive
 - The application is accessible
 - The application is scalable, maintainable
 
 ## Important Constraints
 
+- The application is mobile-first and responsive.
 - UI and logic are separated. No `.vue` file should contain logic. `.vue` file imports composables.
 - Components should not take multiple responsibilities.
 - Always show loader/skeleton-loader while data fetching or something happening.

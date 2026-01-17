@@ -78,6 +78,7 @@ export const useAuthStore = defineStore('auth', () => {
     // Initialize user
     const init = async () => {
         const { data } = await supabase.auth.getSession()
+        console.log(data)
         user.value = data.session?.user || null
 
         supabase.auth.onAuthStateChange((event: any, session: any) => {
