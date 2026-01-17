@@ -108,6 +108,22 @@ An e-commerce website frontend for selling products.
   then the component's name will be `BaseFooButton`.
 - utils functions are automatically imported.
 - Use the composables/ directory to auto-import in any .js, .ts and .vue files.
+- theme Guideline
+  Use luxury-bg as the page background in light mode and luxury-darkBg in dark mode.
+  Use luxury-surface / luxury-darkSurface only for cards, modals, and grouped UI.
+  Use luxury-text / luxury-darkText for all primary text.
+  Use luxury-textMuted / luxury-darkTextMuted for descriptions, metadata, and secondary labels.
+  Use luxury-border / luxury-darkBorder only for subtle dividers and card outlines.
+  Use luxury-gold only for primary actions or key highlights.
+  Use luxury-goldHover on hover states of primary actions.
+  Use luxury-goldMuted for secondary accents such as icons or crossed prices.
+  Do not use gold for long text blocks.
+  Apply rounded-luxury to cards, buttons, and major containers.
+  Use shadow-luxury in light mode and shadow-luxuryDark in dark mode.
+  Use tracking-luxury for uppercase labels and brand metadata only.
+  Dark mode must be activated using the dark class.
+  Never use raw hex colors in templates.
+  Avoid pure black, heavy shadows, gradients, or neon colors.
 
 ## External Dependencies
 
