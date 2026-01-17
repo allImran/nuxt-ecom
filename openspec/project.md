@@ -2,7 +2,7 @@
 
 ## Purpose
 
-An e-commerce website for selling products.
+An e-commerce website frontend for selling products.
 
 ## Tech Stack
 
@@ -43,23 +43,14 @@ An e-commerce website for selling products.
   pages/: file-based routing to create routes within your web application
   plugins/: use Vue plugins and more at the creation of your Nuxt application
   utils/: add functions throughout your application that can be used in your components, composables, and pages.
-  network/: contains the network code of the application. User server end points for API calls. Stores use network functions.
+  network/: contains the network code of the application. Register api endpoint end-points for API calls. Stores use network functions.
 - Pages are route-level components only
 - `pages/admin` is the admin dashboard
 - Shared state is managed with Pinia stores
-- API calls are isolated in `app/services/`
 - UI components should be presentational when possible
 - Avoid tight coupling between components and stores
 - Define types in `app/types/`
-- Use Pinia for state management
-- The server/ directory is the directory that contains the server-side code of the Nuxt application. It contains the following subdirectories:
-  api/: contains the API routes of the application.
-  routes/: contains the server routes of the application (e.g. dynamic /sitemap.xml).
-  middleware/: run code before a server route is processed
-  plugins/: use plugins and more at the creation of the Nuxt server
-  utils/: add functions throughout your application that can be used in your server code.
-- The public/ directory is the directory that contains the public files of the Nuxt application. Files contained within this directory are served at the root and are not modified by the build process.
-- The shared/ directory is the directory that contains the shared code of the Nuxt application and Nuxt server. This code can be used in both the Vue app and the Nitro server.
+- Use Pinia for state managemen
 
 ### Testing Strategy
 

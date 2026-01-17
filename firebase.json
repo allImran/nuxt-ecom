@@ -1,0 +1,14 @@
+{
+  "functions": { "source": ".output/server" },
+  "hosting": {
+    "public": ".output/public",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "site": "urbanease-99bd8",
+    "cleanUrls": true,
+    "rewrites": [{ "source": "**", "function": "server" }]
+  }
+}

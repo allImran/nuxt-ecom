@@ -2,9 +2,9 @@
 
 ## ADDED Requirements
 
-### Signup API
+### Requirement: User Signup
 
-The system must provide an API to register new users.
+The system MUST provide an API to register new users.
 
 #### Scenario: Successful Signup
 
@@ -23,7 +23,7 @@ And appropriate error message
 
 ### Login API
 
-The system must provide an API to authenticate users.
+The system MUST provide an API to authenticate users.
 
 #### Scenario: Successful Login
 
@@ -41,7 +41,7 @@ Then the system should return a 401 Unauthorized error
 
 ### Logout API
 
-The system must provide an API to log out users.
+The system MUST provide an API to log out users.
 
 #### Scenario: Logout
 
@@ -52,7 +52,7 @@ And return a 200 OK response
 
 ### Password Reset API
 
-The system must provide an API to reset passwords.
+The system MUST provide an API to reset passwords.
 
 #### Scenario: Request Password Reset
 
