@@ -30,7 +30,8 @@ An e-commerce website frontend for selling products.
   - computed()s become getters
   - function()s become actions
 - composables use Pinia stores, components import composables not the stores.
-- use nested slot to avoid props drilling. Like, <Nav> <NavItems></NavItems></Nav>
+- Use nested slot to avoid props drilling. Like, <Nav> <NavItems></NavItems></Nav>
+- Use $fetch for api call
 
 ### Architecture Patterns
 

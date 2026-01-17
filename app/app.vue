@@ -1,6 +1,13 @@
+<script setup lang="ts">
+
+import { useThemeStore } from '@/stores/theme'
+
+onMounted(() => {
+  useThemeStore()
+})
+
+</script>
+
 <template>
-  <div>
-    <NuxtRouteAnnouncer />
-    <NuxtWelcome />
-  </div>
+  <NuxtPage />
 </template>

@@ -9,13 +9,20 @@
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare"
   },
+  "overrides": {
+    "vue": "latest"
+  },
   "dependencies": {
     "@nuxt/content": "^3.10.0",
     "@nuxt/image": "^2.0.0",
+    "@pinia/nuxt": "^0.11.3",
     "@supabase/supabase-js": "^2.90.1",
+    "@tailwindcss/vite": "^4.1.18",
     "better-sqlite3": "^12.5.0",
     "motion-v": "^1.8.1",
     "nuxt": "^4.2.2",
+    "pinia": "^3.0.4",
+    "tailwindcss": "^4.1.18",
     "vue": "^3.5.26",
     "vue-router": "^4.6.4"
   }
