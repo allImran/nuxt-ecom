@@ -44,7 +44,7 @@ An e-commerce website frontend for selling products.
   pages/: file-based routing to create routes within your web application
   plugins/: use Vue plugins and more at the creation of your Nuxt application
   utils/: add functions throughout your application that can be used in your components, composables, and pages.
-  network/: contains the network code of the application. Register api endpoint end-points for API calls. Stores use network functions.
+  network/: contains the network code of the application. Register api endpoint end-points for API calls.PInia Stores use network functions.
 - Pages are route-level components only
 - `pages/admin` is the admin dashboard
 - Shared state is managed with Pinia stores
