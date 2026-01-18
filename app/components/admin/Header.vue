@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col sm:flex-row justify-between items-center mb-8 gap-4">
-    <h1 class="text-3xl font-bold bg-gradient-to-r from-luxury-text to-luxury-gold dark:from-luxury-dark-text dark:to-luxury-gold bg-clip-text text-transparent tracking-luxury">
+    <h1 class="text-3xl font-bold bg-linear-to-r from-luxury-text to-luxury-gold dark:from-luxury-dark-text dark:to-luxury-gold bg-clip-text text-transparent tracking-luxury">
       {{ title }}
     </h1>
     <div class="relative w-full sm:w-64">

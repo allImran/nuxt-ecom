@@ -1,9 +1,8 @@
 export const useAdminFetch = async <T>(url: string, options: any = {}) => {
   const supabase = useSupabase()
+   const config = useRuntimeConfig()
   const { data: { session } } = await supabase.auth.getSession()
-  
-  // Base URL from API_DOCS
-  const baseURL = 'https://urbanease-backend.vercel.app/api'
+  const baseURL = config.public.apiBaseURL
 
   const headers = {
     ...options.headers,
