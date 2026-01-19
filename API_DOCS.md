@@ -154,9 +154,12 @@ Base URL: `https://urbanease-backend.vercel.app/api`
   {
     "name": "Product Name",
     "slug": "product-slug",
-    "image_urls": ["url1", "url2"], // optional
+    "file_paths": ["path1", "path2"], // optional
     "youtube_url": "youtube url", // optional
-    "sections": [{ "type": "text", "content": "..." }], // optional JSONB
+    "sections": [
+      { "type": "text", "content": "..." },
+      { "type": "media", "file_paths": ["path1", "path2"] }
+    ], // optional JSONB
     "category_id": "uuid"
   }
   ```
@@ -172,7 +175,7 @@ Base URL: `https://urbanease-backend.vercel.app/api`
   {
     "name": "Updated Name",
     "slug": "updated-slug",
-    "image_urls": ["url1"],
+    "file_paths": ["path1"],
     "sections": []
   }
   ```
@@ -233,3 +236,39 @@ Base URL: `https://urbanease-backend.vercel.app/api`
 
 - **Auth**: Admin only
 - **Response**: 204 No Content
+
+---
+
+## File API
+
+### Upload File
+
+`POST /files/upload`
+
+- **Auth**: Admin, Staff
+- **Body**: `multipart/form-data`
+  - `file`: The file to upload.
+- **Response**:
+  ```json
+  {
+    "url": "https://...",
+    "path": "uploads/...",
+    "size": 12345,
+    "mimetype": "image/jpeg",
+    "filename": "..."
+  }
+  ```
+
+### Delete File
+
+`DELETE /files/:path`
+
+- **Auth**: Admin only
+- **Description**: Deletes a file by its path (e.g., `uploads/image.jpg`). The path parameter can contain slashes.
+- **Response**:
+  ```json
+  {
+    "message": "File deleted successfully",
+    "path": "uploads/..."
+  }
+  ```
