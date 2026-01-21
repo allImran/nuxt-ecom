@@ -1,9 +1,8 @@
 <script setup lang="ts">
-import { adminNetwork } from '~/network/admin'
+import { useProductViewModel } from '~/composables/useProductViewModel'
 import { getPublicImage } from '~/utils/image'
 
 interface Props {
-  modelValue: string[]
   bucket?: string
 }
 
@@ -11,18 +10,13 @@ const props = withDefaults(defineProps<Props>(), {
   bucket: 'product-images'
 })
 
-const emit = defineEmits<{
-  (e: 'update:modelValue', value: string[]): void
-}>()
+const { productForm, uploadFile, uploading: isUploading } = useProductViewModel()
 
-const uploading = ref(false)
+const uploading = computed(() => isUploading.value)
 const dragOver = ref(false)
 const fileInput = ref<HTMLInputElement | null>(null)
 
-const images = computed({
-  get: () => props.modelValue || [],
-  set: (value) => emit('update:modelValue', value)
-})
+const images = computed(() => productForm.file_paths || [])
 
 const getImageUrl = (path: string) => {
   return getPublicImage(props.bucket, path)
@@ -31,27 +25,24 @@ const getImageUrl = (path: string) => {
 const handleFiles = async (files: FileList | null) => {
   if (!files || files.length === 0) return
 
-  uploading.value = true
   const newPaths: string[] = []
 
-  try {
-    for (const file of Array.from(files)) {
-      if (!file.type.startsWith('image/')) {
-        console.warn(`Skipping non-image file: ${file.name}`)
-        continue
-      }
+  for (const file of Array.from(files)) {
+    if (!file.type.startsWith('image/')) {
+      console.warn(`Skipping non-image file: ${file.name}`)
+      continue
+    }
 
-      const response = await adminNetwork.uploadFile(file)
+    try {
+      const response = await uploadFile(file)
       newPaths.push(response.path)
+    } catch (error) {
+      console.error('Failed to upload image:', error)
     }
+  }
 
-    if (newPaths.length > 0) {
-      images.value = [...images.value, ...newPaths]
-    }
-  } catch (error) {
-    console.error('Failed to upload images:', error)
-  } finally {
-    uploading.value = false
+  if (newPaths.length > 0) {
+    productForm.file_paths = [...images.value, ...newPaths]
   }
 }
 
@@ -86,7 +77,7 @@ const triggerFileInput = () => {
 const removeImage = (index: number) => {
   const newImages = [...images.value]
   newImages.splice(index, 1)
-  images.value = newImages
+  productForm.file_paths = newImages
 }
 
 const moveImage = (fromIndex: number, toIndex: number) => {
@@ -95,7 +86,7 @@ const moveImage = (fromIndex: number, toIndex: number) => {
   const [removed] = newImages.splice(fromIndex, 1)
   if (removed) {
     newImages.splice(toIndex, 0, removed)
-    images.value = newImages
+    productForm.file_paths = newImages
   }
 }
 </script>

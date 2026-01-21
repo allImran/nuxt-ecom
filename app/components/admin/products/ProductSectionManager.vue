@@ -1,10 +1,9 @@
 <script setup lang="ts">
 import type { ProductSection } from '~/network/admin'
-import { adminNetwork } from '~/network/admin'
+import { useProductViewModel } from '~/composables/useProductViewModel'
 import { getPublicImage } from '~/utils/image'
 
 interface Props {
-  modelValue: ProductSection[]
   bucket?: string
 }
 
@@ -12,97 +11,26 @@ const props = withDefaults(defineProps<Props>(), {
   bucket: 'product-images'
 })
 
-const emit = defineEmits<{
-  (e: 'update:modelValue', value: ProductSection[]): void
-}>()
+const {
+  productForm,
+  uploadingSection,
+  addSection,
+  removeSection,
+  updateSectionContent,
+  moveSection,
+  handleSectionFileUpload,
+  removeSectionMediaFile
+} = useProductViewModel()
 
-const sections = computed({
-  get: () => props.modelValue || [],
-  set: (value) => emit('update:modelValue', value)
-})
-
-const uploading = ref<number | null>(null)
-
-const addSection = (type: 'text' | 'media') => {
-  const newSection: ProductSection = type === 'text'
-    ? { type: 'text', content: '' }
-    : { type: 'media', file_paths: [] }
-  sections.value = [...sections.value, newSection]
-}
-
-const removeSection = (index: number) => {
-  const newSections = [...sections.value]
-  newSections.splice(index, 1)
-  sections.value = newSections
-}
-
-const updateSectionContent = (index: number, content: string) => {
-  const newSections = [...sections.value]
-  const section = newSections[index]
-  if (section) {
-    newSections[index] = { type: section.type, content, file_paths: section.file_paths }
-    sections.value = newSections
-  }
-}
-
-const moveSection = (fromIndex: number, toIndex: number) => {
-  if (toIndex < 0 || toIndex >= sections.value.length) return
-  const newSections = [...sections.value]
-  const [removed] = newSections.splice(fromIndex, 1)
-  if (removed) {
-    newSections.splice(toIndex, 0, removed)
-    sections.value = newSections
-  }
-}
+const sections = computed(() => productForm.sections || [])
 
 const handleFileUpload = async (index: number, event: Event) => {
   const target = event.target as HTMLInputElement
   const files = target.files
   if (!files || files.length === 0) return
 
-  uploading.value = index
-  try {
-    const newPaths: string[] = []
-    for (const file of Array.from(files)) {
-      if (!file.type.startsWith('image/')) continue
-      const response = await adminNetwork.uploadFile(file)
-      newPaths.push(response.path)
-    }
-
-    if (newPaths.length > 0) {
-      const newSections = [...sections.value]
-      const section = newSections[index]
-      if (section) {
-        const currentPaths = section.file_paths || []
-        newSections[index] = {
-          type: section.type,
-          content: section.content,
-          file_paths: [...currentPaths, ...newPaths]
-        }
-        sections.value = newSections
-      }
-    }
-  } catch (error) {
-    console.error('Failed to upload file:', error)
-  } finally {
-    uploading.value = null
-    target.value = ''
-  }
-}
-
-const removeMediaFile = (sectionIndex: number, fileIndex: number) => {
-  const newSections = [...sections.value]
-  const section = newSections[sectionIndex]
-  if (section) {
-    const currentPaths = [...(section.file_paths || [])]
-    currentPaths.splice(fileIndex, 1)
-    newSections[sectionIndex] = {
-      type: section.type,
-      content: section.content,
-      file_paths: currentPaths
-    }
-    sections.value = newSections
-  }
+  await handleSectionFileUpload(index, files)
+  target.value = ''
 }
 
 const getImageUrl = (path: string) => {
@@ -205,7 +133,7 @@ const getImageUrl = (path: string) => {
           <!-- Upload Button -->
           <label
             class="inline-flex items-center gap-2 px-4 py-2 border border-dashed border-luxury-border dark:border-luxury-dark-border rounded-luxury cursor-pointer hover:border-luxury-gold transition-colors"
-            :class="{ 'opacity-50 pointer-events-none': uploading === index }"
+            :class="{ 'opacity-50 pointer-events-none': uploadingSection === index }"
           >
             <input
               type="file"
@@ -214,7 +142,7 @@ const getImageUrl = (path: string) => {
               class="hidden"
               @change="handleFileUpload(index, $event)"
             />
-            <svg v-if="uploading !== index" class="h-4 w-4 text-luxury-text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg v-if="uploadingSection !== index" class="h-4 w-4 text-luxury-text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
             </svg>
             <svg v-else class="h-4 w-4 animate-spin text-luxury-gold" fill="none" viewBox="0 0 24 24">
@@ -222,7 +150,7 @@ const getImageUrl = (path: string) => {
               <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
             </svg>
             <span class="text-sm text-luxury-text-muted dark:text-luxury-dark-text-muted">
-              {{ uploading === index ? 'Uploading...' : 'Add Images' }}
+              {{ uploadingSection === index ? 'Uploading...' : 'Add Images' }}
             </span>
           </label>
 
@@ -242,7 +170,7 @@ const getImageUrl = (path: string) => {
                 type="button"
                 class="absolute top-1 right-1 p-1 bg-red-500/80 hover:bg-red-500 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
                 title="Remove"
-                @click="removeMediaFile(index, fileIndex)"
+                @click="removeSectionMediaFile(index, fileIndex)"
               >
                 <svg class="h-3 w-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />

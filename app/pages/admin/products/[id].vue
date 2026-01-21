@@ -25,7 +25,7 @@
     </div>
 
     <!-- Product Edit Form -->
-    <template v-else-if="product">
+    <template v-else-if="currentProduct">
       <!-- Header -->
       <div class="flex items-center justify-between">
         <div class="flex items-center gap-4">
@@ -40,10 +40,10 @@
           </button>
           <div>
             <h1 class="text-2xl font-bold text-luxury-text dark:text-luxury-dark-text">
-              {{ product.name }}
+              {{ currentProduct.name }}
             </h1>
             <p class="text-luxury-text-muted dark:text-luxury-dark-text-muted mt-1">
-              {{ product.category?.name || 'No category' }}
+              {{ currentProduct.category?.name || 'No category' }}
             </p>
           </div>
         </div>
@@ -54,7 +54,7 @@
             </svg>
             Delete
           </UiLuxuryButton>
-          <UiLuxuryButton :loading="saving" @click="saveProduct">
+          <UiLuxuryButton :loading="saving" @click="handleSaveProduct">
             <svg class="h-4 w-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
             </svg>
@@ -89,28 +89,28 @@
         <div v-if="activeTab === 'overview'" class="space-y-6 max-w-2xl">
           <UiLuxuryInput
             id="product-name"
-            v-model="form.name"
+            v-model="productForm.name"
             label="Product Name"
             placeholder="e.g., Premium Leather Bag"
           />
 
           <UiLuxuryInput
             id="product-slug"
-            v-model="form.slug"
+            v-model="productForm.slug"
             label="Slug"
             placeholder="e.g., premium-leather-bag"
           />
 
           <UiLuxuryInput
             id="product-youtube"
-            v-model="form.youtube_url"
+            v-model="productForm.youtube_url"
             label="YouTube URL (optional)"
             placeholder="e.g., https://youtube.com/watch?v=..."
           />
 
           <div class="p-4 bg-luxury-surface dark:bg-luxury-dark-surface rounded-luxury">
             <p class="text-sm text-luxury-text-muted dark:text-luxury-dark-text-muted">
-              <span class="font-medium">Category:</span> {{ product.category?.name || 'None' }}
+              <span class="font-medium">Category:</span> {{ currentProduct.category?.name || 'None' }}
             </p>
             <p class="text-xs text-luxury-text-muted/70 dark:text-luxury-dark-text-muted/70 mt-1">
               Category cannot be changed after creation.
@@ -120,19 +120,19 @@
 
         <!-- Media Tab -->
         <div v-else-if="activeTab === 'media'" class="space-y-6">
-          <AdminProductsProductImageUploader v-model="form.file_paths" />
+          <AdminProductsProductImageUploader />
         </div>
 
         <!-- Content Tab -->
         <div v-else-if="activeTab === 'content'" class="space-y-6">
-          <AdminProductsProductSectionManager v-model="form.sections" />
+          <AdminProductsProductSectionManager />
         </div>
 
         <!-- Variants Tab -->
         <div v-else-if="activeTab === 'variants'" class="space-y-6">
           <AdminProductsProductVariantManager
-            :product-id="product.id"
-            v-model="variants"
+            :product-id="currentProduct.id"
+            v-model="currentVariants"
           />
         </div>
       </div>
@@ -141,11 +141,11 @@
 </template>
 
 <script setup lang="ts">
-import { adminNetwork, type Product, type ProductSection, type ProductVariant } from '~/network/admin'
+import { useProductViewModel } from '~/composables/useProductViewModel'
 
 definePageMeta({
   layout: 'admin',
-//   middleware: 'admin'
+  // middleware: 'admin'
 })
 
 const route = useRoute()
@@ -153,95 +153,53 @@ const router = useRouter()
 
 const productId = computed(() => route.params.id as string)
 
-// State
-const product = ref<Product | null>(null)
-const variants = ref<ProductVariant[]>([])
-const loading = ref(true)
-const saving = ref(false)
-const error = ref<string | null>(null)
-const activeTab = ref('overview')
-
-// Form state
-const form = reactive({
-  name: '',
-  slug: '',
-  youtube_url: '',
-  file_paths: [] as string[],
-  sections: [] as ProductSection[]
-})
-
-// Tabs
-const tabs = [
-  { id: 'overview', label: 'Overview' },
-  { id: 'media', label: 'Media' },
-  { id: 'content', label: 'Content' },
-  { id: 'variants', label: 'Variants' }
-]
+const {
+  currentProduct,
+  currentVariants,
+  loading,
+  saving,
+  error,
+  productForm,
+  activeTab,
+  tabs,
+  fetchProduct,
+  saveProduct,
+  deleteProduct,
+  reset
+} = useProductViewModel()
 
 // Fetch product
-const fetchProduct = async () => {
-  loading.value = true
-  error.value = null
-  try {
-    const data = await adminNetwork.fetchProduct(productId.value)
-    product.value = data
-    variants.value = data.variants || []
-
-    // Populate form
-    form.name = data.name
-    form.slug = data.slug
-    form.youtube_url = data.youtube_url || ''
-    form.file_paths = data.file_paths || []
-    form.sections = data.sections || []
-  } catch (err) {
-    console.error('Failed to fetch product:', err)
-    error.value = 'Failed to load product. Please try again.'
-  } finally {
-    loading.value = false
-  }
+const loadProduct = async () => {
+  await fetchProduct(productId.value)
 }
 
 // Save product
-const saveProduct = async () => {
-  if (!product.value) return
-
-  saving.value = true
-  try {
-    const updated = await adminNetwork.updateProduct(product.value.id, {
-      name: form.name,
-      slug: form.slug,
-      youtube_url: form.youtube_url || undefined,
-      file_paths: form.file_paths,
-      sections: form.sections
-    })
-    product.value = updated
-  } catch (err) {
-    console.error('Failed to save product:', err)
-  } finally {
-    saving.value = false
-  }
+const handleSaveProduct = async () => {
+  await saveProduct()
 }
 
 // Delete product
 const confirmDelete = async () => {
-  if (!product.value) return
-  if (!confirm(`Are you sure you want to delete "${product.value.name}"? This action cannot be undone.`)) return
+  if (!currentProduct.value) return
+  if (!confirm(`Are you sure you want to delete "${currentProduct.value.name}"? This action cannot be undone.`)) return
 
-  try {
-    await adminNetwork.deleteProduct(product.value.id)
-    router.push('/admin/products')
-  } catch (err) {
-    console.error('Failed to delete product:', err)
-  }
+  await deleteProduct()
+  router.push('/admin/products')
 }
 
 // Initialize
 onMounted(() => {
-  fetchProduct()
+  loadProduct()
 })
 
 // Watch for route changes
 watch(productId, () => {
-  fetchProduct()
+  reset()
+  loadProduct()
+})
+
+// Cleanup on unmount
+onUnmounted(() => {
+  reset()
 })
 </script>

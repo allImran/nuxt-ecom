@@ -112,7 +112,7 @@
             </button>
           </div>
 
-          <form @submit.prevent="createProduct" class="space-y-4">
+          <form @submit.prevent="handleCreateProduct" class="space-y-4">
             <!-- Name -->
             <UiLuxuryInput
               id="product-name"
@@ -208,7 +208,9 @@
 </template>
 
 <script setup lang="ts">
-import { adminNetwork, type Product, type Category, type ProductVariant } from '~/network/admin'
+import type { ProductVariant } from '~/network/admin'
+import { useProductViewModel } from '~/composables/useProductViewModel'
+import { useAdminCategoryStore } from '~/stores/adminCategory'
 import { getPublicImage } from '~/utils/image'
 
 definePageMeta({
@@ -218,13 +220,20 @@ definePageMeta({
 
 const router = useRouter()
 
-// State
-const products = ref<Product[]>([])
-const rootCategories = ref<Category[]>([])
-const loading = ref(true)
-const loadingCategories = ref(false)
+const {
+  products,
+  loading,
+  fetchProducts,
+  createProduct: createProductFromVM
+} = useProductViewModel()
+
+const categoryStore = useAdminCategoryStore()
+const { categories } = storeToRefs(categoryStore)
+
+// Modal state
 const showCreateModal = ref(false)
 const creating = ref(false)
+const loadingCategories = ref(false)
 
 // Create form
 const createForm = reactive({
@@ -237,37 +246,27 @@ const canCreate = computed(() => {
   return createForm.name.trim() && createForm.slug.trim() && createForm.category_id
 })
 
-// Fetch products
-const fetchProducts = async () => {
-  loading.value = true
-  try {
-    products.value = await adminNetwork.fetchProducts()
-  } catch (error) {
-    console.error('Failed to fetch products:', error)
-  } finally {
-    loading.value = false
-  }
-}
+const rootCategories = computed(() => {
+  return categories.value.filter(c => !c.parent_id)
+})
 
-// Fetch root categories
-const fetchRootCategories = async () => {
-  loadingCategories.value = true
-  try {
-    rootCategories.value = await adminNetwork.fetchRootCategories()
-  } catch (error) {
-    console.error('Failed to fetch categories:', error)
-  } finally {
-    loadingCategories.value = false
-  }
+// Fetch products
+const loadProducts = async () => {
+  await fetchProducts()
 }
 
 // Modal handlers
-const openCreateModal = () => {
+const openCreateModal = async () => {
   createForm.name = ''
   createForm.slug = ''
   createForm.category_id = ''
   showCreateModal.value = true
-  fetchRootCategories()
+  loadingCategories.value = true
+  try {
+    await categoryStore.fetchCategories()
+  } finally {
+    loadingCategories.value = false
+  }
 }
 
 const closeCreateModal = () => {
@@ -291,12 +290,12 @@ const slugify = (text: string) => {
 }
 
 // Create product
-const createProduct = async () => {
+const handleCreateProduct = async () => {
   if (!canCreate.value) return
 
   creating.value = true
   try {
-    const product = await adminNetwork.createProduct({
+    const product = await createProductFromVM({
       name: createForm.name,
       slug: createForm.slug,
       category_id: createForm.category_id
@@ -338,6 +337,6 @@ const formatPriceRange = (variants: ProductVariant[]) => {
 
 // Initialize
 onMounted(() => {
-  fetchProducts()
+  loadProducts()
 })
 </script>
