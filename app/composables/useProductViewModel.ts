@@ -10,33 +10,17 @@ export const useProductViewModel = () => {
     loading,
     saving,
     uploading,
-    error
+    error,
+    showVariantModal,
+    editingVariant,
+    deletingVariant,
+    uploadingSection,
+    activeTab
   } = storeToRefs(productStore)
 
-  // Product form state
-  const productForm = reactive({
-    name: '',
-    slug: '',
-    youtube_url: '',
-    file_paths: [] as string[],
-    sections: [] as ProductSection[]
-  })
-
-  // Variant form state
-  const variantForm = reactive({
-    sku: '',
-    price: 0,
-    attributes: [] as { key: string; value: string }[]
-  })
-
-  // Modal state
-  const showVariantModal = ref(false)
-  const editingVariant = ref<ProductVariant | null>(null)
-  const deletingVariant = ref<string | null>(null)
-  const uploadingSection = ref<number | null>(null)
-
-  // Tab state
-  const activeTab = ref('overview')
+  // Reactive objects from store (not wrapped in storeToRefs)
+  const productForm = productStore.productForm
+  const variantForm = productStore.variantForm
 
   // Computed
   const isEditingVariant = computed(() => editingVariant.value !== null)

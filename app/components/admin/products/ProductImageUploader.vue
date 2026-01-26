@@ -93,6 +93,7 @@ const moveImage = (fromIndex: number, toIndex: number) => {
 
 <template>
   <div class="space-y-4">
+    {{productForm.file_paths}}
     <!-- Drop Zone -->
     <div
       class="border-2 border-dashed rounded-luxury p-8 text-center transition-colors duration-200 cursor-pointer"

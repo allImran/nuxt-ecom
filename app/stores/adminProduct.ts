@@ -11,6 +11,28 @@ export const useAdminProductStore = defineStore('adminProduct', () => {
   const uploading = ref(false)
   const error = ref<string | null>(null)
 
+  // Form state
+  const productForm = reactive({
+    name: '',
+    slug: '',
+    youtube_url: '',
+    file_paths: [] as string[],
+    sections: [] as ProductSection[]
+  })
+
+  const variantForm = reactive({
+    sku: '',
+    price: 0,
+    attributes: [] as { key: string; value: string }[]
+  })
+
+  // Modal/UI state
+  const showVariantModal = ref(false)
+  const editingVariant = ref<ProductVariant | null>(null)
+  const deletingVariant = ref<string | null>(null)
+  const uploadingSection = ref<number | null>(null)
+  const activeTab = ref('overview')
+
   // Actions - Products
   const fetchProducts = async () => {
     loading.value = true
@@ -171,6 +193,19 @@ export const useAdminProductStore = defineStore('adminProduct', () => {
     currentProduct.value = null
     currentVariants.value = []
     error.value = null
+    productForm.name = ''
+    productForm.slug = ''
+    productForm.youtube_url = ''
+    productForm.file_paths = []
+    productForm.sections = []
+    variantForm.sku = ''
+    variantForm.price = 0
+    variantForm.attributes = []
+    showVariantModal.value = false
+    editingVariant.value = null
+    deletingVariant.value = null
+    uploadingSection.value = null
+    activeTab.value = 'overview'
   }
 
   return {
@@ -182,6 +217,15 @@ export const useAdminProductStore = defineStore('adminProduct', () => {
     saving,
     uploading,
     error,
+    // Form state
+    productForm,
+    variantForm,
+    // Modal/UI state
+    showVariantModal,
+    editingVariant,
+    deletingVariant,
+    uploadingSection,
+    activeTab,
     // Actions - Products
     fetchProducts,
     fetchProduct,
