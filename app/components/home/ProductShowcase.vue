@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { getPublicImage } from '~/utils/image'
+
 interface Product {
   id: string
   name: string
@@ -30,8 +32,8 @@ const getProductPrice = (product: Product) => {
   return null
 }
 
-const getProductImage = (product: Product) => {
-  return product.file_paths && product.file_paths.length > 0 ? product.file_paths[0] : null
+const getProductImage = (product: Product) => { 
+  return product.file_paths && product.file_paths.length > 0 ? getPublicImage('product-images', product.file_paths[0]!) : null
 }
 
 const handleProductClick = (product: Product) => {

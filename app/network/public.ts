@@ -52,4 +52,16 @@ export const publicNetwork = {
       },
     })
   },
+
+  fetchProductBySlug: (slug: string) => {
+    const config = useRuntimeConfig()
+    const baseURL = config.public.apiBaseURL
+
+    return $fetch<Product>(`/products/slug/${slug}`, {
+      baseURL,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+  },
 }
