@@ -39,7 +39,7 @@ onMounted(() => {
 watchEffect(() => {
   if (product.value) {
     useHead({
-      title: `${product.value.name} - LuxeStore`,
+      title: `${product.value.name} - URBANEASE`,
       meta: [
         {
           name: 'description',

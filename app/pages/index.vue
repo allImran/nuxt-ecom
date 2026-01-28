@@ -1,9 +1,9 @@
 <script setup lang="ts">
 // Page metadata
 useHead({
-  title: 'LuxeStore - Premium Luxury Products',
+  title: 'URBANEASE - Premium Luxury Products',
   meta: [
-    { name: 'description', content: 'Discover premium luxury products at LuxeStore. Quality meets elegance in every piece we offer.' }
+    { name: 'description', content: 'Discover premium luxury products at URBANEASE. Quality meets elegance in every piece we offer.' }
   ]
 })
 

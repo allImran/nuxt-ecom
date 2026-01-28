@@ -9,7 +9,7 @@ const currentYear = computed(() => new Date().getFullYear())
         <!-- Brand -->
         <div class="space-y-4">
           <h3 class="text-lg font-bold tracking-luxury text-luxury-text dark:text-luxury-dark-text">
-            LUXE<span class="text-luxury-gold">STORE</span>
+            URBAN<span class="text-luxury-gold">EASE</span>
           </h3>
           <p class="text-sm text-luxury-text-muted dark:text-luxury-dark-text-muted">
             Premium products for discerning customers. Experience luxury shopping.
@@ -79,7 +79,7 @@ const currentYear = computed(() => new Date().getFullYear())
       <div class="mt-8 pt-8 border-t border-luxury-border dark:border-luxury-dark-border">
         <div class="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
           <p class="text-sm text-luxury-text-muted dark:text-luxury-dark-text-muted">
-            &copy; {{ currentYear }} LuxeStore. All rights reserved.
+            &copy; {{ currentYear }} URBANEASE. All rights reserved.
           </p>
           <div class="flex space-x-6">
             <a href="#" class="text-luxury-text-muted dark:text-luxury-dark-text-muted hover:text-luxury-gold transition-colors">

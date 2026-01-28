@@ -11,7 +11,7 @@ const { isDark } = storeToRefs(themeStore)
         <div class="flex-shrink-0">
           <NuxtLink to="/" class="flex items-center space-x-2">
             <span class="text-xl font-bold tracking-luxury text-luxury-text dark:text-luxury-dark-text">
-              LUXE<span class="text-luxury-gold">STORE</span>
+              URBAN<span class="text-luxury-gold">EASE</span>
             </span>
           </NuxtLink>
         </div>
