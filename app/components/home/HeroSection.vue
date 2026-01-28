@@ -6,7 +6,7 @@ const scrollToProducts = () => {
 </script>
 
 <template>
-  <section class="relative bg-gradient-to-br from-luxury-surface to-luxury-bg dark:from-luxury-dark-surface dark:to-luxury-dark-bg py-20 lg:py-32 transition-colors duration-200">
+  <section class="relative bg-linear-to-br from-luxury-surface to-luxury-bg dark:from-luxury-dark-surface dark:to-luxury-dark-bg py-20 lg:py-32 transition-colors duration-200">
     <div class="container mx-auto px-4 sm:px-6 lg:px-8">
       <div class="max-w-4xl mx-auto text-center">
         <!-- Welcome Badge -->

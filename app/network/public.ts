@@ -45,7 +45,7 @@ export const publicNetwork = {
     const config = useRuntimeConfig()
     const baseURL = config.public.apiBaseURL
 
-    return $fetch<Product[]>(`/products/public?limit=${limit}`, {
+    return $fetch<Product[]>(`/products?limit=${limit}`, {
       baseURL,
       headers: {
         'Content-Type': 'application/json',
