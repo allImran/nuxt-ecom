@@ -119,13 +119,21 @@ const getImageUrl = (path: string) => {
 
         <!-- Text Section Content -->
         <div v-if="section.type === 'text'">
-          <textarea
-            :value="section.content || ''"
-            rows="4"
+          <QuillEditor
+            :content="section.content || ''"
+            content-type="html"
+            :toolbar="[
+              ['bold', 'italic', 'underline'],
+              [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+              [{ 'header': [1, 2, 3, false] }],
+              ['link'],
+              ['clean']
+            ]"
             placeholder="Enter text content..."
-            class="w-full bg-transparent border border-luxury-border dark:border-luxury-dark-border rounded-luxury p-3 text-luxury-text dark:text-luxury-dark-text focus:outline-none focus:border-luxury-gold transition-colors resize-y"
-            @input="updateSectionContent(index, ($event.target as HTMLTextAreaElement).value)"
-          ></textarea>
+            theme="snow"
+            class="luxury-quill-editor"
+            @update:content="updateSectionContent(index, $event)"
+          />
         </div>
 
         <!-- Media Section Content -->
@@ -192,3 +200,122 @@ const getImageUrl = (path: string) => {
     </div>
   </div>
 </template>
+
+<style scoped>
+/* Quill Editor Luxury Theme Styling */
+:deep(.luxury-quill-editor) {
+  border-radius: 1.5rem;
+}
+
+:deep(.luxury-quill-editor .ql-toolbar) {
+  border: 1px solid rgb(229, 231, 235);
+  border-top-left-radius: 1.5rem;
+  border-top-right-radius: 1.5rem;
+  background: rgb(255, 255, 255);
+  border-bottom: none;
+}
+
+:deep(.luxury-quill-editor .ql-container) {
+  border: 1px solid rgb(229, 231, 235);
+  border-bottom-left-radius: 1.5rem;
+  border-bottom-right-radius: 1.5rem;
+  background: transparent;
+  font-size: 1rem;
+  min-height: 120px;
+}
+
+:deep(.luxury-quill-editor .ql-editor) {
+  color: rgb(17, 24, 39);
+  background: transparent;
+}
+
+:deep(.luxury-quill-editor .ql-editor.ql-blank::before) {
+  color: rgb(107, 114, 128);
+  font-style: normal;
+}
+
+:deep(.luxury-quill-editor:focus-within .ql-toolbar) {
+  border-color: rgb(212, 175, 55);
+}
+
+:deep(.luxury-quill-editor:focus-within .ql-container) {
+  border-color: rgb(212, 175, 55);
+}
+
+/* Dark mode styling */
+:deep(.dark .luxury-quill-editor .ql-toolbar) {
+  border-color: rgb(55, 65, 81);
+  background: rgb(17, 24, 39);
+}
+
+:deep(.dark .luxury-quill-editor .ql-container) {
+  border-color: rgb(55, 65, 81);
+  background: transparent;
+}
+
+:deep(.dark .luxury-quill-editor .ql-editor) {
+  color: rgb(243, 244, 246);
+}
+
+:deep(.dark .luxury-quill-editor .ql-editor.ql-blank::before) {
+  color: rgb(156, 163, 175);
+}
+
+:deep(.dark .luxury-quill-editor:focus-within .ql-toolbar) {
+  border-color: rgb(212, 175, 55);
+}
+
+:deep(.dark .luxury-quill-editor:focus-within .ql-container) {
+  border-color: rgb(212, 175, 55);
+}
+
+/* Toolbar button styling */
+:deep(.luxury-quill-editor .ql-toolbar button) {
+  color: rgb(107, 114, 128);
+}
+
+:deep(.luxury-quill-editor .ql-toolbar button:hover) {
+  color: rgb(212, 175, 55);
+}
+
+:deep(.luxury-quill-editor .ql-toolbar button.ql-active) {
+  color: rgb(212, 175, 55);
+}
+
+:deep(.dark .luxury-quill-editor .ql-toolbar button) {
+  color: rgb(156, 163, 175);
+}
+
+:deep(.dark .luxury-quill-editor .ql-toolbar button:hover) {
+  color: rgb(212, 175, 55);
+}
+
+:deep(.dark .luxury-quill-editor .ql-toolbar button.ql-active) {
+  color: rgb(212, 175, 55);
+}
+
+/* Toolbar styling */
+:deep(.luxury-quill-editor .ql-toolbar .ql-picker-label) {
+  color: rgb(107, 114, 128);
+}
+
+:deep(.luxury-quill-editor .ql-toolbar .ql-picker-label:hover) {
+  color: rgb(212, 175, 55);
+}
+
+:deep(.luxury-quill-editor .ql-toolbar .ql-picker-label.ql-active) {
+  color: rgb(212, 175, 55);
+}
+
+:deep(.dark .luxury-quill-editor .ql-toolbar .ql-picker-label) {
+  color: rgb(156, 163, 175);
+}
+
+:deep(.dark .luxury-quill-editor .ql-toolbar .ql-picker-label:hover) {
+  color: rgb(212, 175, 55);
+}
+
+:deep(.dark .luxury-quill-editor .ql-toolbar .ql-picker-label.ql-active) {
+  color: rgb(212, 175, 55);
+}
+</style>
