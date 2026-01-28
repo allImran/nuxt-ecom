@@ -1,0 +1,5 @@
+description: Add home page with layout components
+specChanges:
+  - capability: home-page
+    type: ADDED
+    impactSummary: New home page capability with layout, components, and state management

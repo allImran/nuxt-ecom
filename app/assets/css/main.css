@@ -2,6 +2,11 @@
 @custom-variant dark (&:where(.dark, .dark *));
 @tailwind utilities;
 
+
+
+/* Reset margins on specific elements only */
+
+
 @theme {
   /* ---------- Colors ---------- */
   --color-luxury-charcoal: #2C2C2C;
