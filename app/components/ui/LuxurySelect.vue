@@ -48,9 +48,7 @@ const updateValue = (event: Event) => {
         </option>
       </select>
       <div class="absolute inset-y-0 right-0 flex items-center px-1 pointer-events-none text-luxury-text-muted dark:text-luxury-dark-text-muted peer-focus:text-luxury-gold transition-colors">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-        </svg>
+        <UiIcon name="chevron-down" :size="16" />
       </div>
     </div>
     <label
