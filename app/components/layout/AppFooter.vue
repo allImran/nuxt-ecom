@@ -61,11 +61,11 @@ const currentYear = computed(() => new Date().getFullYear())
                 Shipping Info
               </NuxtLink>
             </li>
-            <li>
+            <!-- <li>
               <NuxtLink to="/returns" class="text-sm text-luxury-text-muted dark:text-luxury-dark-text-muted hover:text-luxury-gold transition-colors">
                 Returns
               </NuxtLink>
-            </li>
+            </li> -->
             <li>
               <NuxtLink to="/privacy" class="text-sm text-luxury-text-muted dark:text-luxury-dark-text-muted hover:text-luxury-gold transition-colors">
                 Privacy Policy

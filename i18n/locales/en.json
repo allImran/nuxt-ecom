@@ -51,5 +51,74 @@
     "generic": "Something went wrong. Please try again.",
     "network": "Network error. Please check your internet connection.",
     "unauthorized": "Unauthorized. Please login again."
+  },
+  "about": {
+    "title": "About Us",
+    "hero": {
+      "title": "Our Story",
+      "subtitle": "Simplifying everyday life through thoughtful solutions"
+    },
+    "mission": {
+      "title": "Our Mission",
+      "description": "We are simply solving problems we face in our daily lives through these products. These products are not only solving our problems but also making our lives easier, more efficient, and more enjoyable. Every item in our collection is born from real experiences and genuine needs that we encountered in our day-to-day routines. We believe that the best solutions come from understanding the challenges people actually face, not from imagining what might be useful."
+    },
+    "philosophy": {
+      "title": "Our Philosophy",
+      "description": "At URBANEASE, we believe in simplicity, quality, and practicality. Each product is carefully selected to ensure it serves a real purpose and adds genuine value to your life. We don't just sell products—we share solutions that have made a difference in our own lives, and we hope they will do the same for you.",
+      "items": [
+        {
+          "title": "Problem-Solving First",
+          "description": "Every product addresses a specific challenge we've personally experienced"
+        },
+        {
+          "title": "Quality Over Quantity",
+          "description": "We carefully curate products that are built to last and perform exceptionally"
+        },
+        {
+          "title": "Making Life Easier",
+          "description": "Our goal is to simplify your daily routines and enhance your quality of life"
+        }
+      ]
+    },
+    "journey": {
+      "title": "Our Journey",
+      "description": "What started as a personal quest to find better solutions for everyday challenges has grown into a curated collection of products that we truly believe in. Each item represents hours of research, testing, and real-world use in our own lives. We're not just sellers—we're users, advocates, and believers in the power of thoughtful design to make life better."
+    }
+  },
+  "faq": {
+    "title": "Frequently Asked Questions",
+    "subtitle": "Find answers to common questions about our products, services, and policies",
+    "questions": [
+      {
+        "id": "returns",
+        "question": "Do you support returns?",
+        "answer": "Yes, we support returns in the following cases: (1) If you receive the wrong product, or (2) If the product is damaged upon delivery. Please contact us within 48 hours of delivery with photos of the damaged product or wrong item, and we'll process your return request."
+      },
+      {
+        "id": "exchanges",
+        "question": "Do you support exchanges?",
+        "answer": "No, we currently do not support product exchanges. If you have an issue with your order, please refer to our return policy or contact us for assistance."
+      },
+      {
+        "id": "refunds",
+        "question": "Do you support refunds?",
+        "answer": "We do not offer refunds directly. Instead, we support returns for eligible cases such as receiving a wrong product or damaged items. Once your return is approved, we'll work with you to find the best solution."
+      },
+      {
+        "id": "warranty",
+        "question": "Do you support warranty?",
+        "answer": "No, we do not currently offer warranty on our products. We carefully select and quality-check all products before shipping to ensure you receive items in perfect condition."
+      },
+      {
+        "id": "giftCards",
+        "question": "Do you support gift cards?",
+        "answer": "Currently, we do not offer gift cards. However, we're working on introducing this feature in the future. Stay tuned for updates!"
+      },
+      {
+        "id": "shipping",
+        "question": "What is your shipping process?",
+        "answer": "We use third-party shipping services to deliver your orders. Once your order is confirmed, we hand it over to our trusted shipping partners who will deliver it to your doorstep. You'll receive tracking information once your order has been shipped so you can monitor its progress."
+      }
+    ]
   }
 }
