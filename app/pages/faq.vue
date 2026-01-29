@@ -151,22 +151,10 @@ definePageMeta({
         </div>
 
         <!-- Contact CTA -->
-        <div class="mt-16 text-center">
-          <UiBaseCard class="max-w-2xl mx-auto p-8 sm:p-10">
-            <h3 class="text-2xl font-bold text-luxury-text dark:text-luxury-dark-text mb-3">
-              {{ $t('nav.contact') }}
-            </h3>
-            <p class="text-luxury-text-muted dark:text-luxury-dark-text-muted mb-6 max-w-md mx-auto">
-              Can't find what you're looking for? Feel free to reach out to us directly.
-            </p>
-            <NuxtLink to="/contact">
-              <UiLuxuryButton variant="outline">
-                <span>{{ $t('nav.contact') }}</span>
-                <UiIcon name="arrow-right" :size="18" class="ml-2" />
-              </UiLuxuryButton>
-            </NuxtLink>
-          </UiBaseCard>
-        </div>
+        <SectionsContactCTA
+          title="Can't find what you're looking for?"
+          description="Feel free to reach out to us directly."
+        />
       </div>
     </section>
   </div>

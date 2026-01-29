@@ -134,7 +134,7 @@ definePageMeta({
             class="p-6 sm:p-8"
           >
             <h2 class="text-xl sm:text-2xl font-bold text-luxury-text dark:text-luxury-dark-text mb-4 flex items-center">
-              <span class="w-2 h-8 bg-luxury-gold rounded-full mr-4 flex-shrink-0"></span>
+              <span class="w-2 h-8 bg-luxury-gold rounded-full mr-4 shrink-0"></span>
               {{ section.title }}
             </h2>
             <p class="text-luxury-text-muted dark:text-luxury-dark-text-muted leading-relaxed">
@@ -144,22 +144,10 @@ definePageMeta({
         </div>
 
         <!-- Contact CTA -->
-        <div class="mt-16 text-center">
-          <UiBaseCard class="max-w-2xl mx-auto p-8 sm:p-10">
-            <h3 class="text-2xl font-bold text-luxury-text dark:text-luxury-dark-text mb-3">
-              {{ $t('nav.contact') }}
-            </h3>
-            <p class="text-luxury-text-muted dark:text-luxury-dark-text-muted mb-6 max-w-md mx-auto">
-              If you have any questions about our privacy policy, please don't hesitate to contact us.
-            </p>
-            <NuxtLink to="/contact">
-              <UiLuxuryButton variant="outline">
-                <span>{{ $t('nav.contact') }}</span>
-                <UiIcon name="arrow-right" :size="18" class="ml-2" />
-              </UiLuxuryButton>
-            </NuxtLink>
-          </UiBaseCard>
-        </div>
+        <SectionsContactCTA
+          title="Have Questions?"
+          description="If you have any questions about our privacy policy, please don't hesitate to contact us."
+        />
       </div>
     </section>
   </div>
