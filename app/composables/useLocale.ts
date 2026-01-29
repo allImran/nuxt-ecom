@@ -1,6 +1,8 @@
+import { storeToRefs } from "pinia"
 export function useLocale() {
   const localeStore = useLocaleStore()
   const { locale, locales, t } = useI18n()
+  const { currentLocale } = storeToRefs(localeStore)
 
   // Switch language instantly without page reload
   // Uses the store's setLocale which calls i18n's setLocale
@@ -18,6 +20,7 @@ export function useLocale() {
 
   return {
     ...localeStore,
+    currentLocale,
     locale,
     locales,
     t,
