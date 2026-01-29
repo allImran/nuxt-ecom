@@ -10,5 +10,17 @@ export default {
     './plugins/**/*.{js,ts}',
     './nuxt.config.{js,ts}',
   ],
+  theme: {
+    extend: {
+      fontFamily: {
+        sans: [
+          'Hind Siliguri',
+          'Noto Sans Bengali',
+          'Arial',
+          'sans-serif'
+        ]
+      }
+    }
+  },
   plugins: [],
 }

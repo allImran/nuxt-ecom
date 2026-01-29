@@ -1,4 +1,5 @@
 <script setup lang="ts">
+const { t } = useI18n()
 const themeStore = useThemeStore()
 const { isDark } = storeToRefs(themeStore)
 
@@ -37,8 +38,11 @@ watch(() => route.path, () => {
           <LayoutAppMenu variant="horizontal" />
         </div>
 
-        <!-- Theme Toggle & Auth -->
+        <!-- Theme Toggle, Language & Auth -->
         <div class="flex items-center space-x-4">
+          <!-- Language Toggle -->
+          <LayoutLanguageToggle />
+
           <!-- Theme Toggle -->
           <button
             @click="themeStore.toggleTheme"
@@ -55,13 +59,13 @@ watch(() => route.path, () => {
               to="/login"
               class="text-sm font-medium text-luxury-text dark:text-luxury-dark-text hover:text-luxury-gold transition-colors"
             >
-              Login
+              {{ t('auth.login') }}
             </NuxtLink>
             <NuxtLink
               to="/signup"
               class="text-sm font-medium px-4 py-2 rounded-luxury bg-luxury-gold hover:bg-luxury-gold-hover text-white transition-colors"
             >
-              Sign Up
+              {{ t('auth.signup') }}
             </NuxtLink>
           </div>
 
@@ -130,17 +134,20 @@ watch(() => route.path, () => {
                 <LayoutAppMenu variant="vertical" />
 
                 <div class="pt-6 border-t border-luxury-border dark:border-luxury-dark-border space-y-4">
+                  <div class="flex justify-center">
+                    <LayoutLanguageToggle />
+                  </div>
                   <NuxtLink
                     to="/login"
                     class="block text-center text-sm font-medium text-luxury-text dark:text-luxury-dark-text hover:text-luxury-gold transition-colors py-2"
                   >
-                    Login
+                    {{ t('auth.login') }}
                   </NuxtLink>
                   <NuxtLink
                     to="/signup"
                     class="block text-center text-sm font-medium px-4 py-2 rounded-luxury bg-luxury-gold hover:bg-luxury-gold-hover text-white transition-colors shadow-luxury"
                   >
-                    Sign Up
+                    {{ t('auth.signup') }}
                   </NuxtLink>
                 </div>
               </div>

@@ -12,6 +12,7 @@
   "dependencies": {
     "@nuxt/content": "^3.10.0",
     "@nuxt/image": "^2.0.0",
+    "@nuxtjs/i18n": "^10.2.1",
     "@pinia/nuxt": "^0.11.3",
     "@supabase/supabase-js": "^2.90.1",
     "@tailwindcss/vite": "^4.1.18",

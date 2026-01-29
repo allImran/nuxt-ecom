@@ -7,12 +7,14 @@ withDefaults(defineProps<Props>(), {
   variant: 'horizontal'
 })
 
-const menuItems = [
-  { name: 'Home', path: '/' },
-  { name: 'Products', path: '/products' },
-  { name: 'About', path: '/about' },
-  { name: 'Contact', path: '/contact' }
-]
+const { t } = useI18n()
+
+const menuItems = computed(() => [
+  { name: t('nav.home'), path: '/' },
+  { name: t('nav.products'), path: '/products' },
+  { name: t('nav.about'), path: '/about' },
+  { name: t('nav.contact'), path: '/contact' }
+])
 
 const currentPath = computed(() => useRoute().path)
 </script>

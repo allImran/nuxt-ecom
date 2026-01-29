@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=Noto+Sans+Bengali:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
 @custom-variant dark (&:where(.dark, .dark *));
 @tailwind utilities;
@@ -39,4 +40,14 @@
 
   /* ---------- Letter spacing ---------- */
   --tracking-luxury: 0.18em;
+}
+
+/* Bangla-specific optimizations */
+html[lang="bn"] body {
+  font-family: 'Hind Siliguri', 'Noto Sans Bengali', sans-serif;
+  line-height: 1.6;
+}
+
+html[lang="bn"] * {
+  letter-spacing: 0.01em;
 }
