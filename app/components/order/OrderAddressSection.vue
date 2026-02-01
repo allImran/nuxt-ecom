@@ -10,6 +10,7 @@
     />
 
     <OrderDistrictSelect
+      v-if="selectedDivision"
       :selected-division="selectedDivision"
       :selected-district="selectedDistrict"
       :is-bangla="isBangla"
@@ -19,6 +20,7 @@
     />
 
     <OrderUpazilaSelect
+      v-if="selectedDistrict"
       :selected-district="selectedDistrict"
       :selected-upazila="selectedUpazila"
       :is-bangla="isBangla"
@@ -36,6 +38,11 @@
       :model-value="mobileNumber"
       @update:modelValue="onMobileChange"
     />
+
+    <OrderFullNameInput
+      :model-value="fullName"
+      @update:modelValue="onFullNameChange"
+    />
   </section>
 </template>
 
@@ -48,6 +55,7 @@ interface Props {
   selectedUpazila: string | null
   fullAddress: string
   mobileNumber: string
+  fullName: string
   isBangla: boolean
   availableDistricts: LocationData[]
   availableUpazilas: LocationData[]
@@ -65,6 +73,7 @@ const emit = defineEmits<{
   (e: 'upazilaChange', value: string | null): void
   (e: 'addressChange', value: string): void
   (e: 'mobileChange', value: string): void
+  (e: 'fullNameChange', value: string): void
 }>()
 
 function onDivisionChange(value: string | null) {
@@ -85,5 +94,9 @@ function onAddressChange(value: string) {
 
 function onMobileChange(value: string) {
   emit('mobileChange', value)
+}
+
+function onFullNameChange(value: string) {
+  emit('fullNameChange', value)
 }
 </script>

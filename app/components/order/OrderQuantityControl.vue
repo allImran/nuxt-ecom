@@ -1,9 +1,9 @@
 <template>
-  <div class="order-quantity-control flex items-center gap-3">
+  <div class="order-quantity-control bg-gray-100/60 dark:bg-gray-900 p-2 rounded-full flex items-center gap-">
     <button
       type="button"
       :disabled="quantity <= 0"
-      class="w-10 h-10 flex items-center justify-center border rounded-luxury hover:bg-luxury-border dark:hover:bg-luxury-dark-border transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+      class="size-8 flex items-center justify-center border rounded-luxury hover:bg-luxury-border dark:hover:bg-luxury-dark-border transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
       @click="onDecrease"
     >
       <span class="text-xl">−</span>
@@ -11,7 +11,7 @@
     <span class="w-12 text-center font-medium">{{ quantity }}</span>
     <button
       type="button"
-      class="w-10 h-10 flex items-center justify-center border rounded-luxury hover:bg-luxury-border dark:hover:bg-luxury-dark-border transition-colors"
+      class="size-8 flex items-center justify-center border rounded-luxury hover:bg-luxury-border dark:hover:bg-luxury-dark-border transition-colors"
       @click="onIncrease"
     >
       <span class="text-xl">+</span>

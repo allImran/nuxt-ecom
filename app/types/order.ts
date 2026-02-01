@@ -22,6 +22,9 @@ export interface ShippingAddress {
 export interface CreateOrderRequest {
   user_id?: string | null
   status: string
+  full_name?: string
+  phone?: string
+  business_id?: string
   shipping_address: ShippingAddress
   products: Array<{
     id: string

@@ -1,5 +1,5 @@
 <template>
-  <div class="order-product-item flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 border border-luxury-border dark:border-luxury-dark-border rounded-luxury">
+  <div class="overflow-hidden order-product-item flex flex-col sm:flex-row sm:items-center justify-between gap-4 pr-4 border border-luxury-border dark:border-luxury-dark-border rounded-luxury">
     <OrderProductInfo
       :product="product"
       :product-price="productPrice"

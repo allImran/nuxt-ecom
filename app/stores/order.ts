@@ -16,6 +16,7 @@ export const useOrderStore = defineStore('order', () => {
   const selectedUpazila = ref<string | null>(null)
   const fullAddress = ref('')
   const mobileNumber = ref('')
+  const fullName = ref('')
 
   // UI state
   const loading = ref(false)
@@ -58,7 +59,7 @@ export const useOrderStore = defineStore('order', () => {
     orderProducts.value = productList.map(product => ({
       id: product.id,
       variant_id: product.variants?.[0]?.id || null,
-      quantity: 0
+      quantity: 1
     }))
   }
 
@@ -72,7 +73,7 @@ export const useOrderStore = defineStore('order', () => {
   }
 
   // Actions - Address management
-  function setAddressField(field: 'selectedDivision' | 'selectedDistrict' | 'selectedUpazila' | 'fullAddress' | 'mobileNumber', value: string | null) {
+  function setAddressField(field: 'selectedDivision' | 'selectedDistrict' | 'selectedUpazila' | 'fullAddress' | 'mobileNumber' | 'fullName', value: string | null) {
     switch (field) {
       case 'selectedDivision':
         selectedDivision.value = value
@@ -91,6 +92,9 @@ export const useOrderStore = defineStore('order', () => {
         break
       case 'mobileNumber':
         mobileNumber.value = value as string
+        break
+      case 'fullName':
+        fullName.value = value as string
         break
     }
   }
@@ -147,9 +151,17 @@ export const useOrderStore = defineStore('order', () => {
 
     try {
       const { publicNetwork } = await import('~/network/public')
+
+      // Get business_id from the first product's category
+      const firstProduct = products.value.find(p => p.id === productsForSubmission.value[0]?.id)
+      const businessId = firstProduct?.category?.business_id || firstProduct?.category?.business?.id
+
       await publicNetwork.createOrder({
         user_id: null,
         status: 'pending',
+        full_name: fullName.value,
+        phone: mobileNumber.value,
+        business_id: businessId,
         shipping_address: shippingAddress,
         products: productsForSubmission.value.map(p => ({
           id: p.id,
@@ -176,6 +188,7 @@ export const useOrderStore = defineStore('order', () => {
     selectedUpazila.value = null
     fullAddress.value = ''
     mobileNumber.value = ''
+    fullName.value = ''
     error.value = null
     success.value = false
   }
@@ -189,6 +202,7 @@ export const useOrderStore = defineStore('order', () => {
     selectedUpazila,
     fullAddress,
     mobileNumber,
+    fullName,
     loading,
     error,
     success,

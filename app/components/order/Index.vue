@@ -1,5 +1,5 @@
 <template>
-  <div class="order-component max-w-4xl mx-auto p-6">
+  <div class="order-component max-w-4xl mx-auto p-6 bg-luxury-bg/50 dark:bg-luxury-dark-bg/50 pt-12">
     <!-- Success state -->
     <div v-if="success && !loading" class="text-center py-12">
       <div class="text-6xl mb-4">✓</div>
@@ -37,6 +37,7 @@
           :selected-upazila="selectedUpazila"
           :full-address="fullAddress"
           :mobile-number="mobileNumber"
+          :full-name="fullName"
           :is-bangla="isBangla"
           :available-districts="availableDistricts"
           :available-upazilas="availableUpazilas"
@@ -48,6 +49,7 @@
           @upazila-change="setUpazila"
           @address-change="setAddress"
           @mobile-change="setMobile"
+          @full-name-change="setFullName"
         />
 
         <OrderSummary
@@ -98,6 +100,7 @@ const {
   selectedUpazila,
   fullAddress,
   mobileNumber,
+  fullName,
   loading,
   error,
   success,
@@ -119,6 +122,7 @@ const {
   setUpazila,
   setAddress,
   setMobile,
+  setFullName,
   handleSubmit: vmHandleSubmit,
   resetOrder
 } = vm

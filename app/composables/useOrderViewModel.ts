@@ -22,6 +22,7 @@ export function useOrderViewModel() {
     selectedUpazila,
     fullAddress,
     mobileNumber,
+    fullName,
     loading,
     error,
     success,
@@ -106,6 +107,10 @@ export function useOrderViewModel() {
     orderStore.setAddressField('mobileNumber', value)
   }
 
+  function setFullName(value: string) {
+    orderStore.setAddressField('fullName', value)
+  }
+
   // Build shipping address for API submission
   function buildShippingAddress(): ShippingAddress {
     const division = divisions.find(d => d.id === selectedDivision.value)
@@ -153,6 +158,7 @@ export function useOrderViewModel() {
     selectedUpazila,
     fullAddress,
     mobileNumber,
+    fullName,
     loading,
     error,
     success,
@@ -186,6 +192,7 @@ export function useOrderViewModel() {
     setUpazila,
     setAddress,
     setMobile,
+    setFullName,
     handleSubmit,
     resetOrder: orderStore.resetOrder
   }

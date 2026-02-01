@@ -50,7 +50,7 @@ const emit = defineEmits<{
 
 const productItems = computed((): ProductItem[] => {
   return props.orderProducts
-    .filter(op => op.quantity > 0 || props.products.find(p => p.id === op.id))
+    .filter(op => op.quantity > 0)
     .map(op => {
       const product = props.products.find(p => p.id === op.id)
       if (!product) return null
