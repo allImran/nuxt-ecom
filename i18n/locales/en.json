@@ -120,5 +120,29 @@
         "answer": "We use third-party shipping services to deliver your orders. Once your order is confirmed, we hand it over to our trusted shipping partners who will deliver it to your doorstep. You'll receive tracking information once your order has been shipped so you can monitor its progress."
       }
     ]
+  },
+  "order": {
+    "title": "Place Your Order",
+    "division": "Division",
+    "district": "District",
+    "upazila": "Upazila",
+    "fullAddress": "Full Address",
+    "mobileNumber": "Mobile Number",
+    "quantity": "Quantity",
+    "subtotal": "Subtotal",
+    "deliveryFee": "Delivery Fee",
+    "total": "Total",
+    "placeOrder": "Place Order",
+    "cashOnDelivery": "Cash on Delivery",
+    "othersComingSoon": "Others (coming soon)",
+    "noProducts": "Please select at least one product",
+    "invalidPhone": "Please enter a valid mobile number",
+    "orderSuccess": "Order placed successfully! We will contact you soon.",
+    "orderFailed": "Failed to place order. Please try again.",
+    "search": "Search...",
+    "selectDivision": "Select Division",
+    "selectDistrict": "Select District",
+    "selectUpazila": "Select Upazila",
+    "optional": "Optional"
   }
 }

@@ -39,6 +39,27 @@ export interface Category {
   parent_id?: string
 }
 
+// Order types
+export interface CreateOrderRequest {
+  user_id?: string | null
+  status: string
+  shipping_address: {
+    division: string
+    division_name: string
+    district?: string
+    district_name?: string
+    upazila?: string
+    upazila_name?: string
+    address: string
+    mobile: string
+  }
+  products: Array<{
+    id: string
+    variant_id?: string | null
+    quantity: number
+  }>
+}
+
 export const publicNetwork = {
   // Products - Public endpoints
   fetchFeaturedProducts: (limit = 8) => {
@@ -62,6 +83,21 @@ export const publicNetwork = {
       headers: {
         'Content-Type': 'application/json',
       },
+    })
+  },
+
+  // Orders - Public endpoints
+  createOrder: (request: CreateOrderRequest) => {
+    const config = useRuntimeConfig()
+    const baseURL = config.public.apiBaseURL
+
+    return $fetch('/order', {
+      baseURL,
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: request
     })
   },
 }

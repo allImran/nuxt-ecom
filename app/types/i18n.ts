@@ -52,6 +52,30 @@ export interface I18nMessages {
     network: string
     unauthorized: string
   }
+  order: {
+    title: string
+    division: string
+    district: string
+    upazila: string
+    fullAddress: string
+    mobileNumber: string
+    quantity: string
+    subtotal: string
+    deliveryFee: string
+    total: string
+    placeOrder: string
+    cashOnDelivery: string
+    othersComingSoon: string
+    noProducts: string
+    invalidPhone: string
+    orderSuccess: string
+    orderFailed: string
+    search: string
+    selectDivision: string
+    selectDistrict: string
+    selectUpazila: string
+    optional: string
+  }
 }
 
 declare module 'vue-i18n' {

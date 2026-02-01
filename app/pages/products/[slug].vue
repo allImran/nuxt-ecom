@@ -145,6 +145,8 @@ const handleSelectMedia = (index: number) => {
           />
         </div>
       </div>
+
+      <Order v-if="product" :products="[product]" />
     </div>
   </div>
 </template>
