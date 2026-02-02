@@ -122,17 +122,18 @@
     ]
   },
   "order": {
-    "title": "অর্ডার করুন",
+    "title": "অর্ডার সম্পন্ন করতে * চিহ্নিত তথ্যগুলো অবশ্যই পূরণ করতে হবে",
     "division": "বিভাগ",
     "district": "জেলা",
     "upazila": "উপজেলা",
     "fullAddress": "সম্পূর্ণ ঠিকানা",
+    "fullName": "নাম",
     "mobileNumber": "মোবাইল নম্বর",
     "quantity": "পরিমাণ",
     "subtotal": "উপ-মোট",
     "deliveryFee": "ডেলিভারি ফি",
     "total": "মোট",
-    "placeOrder": "পেমেন্ট করুন",
+    "placeOrder": "অর্ডারটি কনফার্ম করুন",
     "cashOnDelivery": "ক্যাশ অন ডেলিভারি",
     "othersComingSoon": "অন্যান্য (শীঘ্রই আসছে)",
     "noProducts": "অনুগ্রহ করে অন্তত একটি পণ্য নির্বাচন করুন",
@@ -143,6 +144,7 @@
     "selectDivision": "বিভাগ নির্বাচন করুন",
     "selectDistrict": "জেলা নির্বাচন করুন",
     "selectUpazila": "উপজেলা নির্বাচন করুন",
-    "optional": "ঐচ্ছিক"
+    "optional": "ঐচ্ছিক",
+    "paymentMethods": "পেমেন্ট মেথডস"
   }
 }

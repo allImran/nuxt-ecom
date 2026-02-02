@@ -1,5 +1,5 @@
 <template>
-  <div class="order-component max-w-4xl mx-auto p-6 bg-luxury-bg/50 dark:bg-luxury-dark-bg/50 pt-12">
+  <div class="order-component max-w-4xl mx-auto p-6  pt-12">
     <!-- Success state -->
     <div v-if="success && !loading" class="text-center py-12">
       <div class="text-6xl mb-4">✓</div>

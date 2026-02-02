@@ -10,7 +10,7 @@
         type="text"
         :placeholder="t('order.search')"
         :disabled="!selectedDivision"
-        class="w-full px-4 py-3 pr-10 border border-luxury-border dark:border-luxury-dark-border/30 rounded-luxury focus:outline-none focus:ring-2 focus:ring-luxury-gold focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed"
+        class="w-full px-4 py-3 pr-10 border border-luxury-border dark:border-luxury-dark-border rounded-luxury focus:outline-none focus:ring-2 focus:ring-luxury-gold focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed"
         @focus="showDropdown = true"
         @blur="handleBlur"
       />

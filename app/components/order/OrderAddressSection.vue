@@ -1,6 +1,5 @@
 <template>
   <section class="order-address-section space-y-6">
-    <h2 class="text-xl font-semibold tracking-luxury">{{ t('order.title') }}</h2>
 
     <OrderDivisionSelect
       :selected-division="selectedDivision"

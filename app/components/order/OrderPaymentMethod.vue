@@ -1,6 +1,6 @@
 <template>
   <div class="order-payment-method space-y-3">
-    <label class="flex items-center gap-3 p-4 border border-luxury-border dark:border-luxury-dark-border/30 rounded-luxury cursor-pointer">
+    <label class="flex items-center gap-3 p-4 border border-luxury-border dark:border-luxury-dark-border rounded-luxury cursor-pointer">
       <input
         type="radio"
         :checked="selected"
@@ -12,7 +12,7 @@
       </div>
     </label>
 
-    <label class="flex items-center gap-3 p-4 border border-luxury-border dark:border-luxury-dark-border/30 rounded-luxury opacity-50">
+    <label class="flex items-center gap-3 p-4 border border-luxury-border dark:border-luxury-dark-border rounded-luxury opacity-50">
       <input
         type="radio"
         disabled

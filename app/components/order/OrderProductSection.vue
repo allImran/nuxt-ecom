@@ -1,7 +1,6 @@
 <template>
   <section class="order-product-section space-y-6">
-    <h2 class="text-xl font-semibold tracking-luxury">{{ t('product.title') }}</h2>
-
+    
     <div v-if="productItems.length > 0" class="space-y-4">
       <OrderProductItem
         v-for="item in productItems"

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const route = useRoute()
-
+const { t } = useI18n()
 // Define layout for this page
 definePageMeta({
   layout: 'default'
@@ -145,6 +145,11 @@ const handleSelectMedia = (index: number) => {
           />
         </div>
       </div>
+
+    </div>
+
+    <div class="bg-luxury-gold/4 py-20 border-t border-luxury-border dark:border-luxury-dark-border">
+      <h2 class="text-xl lg:text-2xl  font-semibold text-center">{{ t('order.title') }}</h2>
 
       <Order v-if="product" :products="[product]" />
     </div>

@@ -5,7 +5,7 @@
       :value="modelValue"
       :placeholder="t('order.fullAddress')"
       rows="3"
-      class="w-full px-4 py-3 border border-luxury-border dark:border-luxury-dark-border/30 rounded-luxury focus:outline-none focus:ring-2 focus:ring-luxury-gold focus:border-transparent resize-none"
+      class="w-full px-4 py-3 border border-luxury-border dark:border-luxury-dark-border rounded-luxury focus:outline-none focus:ring-2 focus:ring-luxury-gold focus:border-transparent resize-none"
       @input="onInput"
     />
   </div>
