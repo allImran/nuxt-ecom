@@ -27,8 +27,8 @@ export interface CreateOrderRequest {
   phone?: string
   business_id?: string
   shipping_address: ShippingAddress
-  products: Array<{
-    id: string
+  items: Array<{
+    product_id: string
     variant_id?: string | null
     quantity: number
   }>

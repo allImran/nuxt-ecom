@@ -62,8 +62,8 @@ export interface CreateOrderRequest {
     address: string
     mobile: string
   }
-  products: Array<{
-    id: string
+  items: Array<{
+    product_id: string
     variant_id?: string | null
     quantity: number
   }>

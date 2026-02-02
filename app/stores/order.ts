@@ -164,8 +164,8 @@ export const useOrderStore = defineStore('order', () => {
         phone: mobileNumber.value,
         business_id: businessId,
         shipping_address: shippingAddress,
-        products: productsForSubmission.value.map(p => ({
-          id: p.id,
+        items: productsForSubmission.value.map(p => ({
+          product_id: p.id,
           variant_id: p.variant_id,
           quantity: p.quantity
         }))

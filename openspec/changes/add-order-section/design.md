@@ -3,6 +3,7 @@
 The order section is a critical e-commerce feature that allows users to place orders directly from the product detail page. The design must follow the project's strict architectural patterns while introducing new capabilities for location-based address selection, bilingual support for Bangladesh geography, and order submission.
 
 **Constraints:**
+
 - No logic in `.vue` files - all logic in composables
 - No local variables in components - use composables for all state
 - DRY principle - reusable nested components to avoid props drilling
@@ -14,6 +15,7 @@ The order section is a critical e-commerce feature that allows users to place or
 - Location data (divisions, districts, upazilas) are in `/public/*.json` files
 
 **Stakeholders:**
+
 - End users placing orders
 - Admin users managing orders
 - Delivery personnel processing shipping addresses
@@ -21,6 +23,7 @@ The order section is a critical e-commerce feature that allows users to place or
 ## Goals / Non-Goals
 
 **Goals:**
+
 1. Allow users to select products and adjust quantities
 2. Collect shipping address with Bangladesh geography support
 3. Display bilingual location names based on current locale
@@ -32,6 +35,7 @@ The order section is a critical e-commerce feature that allows users to place or
 9. Loading and error states for order submission
 
 **Non-Goals:**
+
 - Shopping cart persistence across pages (single-page checkout)
 - User authentication integration (user_id: null initially)
 - Payment gateway integration (COD only for now)
@@ -49,19 +53,21 @@ The order section is a critical e-commerce feature that allows users to place or
 **Why**: The location data is static and relatively small (8 divisions, ~64 districts, ~495 upazilas). Static imports enable better search performance and avoid async loading complexity.
 
 **Implementation**:
+
 ```typescript
 // In utils/location.ts
-import divisionsData from '~/public/divisions.json'
-import districtsData from '~/public/districts.json'
-import upazilasData from '~/public/upazilas.json'
+import divisionsData from "~/public/divisions.json";
+import districtsData from "~/public/districts.json";
+import upazilasData from "~/public/upazilas.json";
 
 // Parse and export structured data
-export const divisions: LocationData[] = parseDivisions(divisionsData)
-export const districts: LocationData[] = parseDistricts(districtsData)
-export const upazilas: LocationData[] = parseUpazilas(upazilasData)
+export const divisions: LocationData[] = parseDivisions(divisionsData);
+export const districts: LocationData[] = parseDistricts(districtsData);
+export const upazilas: LocationData[] = parseUpazilas(upazilasData);
 ```
 
 **Alternatives considered:**
+
 - Runtime fetch with $fetch - Rejected due to unnecessary async complexity
 - Store in database - Rejected due to static nature of Bangladesh geography
 - Hardcode in TypeScript - Rejected due to size and maintainability
@@ -73,26 +79,28 @@ export const upazilas: LocationData[] = parseUpazilas(upazilasData)
 **Why**: The location JSON files contain both `name` (English) and `bn_name` (Bengali) fields. This matches the project's i18n pattern.
 
 **Implementation**:
+
 ```typescript
 // In composable
-const localeStore = useLocaleStore()
-const isBangla = computed(() => localeStore.isBangla)
+const localeStore = useLocaleStore();
+const isBangla = computed(() => localeStore.isBangla);
 
 const getDivisionName = (division: LocationData): string => {
-  return isBangla.value ? division.bn_name : division.name
-}
+  return isBangla.value ? division.bn_name : division.name;
+};
 
 // Search works on both fields
 const searchDivisions = (query: string): LocationData[] => {
-  const lowerQuery = query.toLowerCase()
-  return divisions.filter(d =>
-    d.name.toLowerCase().includes(lowerQuery) ||
-    d.bn_name.includes(query) // Bengali case-sensitive search
-  )
-}
+  const lowerQuery = query.toLowerCase();
+  return divisions.filter(
+    (d) =>
+      d.name.toLowerCase().includes(lowerQuery) || d.bn_name.includes(query), // Bengali case-sensitive search
+  );
+};
 ```
 
 **Alternatives considered:**
+
 - Separate i18n keys for each location - Rejected due to 500+ items
 - Always show both languages - Rejected, creates UI clutter
 
@@ -103,20 +111,22 @@ const searchDivisions = (query: string): LocationData[] => {
 **Why**: Bangladesh geographic hierarchy requires parent-child relationships. Optional fields accommodate areas where detailed location may not be necessary.
 
 **Implementation**:
+
 ```typescript
 // In store
 const availableDistricts = computed(() => {
-  if (!selectedDivision.value) return []
-  return districts.filter(d => d.division_id === selectedDivision.value?.id)
-})
+  if (!selectedDivision.value) return [];
+  return districts.filter((d) => d.division_id === selectedDivision.value?.id);
+});
 
 const availableUpazilas = computed(() => {
-  if (!selectedDistrict.value) return []
-  return upazilas.filter(u => u.district_id === selectedDistrict.value?.id)
-})
+  if (!selectedDistrict.value) return [];
+  return upazilas.filter((u) => u.district_id === selectedDistrict.value?.id);
+});
 ```
 
 **Alternatives considered:**
+
 - Free-text input for all locations - Rejected, prone to errors
 - Single dropdown with all locations - Rejected, poor UX with 500+ options
 - Required all fields - Rejected, too restrictive for users
@@ -128,33 +138,43 @@ const availableUpazilas = computed(() => {
 **Why**: The component receives a products array and allows users to adjust quantities. This structure maps directly to the API requirement.
 
 **Implementation**:
+
 ```typescript
 interface OrderProduct {
-  id: string
-  variant_id: string | null
-  quantity: number
+  id: string;
+  variant_id: string | null;
+  quantity: number;
 }
 
 // In store
-const orderProducts = ref<OrderProduct[]>([])
+const orderProducts = ref<OrderProduct[]>([]);
 
-const updateQuantity = (productId: string, variantId: string, quantity: number) => {
+const updateQuantity = (
+  productId: string,
+  variantId: string,
+  quantity: number,
+) => {
   const existing = orderProducts.value.find(
-    p => p.id === productId && p.variant_id === variantId
-  )
+    (p) => p.id === productId && p.variant_id === variantId,
+  );
   if (existing) {
-    existing.quantity = quantity
+    existing.quantity = quantity;
   } else {
-    orderProducts.value.push({ id: productId, variant_id: variantId, quantity })
+    orderProducts.value.push({
+      id: productId,
+      variant_id: variantId,
+      quantity,
+    });
   }
-}
+};
 
 const productsForSubmission = computed(() => {
-  return orderProducts.value.filter(p => p.quantity > 0)
-})
+  return orderProducts.value.filter((p) => p.quantity > 0);
+});
 ```
 
 **Alternatives considered:**
+
 - Single product at a time - Rejected, users may want multiple items
 - Map-based storage - Rejected, array is simpler for API submission
 
@@ -165,23 +185,25 @@ const productsForSubmission = computed(() => {
 **Why**: User requirement states "show the list of products with price from the first variant". This keeps the UI simple.
 
 **Implementation**:
+
 ```typescript
 const getProductPrice = (product: Product): number => {
-  return product.variants?.[0]?.price || 0
-}
+  return product.variants?.[0]?.price || 0;
+};
 
 const subtotal = computed(() => {
   return orderProducts.value.reduce((sum, p) => {
-    const product = products.value.find(prod => prod.id === p.id)
-    const price = product ? getProductPrice(product) : 0
-    return sum + (price * p.quantity)
-  }, 0)
-})
+    const product = products.value.find((prod) => prod.id === p.id);
+    const price = product ? getProductPrice(product) : 0;
+    return sum + price * p.quantity;
+  }, 0);
+});
 
-const total = computed(() => subtotal.value + DELIVERY_FEE)
+const total = computed(() => subtotal.value + DELIVERY_FEE);
 ```
 
 **Alternatives considered:**
+
 - Price range display - Rejected, confusing for order calculation
 - User selects variant per product - Rejected, adds complexity
 
@@ -215,38 +237,52 @@ Order (Index.vue)
 **Why**: PostgreSQL JSONB fields can store structured data. A flat object is simple to query and maintain.
 
 **Implementation**:
+
 ```typescript
 interface ShippingAddress {
-  division: string        // Division ID
-  division_name: string   // Division name (for display)
-  district?: string       // District ID (optional)
-  district_name?: string  // District name (optional)
-  upazila?: string        // Upazila ID (optional)
-  upazila_name?: string   // Upazila name (optional)
-  address: string         // Full address text
-  mobile: string          // Mobile number
+  division: string; // Division ID
+  division_name: string; // Division name (for display)
+  district?: string; // District ID (optional)
+  district_name?: string; // District name (optional)
+  upazila?: string; // Upazila ID (optional)
+  upazila_name?: string; // Upazila name (optional)
+  address: string; // Full address text
+  mobile: string; // Mobile number
 }
 
 // Build for submission
 const buildShippingAddress = (): ShippingAddress => {
-  const division = divisions.value.find(d => d.id === selectedDivision.value)
-  const district = districts.value.find(d => d.id === selectedDistrict.value)
-  const upazila = upazilas.value.find(u => u.id === selectedUpazila.value)
+  const division = divisions.value.find((d) => d.id === selectedDivision.value);
+  const district = districts.value.find((d) => d.id === selectedDistrict.value);
+  const upazila = upazilas.value.find((u) => u.id === selectedUpazila.value);
 
   return {
-    division: selectedDivision.value || '',
-    division_name: division ? (isBangla.value ? division.bn_name : division.name) : '',
+    division: selectedDivision.value || "",
+    division_name: division
+      ? isBangla.value
+        ? division.bn_name
+        : division.name
+      : "",
     district: selectedDistrict.value || undefined,
-    district_name: district ? (isBangla.value ? district.bn_name : district.name) : undefined,
+    district_name: district
+      ? isBangla.value
+        ? district.bn_name
+        : district.name
+      : undefined,
     upazila: selectedUpazila.value || undefined,
-    upazila_name: upazila ? (isBangla.value ? upazila.bn_name : upazila.name) : undefined,
+    upazila_name: upazila
+      ? isBangla.value
+        ? upazila.bn_name
+        : upazila.name
+      : undefined,
     address: fullAddress.value,
-    mobile: mobileNumber.value
-  }
-}
+    mobile: mobileNumber.value,
+  };
+};
 ```
 
 **Alternatives considered:**
+
 - Nested object - Rejected, flat is simpler to query
 - String concatenation - Rejected, loses structured data
 
@@ -255,30 +291,31 @@ const buildShippingAddress = (): ShippingAddress => {
 **What**: Submit order via POST to `/order` endpoint with JSON body.
 
 **Implementation**:
+
 ```typescript
 interface CreateOrderRequest {
-  user_id?: string | null      // null for now
-  status: string               // 'pending'
-  shipping_address: ShippingAddress
-  products: Array<{
-    id: string
-    variant_id?: string | null
-    quantity: number
-  }>
+  user_id?: string | null; // null for now
+  status: string; // 'pending'
+  shipping_address: ShippingAddress;
+  items: Array<{
+    product_id: string;
+    variant_id?: string | null;
+    quantity: number;
+  }>;
 }
 
 // In network/public.ts
 createOrder: (request: CreateOrderRequest) => {
-  const config = useRuntimeConfig()
-  const baseURL = config.public.apiBaseURL
+  const config = useRuntimeConfig();
+  const baseURL = config.public.apiBaseURL;
 
-  return $fetch('/order', {
+  return $fetch("/order", {
     baseURL,
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: request
-  })
-}
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: request,
+  });
+};
 ```
 
 ### Decision 9: Search Functionality - Client-Side Filtering
@@ -288,28 +325,37 @@ createOrder: (request: CreateOrderRequest) => {
 **Why**: With ~500 upazilas, client-side filtering is fast and simple. No need for server-side search.
 
 **Implementation**:
-```typescript
-const searchResults = ref<LocationData[]>([])
 
-const searchLocations = (type: 'division' | 'district' | 'upazila', query: string) => {
-  const data = type === 'division' ? divisions :
-               type === 'district' ? availableDistricts.value :
-               availableUpazilas.value
+```typescript
+const searchResults = ref<LocationData[]>([]);
+
+const searchLocations = (
+  type: "division" | "district" | "upazila",
+  query: string,
+) => {
+  const data =
+    type === "division"
+      ? divisions
+      : type === "district"
+        ? availableDistricts.value
+        : availableUpazilas.value;
 
   if (!query) {
-    searchResults.value = data.slice(0, 50) // Limit initial display
-    return
+    searchResults.value = data.slice(0, 50); // Limit initial display
+    return;
   }
 
-  const lowerQuery = query.toLowerCase()
-  searchResults.value = data.filter(item =>
-    item.name.toLowerCase().includes(lowerQuery) ||
-    item.bn_name.includes(query)
-  )
-}
+  const lowerQuery = query.toLowerCase();
+  searchResults.value = data.filter(
+    (item) =>
+      item.name.toLowerCase().includes(lowerQuery) ||
+      item.bn_name.includes(query),
+  );
+};
 ```
 
 **Alternatives considered:**
+
 - Server-side search API - Rejected, overkill for 500 items
 - No search, just scroll - Rejected, poor UX with long lists
 
@@ -338,6 +384,7 @@ const searchLocations = (type: 'division' | 'district' | 'upazila', query: strin
 No migration needed - this is a new feature.
 
 **Steps:**
+
 1. Create location data utilities and types
 2. Create order Pinia store
 3. Create order composable with business logic
