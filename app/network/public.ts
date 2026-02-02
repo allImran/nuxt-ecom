@@ -100,7 +100,7 @@ export const publicNetwork = {
     const config = useRuntimeConfig()
     const baseURL = config.public.apiBaseURL
 
-    return $fetch('/order', {
+    return $fetch('/orders', {
       baseURL,
       method: 'POST',
       headers: {
