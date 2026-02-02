@@ -33,15 +33,16 @@
       @update:modelValue="onAddressChange"
     />
 
-    <OrderMobileInput
-      :model-value="mobileNumber"
-      @update:modelValue="onMobileChange"
-    />
-
     <OrderFullNameInput
       :model-value="fullName"
       @update:modelValue="onFullNameChange"
     />
+
+    <OrderMobileInput
+      :model-value="mobileNumber"
+      @update:modelValue="onMobileChange"
+    />
+    
   </section>
 </template>
 

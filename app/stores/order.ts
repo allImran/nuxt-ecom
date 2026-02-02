@@ -138,6 +138,7 @@ export const useOrderStore = defineStore('order', () => {
     upazila_name?: string
     address: string
     mobile: string
+    full_name?: string
   }) {
     const validation = validateOrder()
     if (!validation.valid) {
@@ -159,7 +160,7 @@ export const useOrderStore = defineStore('order', () => {
       await publicNetwork.createOrder({
         user_id: null,
         status: 'pending',
-        full_name: fullName.value,
+        // full_name: fullName.value,
         phone: mobileNumber.value,
         business_id: businessId,
         shipping_address: shippingAddress,

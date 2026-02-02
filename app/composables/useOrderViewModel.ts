@@ -125,6 +125,7 @@ export function useOrderViewModel() {
       upazila: selectedUpazila.value || undefined,
       upazila_name: upazila ? getUpazilaName(upazila) : undefined,
       address: fullAddress.value,
+      full_name: fullName.value,
       mobile: mobileNumber.value
     }
   }

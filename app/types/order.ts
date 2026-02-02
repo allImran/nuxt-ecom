@@ -17,6 +17,7 @@ export interface ShippingAddress {
   upazila_name?: string       // Upazila name (optional)
   address: string             // Full address text
   mobile: string              // Mobile number
+  full_name?: string
 }
 
 export interface CreateOrderRequest {
