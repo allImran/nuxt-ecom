@@ -4,14 +4,16 @@ interface Props {
   last?: boolean
 }
 
-defineProps<Props>()
+withDefaults(defineProps<Props>(), {
+  last: false
+})
 </script>
 
 <template>
   <li class="flex items-center">
     <component
-      :is="href ? NuxtLink : 'span'"
-      :href="href"
+      :is="href ? 'NuxtLink' : 'span'"
+      :to="href"
       :class="[
         'text-sm font-medium tracking-luxury uppercase',
         last
