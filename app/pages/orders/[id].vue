@@ -114,7 +114,7 @@ const navigateBack = () => {
           :order-id="order.id"
           :status="order.status"
           :created-at="order.created_at"
-          :total="order.total"
+          :total="order.total_amount"
           :format-date="formatDate"
           :format-price="formatPrice"
           :get-status-color="getStatusColor"
@@ -137,8 +137,8 @@ const navigateBack = () => {
 
         <!-- Status History Section -->
         <OrderDetailStatusHistory
-          v-if="order?.order_history && order.order_history.length > 0"
-          :history="order.order_history"
+          v-if="order?.history && order.history.length > 0"
+          :history="order.history"
           :format-date="formatDate"
           :get-status-color="getStatusColor"
         />
@@ -146,7 +146,7 @@ const navigateBack = () => {
         <!-- Totals Section -->
         <OrderDetailTotals
           :items="orderItems"
-          :total="order.total"
+          :total="order.total_amount"
           :format-price="formatPrice"
           :calculate-item-total="calculateItemTotal"
           :calculate-subtotal="calculateSubtotal"

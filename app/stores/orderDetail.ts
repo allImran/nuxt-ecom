@@ -13,10 +13,10 @@ export const useOrderDetailStore = defineStore('orderDetail', () => {
   const hasOrder = computed(() => order.value !== null)
 
   // Computed - Order items
-  const orderItems = computed(() => order.value?.items || [])
+  const orderItems = computed(() => order.value?.order_items || [])
 
   // Computed - Status history
-  const statusHistory = computed(() => order.value?.order_history || [])
+  const statusHistory = computed(() => order.value?.history || [])
 
   // Computed - Formatted date
   const formattedDate = computed(() => {
@@ -26,11 +26,11 @@ export const useOrderDetailStore = defineStore('orderDetail', () => {
 
   // Computed - Formatted total
   const formattedTotal = computed(() => {
-    if (!order.value?.total) return ''
+    if (!order.value?.total_amount) return ''
     return new Intl.NumberFormat('en-BD', {
       style: 'currency',
       currency: 'BDT'
-    }).format(order.value.total)
+    }).format(order.value.total_amount)
   })
 
   // Actions - Fetch order by ID

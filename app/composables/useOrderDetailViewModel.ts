@@ -71,9 +71,9 @@ export function useOrderDetailViewModel() {
     }
   }
 
-  // Helper: Calculate order item total (price × quantity)
+  // Helper: Calculate order item total (price_at_purchase × quantity)
   function calculateItemTotal(item: OrderItem): number {
-    const price = typeof item.price === 'string' ? parseFloat(item.price) : item.price
+    const price = typeof item.price_at_purchase === 'string' ? parseFloat(item.price_at_purchase) : item.price_at_purchase
     const quantity = typeof item.quantity === 'string' ? parseInt(item.quantity, 10) : item.quantity
     return (price || 0) * (quantity || 0)
   }

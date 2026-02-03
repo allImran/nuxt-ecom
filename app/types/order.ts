@@ -40,14 +40,36 @@ export interface OrderProductSnapshot {
   name: string
   slug: string
   file_paths?: string[]
+  sections?: Array<{
+    type: string
+    content?: string
+    file_paths?: string[]
+  }>
+  category_id?: string
+  youtube_url?: string
+  created_at?: string
+  updated_at?: string
+  category?: {
+    id: string
+    name: string
+    is_active: boolean
+  }
+  variants?: Array<{
+    id: string
+    sku: string
+    price: number
+    attributes: Record<string, string>
+  }>
 }
 
 export interface OrderItem {
   id: string
   product: OrderProductSnapshot
   quantity: number
-  price: number
+  price_at_purchase: number
   snapshot_name: string // Product name with variant info
+  variant_id?: string
+  product_id?: string
 }
 
 export interface OrderHistory {
@@ -61,11 +83,13 @@ export interface OrderHistory {
 export interface OrderDetail {
   id: string
   user_id?: string
+  business_id?: string
   status: string
-  total: number
-  items: OrderItem[]
+  total_amount: number
+  order_items: OrderItem[]
   shipping_address: ShippingAddress
-  order_history?: OrderHistory[]
+  history?: OrderHistory[]
+  payment_intent_id?: string | null
   created_at: string
-  updated_at: string
+  updated_at?: string
 }
