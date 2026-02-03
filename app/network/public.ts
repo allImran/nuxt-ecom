@@ -1,6 +1,8 @@
 // Network layer for Public features
 // Using $fetch without auth headers for public endpoints
 
+import type { OrderDetail, OrderItem, OrderHistory } from '~/types/order'
+
 // Type definitions (reused from admin)
 export interface Product {
   id: string
@@ -107,6 +109,18 @@ export const publicNetwork = {
         'Content-Type': 'application/json',
       },
       body: request
+    })
+  },
+
+  fetchOrderById: (orderId: string) => {
+    const config = useRuntimeConfig()
+    const baseURL = config.public.apiBaseURL
+
+    return $fetch<OrderDetail>(`/orders/${orderId}`, {
+      baseURL,
+      headers: {
+        'Content-Type': 'application/json',
+      },
     })
   },
 }

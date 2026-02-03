@@ -33,3 +33,39 @@ export interface CreateOrderRequest {
     quantity: number
   }>
 }
+
+// Order detail types for displaying order information
+export interface OrderProductSnapshot {
+  id: string
+  name: string
+  slug: string
+  file_paths?: string[]
+}
+
+export interface OrderItem {
+  id: string
+  product: OrderProductSnapshot
+  quantity: number
+  price: number
+  snapshot_name: string // Product name with variant info
+}
+
+export interface OrderHistory {
+  id: string
+  order_id: string
+  status: string
+  changed_at: string
+  comment?: string
+}
+
+export interface OrderDetail {
+  id: string
+  user_id?: string
+  status: string
+  total: number
+  items: OrderItem[]
+  shipping_address: ShippingAddress
+  order_history?: OrderHistory[]
+  created_at: string
+  updated_at: string
+}

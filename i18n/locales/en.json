@@ -11,7 +11,8 @@
     "edit": "Edit",
     "search": "Search",
     "filter": "Filter",
-    "sort": "Sort"
+    "sort": "Sort",
+    "back": "Back"
   },
   "nav": {
     "home": "Home",
@@ -49,6 +50,7 @@
   },
   "errors": {
     "generic": "Something went wrong. Please try again.",
+    "genericMessage": "An unexpected error occurred. Please try again later.",
     "network": "Network error. Please check your internet connection.",
     "unauthorized": "Unauthorized. Please login again."
   },
@@ -123,6 +125,13 @@
   },
   "order": {
     "title": "All fields marked with * must be completed to place an order",
+    "order": "Order",
+    "items": "Order Items",
+    "shippingAddress": "Shipping Address",
+    "statusHistory": "Status History",
+    "orderSummary": "Order Summary",
+    "notFound": "Order Not Found",
+    "notFoundMessage": "The order you're looking for doesn't exist or may have been removed.",
     "division": "Division",
     "district": "District",
     "upazila": "Upazila",
