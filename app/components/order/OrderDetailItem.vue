@@ -41,7 +41,7 @@ const productImage = computed(() => props.getProductImage(props.item))
         </h3>
         <div class="flex items-center gap-4 mt-2 text-sm text-luxury-text-muted dark:text-luxury-dark-text-muted">
           <span>{{ $t('order.quantity') }}: {{ item.quantity }}</span>
-          <span>{{ formatPrice(item.price) }}</span>
+          <span>{{ formatPrice(item.price_at_purchase) }}</span>
         </div>
       </div>
 
