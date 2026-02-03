@@ -328,7 +328,7 @@ Base URL: `https://urbanease-backend.vercel.app/api`
 
 `GET /orders/:id`
 
-- **Auth**: Required
+- **Auth**: public
 - **Description**: Retrieves a specific order. Customers can only view their own orders; Admin/Staff can view any order.
 - **Response**: Order object with nested Order Items.
 
