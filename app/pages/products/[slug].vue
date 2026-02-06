@@ -91,12 +91,12 @@ const handleSelectMedia = (index: number) => {
       <!-- Loading State -->
       <div v-else-if="loading" class="grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-12">
         <!-- Media Gallery Skeleton -->
-        <div class="lg:col-span-3">
+        <div class="lg:col-span-2">
           <ProductMediaGallerySkeleton />
         </div>
 
         <!-- Product Info Skeleton -->
-        <div class="lg:col-span-2 space-y-8">
+        <div class="lg:col-span-3 space-y-8">
           <ProductInfoSkeleton />
           <ProductVariantSkeleton />
         </div>
@@ -105,7 +105,7 @@ const handleSelectMedia = (index: number) => {
       <!-- Product Detail -->
       <div v-else-if="hasProduct" class="grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-12">
         <!-- Left Column - Media Gallery (60%) -->
-        <div class="lg:col-span-3">
+        <div class="lg:col-span-2">
           <ProductMediaGallery
             v-if="hasMedia"
             :media="orderedMedia"
@@ -119,7 +119,7 @@ const handleSelectMedia = (index: number) => {
         </div>
 
         <!-- Right Column - Product Info (40%) -->
-        <div class="lg:col-span-2 space-y-8">
+        <div class="lg:col-span-3 space-y-8">
           <!-- Basic Info -->
           <ProductInfoSection
             :name="product?.name"

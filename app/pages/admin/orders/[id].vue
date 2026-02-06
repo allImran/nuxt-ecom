@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import type { OrderStatusType } from '~/types/order'
 
 definePageMeta({
   layout: 'admin',
@@ -10,7 +9,7 @@ const route = useRoute()
 const { t } = useI18n()
 const router = useRouter()
 const toast = useToast()
-
+const { generateOrderPdf, isGenerating } = useOrderPdf()
 // Get the order ID from route
 const orderId = computed(() => route.params.id as string)
 
@@ -147,6 +146,18 @@ const handleQuantitySave = async (newQuantity: number) => {
   }
 }
 
+// Handle PDF download
+async function handleDownloadPdf() {
+  if (!orderDetail.value) return
+
+  try {
+    await generateOrderPdf(orderDetail.value)
+  } catch (error) {
+    console.error('Failed to download PDF:', error)
+    // Error is already set in the composable
+  }
+}
+
 // Cancel quantity edit
 const cancelQuantityEdit = () => {
   showQuantityEditor.value = false
@@ -158,13 +169,29 @@ const cancelQuantityEdit = () => {
 <template>
   <div class="space-y-6">
     <!-- Back Button -->
-    <button
-      @click="navigateBack"
-      class="flex items-center gap-2 text-luxury-text-muted dark:text-luxury-dark-text-muted hover:text-luxury-text dark:hover:text-luxury-dark-text transition-colors"
-    >
-      <UiIcon name="arrow-left" :size="20" />
-      <span>Back to Orders</span>
-    </button>
+     <div class="flex justify-between">
+       <button
+        @click="navigateBack"
+        class="flex items-center gap-2 text-luxury-text-muted dark:text-luxury-dark-text-muted hover:text-luxury-text dark:hover:text-luxury-dark-text transition-colors"
+      >
+        <UiIcon name="arrow-left" :size="20" />
+        <span>Back to Orders</span>
+      </button>
+      <button
+          @click="handleDownloadPdf"
+          :disabled="isGenerating"
+          class="flex items-center gap-2 px-4 py-2 bg-luxury-accent dark:bg-luxury-dark-accent text-luxury-text dark:text-luxury-dark-text rounded-lg hover:bg-opacity-80 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+          title="Download PDF"
+        >
+          <UiIcon
+            :name="isGenerating ? 'loader' : 'download'"
+            :size="18"
+            :class="{ 'animate-spin': isGenerating }"
+          />
+          <span class="text-sm font-medium">PDF</span>
+        </button>
+     </div>
+   
 
     <!-- Error State -->
     <div v-if="error && !loading" class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-luxury p-6">
