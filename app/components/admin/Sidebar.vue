@@ -24,6 +24,12 @@
             Products
           </NuxtLink>
         </li>
+        <li>
+          <NuxtLink to="/admin/orders" class="flex items-center px-4 py-3 text-luxury-text dark:text-luxury-dark-text hover:bg-luxury-border/10 dark:hover:bg-luxury-dark-border/20 rounded-[var(--radius-luxury)] transition-colors" active-class="bg-luxury-border/10 dark:bg-luxury-dark-border/20 text-luxury-gold dark:text-luxury-gold font-medium">
+            <span class="mr-3">📦</span>
+            Orders
+          </NuxtLink>
+        </li>
       </ul>
     </nav>
 

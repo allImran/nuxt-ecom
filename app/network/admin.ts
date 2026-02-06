@@ -129,5 +129,21 @@ export const adminNetwork = {
       headers,
     })
   },
-  deleteFile: (path: string) => useAdminFetch(`/files/${encodeURIComponent(path)}`, { method: 'DELETE' })
+  deleteFile: (path: string) => useAdminFetch(`/files/${encodeURIComponent(path)}`, { method: 'DELETE' }),
+
+  // Orders - Admin endpoints
+  fetchAllOrders: (params?: { status?: string; phone?: string; limit?: number; offset?: number }) => {
+    const query = new URLSearchParams()
+    if (params?.status) query.append('status', params.status)
+    if (params?.phone) query.append('phone', params.phone)
+    if (params?.limit) query.append('limit', params.limit.toString())
+    if (params?.offset) query.append('offset', params.offset.toString())
+    const queryString = query.toString()
+    return useAdminFetch<any[]>(`/orders${queryString ? `?${queryString}` : ''}`)
+  },
+  fetchOrderDetail: (id: string) => useAdminFetch<any>(`/orders/${id}`),
+  updateOrderStatus: (id: string, data: { status: string; comment?: string }) =>
+    useAdminFetch(`/orders/${id}/status`, { method: 'PATCH', body: data }),
+  updateOrder: (id: string, data: { items: Array<{ id: string; quantity: number }> }) =>
+    useAdminFetch(`/orders/${id}`, { method: 'PATCH', body: data })
 }

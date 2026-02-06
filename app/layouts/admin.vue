@@ -8,6 +8,9 @@
         <slot />
       </div>
     </main>
+
+    <!-- Toast Container -->
+    <AdminToastContainer />
   </div>
 </template>
 

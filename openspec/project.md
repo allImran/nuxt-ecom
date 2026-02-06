@@ -1,115 +1,437 @@
-# Project Context
+# API Documentation
 
-## Purpose
+Base URL: `https://urbanease-backend.vercel.app/api`
 
-An e-commerce website frontend for selling products.
+## Authentication
 
-## Tech Stack
+- **Public**: `GET` requests for Businesses and Categories.
+- **Protected**: `POST`, `PUT`, `DELETE` requests require a Bearer Token.
+- **Header**: `Authorization: Bearer <token>`
 
-- Nuxt 4
-- Tailwind 4
-- Pinia
-- Supabase
-- Motion for Vue (https://motion.dev/docs/vue)
+---
 
-## Project Conventions
+## Business API
 
-### Code Style
+### Get All Businesses
 
-- Use TypeScript everywhere
-- Use Composition API and `<script lang="ts" setup>`
-- camelCase for variables and functions
-- PascalCase for components
-- Middleware names are in kebab-case
-- One component per file
-- Prefer composables for reusable logic
-- Avoid unnecessary comments and boilerplate
-- Keep components small and focused
-- Pinia should use `Setup Stores` Similar to the Vue Composition API's setup function. In Setup Stores:
-  - ref()s become state properties
-  - computed()s become getters
-  - function()s become actions
-- composables use Pinia stores, components import composables not the stores.
-- Use nested slot to avoid props drilling. Like, <Nav> <NavItems></NavItems></Nav>
-- Use $fetch for api call
+`GET /businesses`
 
-### Architecture Patterns
+- **Auth**: Public
+- **Response**: Array of Business objects.
 
-- The app/ directory is the main directory of the Nuxt application. It contains the following subdirectories:
-  assets/: website's assets that the build tool (Vite or webpack) will process
-  components/: Vue components of the application
-  composables/: all logics composables
-  layouts/: Vue components that wrap around your pages and avoid re-rendering between pages
-  middleware/: run code before navigating to a particular route
-  pages/: file-based routing to create routes within your web application
-  plugins/: use Vue plugins and more at the creation of your Nuxt application
-  utils/: add functions throughout your application that can be used in your components, composables, and pages.
-  network/: contains the network code of the application. Register api endpoint end-points for API calls.PInia Stores use network functions.
-- Pages are route-level components only
-- `pages/admin` is the admin dashboard
-- Shared state is managed with Pinia stores
-- UI components should be presentational when possible
-- Avoid tight coupling between components and stores
-- Define types in `app/types/`
-- Use Pinia for state managemen
+### Get Business by ID
 
-### Testing Strategy
+`GET /businesses/:id`
 
-[Explain your testing approach and requirements]
+- **Auth**: Public
+- **Response**: Business object.
 
-### Git Workflow
+### Create Business
 
-- `main` branch is always stable
-- Feature branches: `feature/<short-description>`
-- Bug fixes: `fix/<short-description>`
-- Commits follow conventional commits:
-  - `feat:` new features
-  - `fix:` bug fixes
-  - `refactor:` code improvements
-  - `chore:` tooling or config changes
+`POST /businesses`
 
-## Domain Context
+- **Auth**: Admin only
+- **Body**:
+  ```json
+  {
+    "name": "Business Name",
+    "slug": "business-slug"
+  }
+  ```
+- **Response**: Created Business object.
 
-- User e-commerce website best practices.
-- The application is UI-driven and data-centric
-- UX clarity and responsiveness are more important than visual effects
-- The application is accessible
-- The application is scalable, maintainable
+### Update Business
 
-## Important Constraints
+`PUT /businesses/:id`
 
-- The application is mobile-first and responsive.
-- UI and logic are separated. No `.vue` file should contain logic. `.vue` file imports composables.
-- Components should not take multiple responsibilities.
-- Always show loader/skeleton-loader while data fetching or something happening.
-- Do not duplicate business logic across API endpoints
-- Shared logic (e.g. fetching a single user, existence checks, authorization) must live in `utils/` or `services/`
-- Always use try-catch to avoid unhandled exceptions where no error handler exist.
-- API handlers should only orchestrate flow, not implement core logic
-- If multiple endpoints require the same validation or data-fetching, extract it into a reusable helper
-- Never fetch or validate the same entity (e.g. user) differently in different endpoints
-- API routes should call reusable functions instead of containing inline logic
-- Utility functions must be framework-agnostic and testable
-- Services and utilities must be written using **functional patterns only**
-- Do **not** use class-based services or OOP-style abstractions
-- Network layer handles HTTP calls only
-- Pinia is the single source of truth for state
-- Pinia actions call network functions
-- Composables must not call network directly
-- Composables may only consume Pinia stores
-- Components must interact with data via composables
-- State mutations must happen only inside Pinia
-- Nuxt automatically imports any components, If a component in nested directories, then the component's name will be based on its own path directory and filename, with duplicate segments being removed. example,
-  -| components/
-  ---| base/
-  -----| foo/
-  -------| Button.vue
-  then the component's name will be `BaseFooButton`.
-- utils functions are automatically imported.
-- Use the composables/ directory to auto-import in any .js, .ts and .vue files.
-- theme Guideline
-  Follow `app/assets/css/main.css` for theme guideline.
+- **Auth**: Admin only
+- **Body**:
+  ```json
+  {
+    "name": "Updated Name",
+    "slug": "updated-slug"
+  }
+  ```
+- **Response**: Updated Business object.
 
-## External Dependencies
+### Delete Business
 
-[Document key external services, APIs, or systems]
+`DELETE /businesses/:id`
+
+- **Auth**: Admin only
+- **Description**: Soft deletes the business (sets `is_active` to false).
+
+---
+
+## Category API
+
+### Get Root Categories
+
+`GET /categories/roots`
+
+- **Auth**: Public
+- **Query Params**:
+  - `business_id` (optional): Filter roots by business.
+- **Response**: Array of root Category objects.
+
+### Get All Categories
+
+`GET /categories`
+
+- **Auth**: Public
+- **Query Params**:
+  - `business_id` (optional): Filter by business.
+- **Response**: Array of Category objects.
+
+### Get Category by ID
+
+`GET /categories/:id`
+
+- **Auth**: Public
+- **Response**: Category object.
+
+### Create Category
+
+`POST /categories`
+
+- **Auth**: Admin, Staff
+- **Body**:
+  ```json
+  {
+    "name": "Category Name",
+    "business_id": "uuid",
+    "parent_id": "uuid" // optional
+  }
+  ```
+- **Response**: Created Category object.
+
+### Update Category
+
+`PUT /categories/:id`
+
+- **Auth**: Admin, Staff
+- **Body**:
+  ```json
+  {
+    "name": "Updated Name",
+    "parent_id": "uuid" // optional
+  }
+  ```
+- **Response**: Updated Category object.
+
+### Delete Category
+
+`DELETE /categories/:id`
+
+- **Auth**: Admin only
+- **Description**: Soft deletes the category (sets `is_active` to false).
+
+---
+
+## Product API
+
+### Get All Products
+
+`GET /products`
+
+- **Auth**: Public
+- **Response**: Array of Product objects with nested Category.
+
+### Get Product by ID
+
+`GET /products/:id`
+
+- **Auth**: Public
+- **Response**: Product object with nested Category and Variants.
+
+### Create Product
+
+`POST /products`
+
+- **Auth**: Admin, Staff
+- **Body**:
+  ```json
+  {
+    "name": "Product Name",
+    "slug": "product-slug",
+    "image_urls": ["url1", "url2"], // optional
+    "sections": [{ "type": "text", "content": "..." }], // optional JSONB
+    "category_id": "uuid"
+  }
+  ```
+- **Response**: Created Product object.
+
+### Update Product
+
+`PUT /products/:id`
+
+- **Auth**: Admin, Staff
+- **Body**:
+  ```json
+  {
+    "name": "Updated Name",
+    "slug": "updated-slug",
+    "image_urls": ["url1"],
+    "sections": []
+  }
+  ```
+- **Response**: Updated Product object.
+
+### Delete Product
+
+`DELETE /products/:id`
+
+- **Auth**: Admin only
+- **Response**: 204 No Content
+
+---
+
+## Product Variant API
+
+### Get Variants by Product ID
+
+`GET /products/:id/variants`
+
+- **Auth**: Public
+- **Response**: Array of Variant objects.
+
+### Create Variant
+
+`POST /products/:id/variants`
+
+- **Auth**: Admin, Staff
+- **Body**:
+  ```json
+  {
+    "sku": "SKU-123",
+    "price": 99.99,
+    "attributes": { "color": "blue", "size": "M" },
+    "product_id": "uuid" // included in body validation but url param used for association
+  }
+  ```
+- **Response**: Created Variant object.
+
+### Update Variant
+
+`PUT /products/variants/:id`
+
+- **Auth**: Admin, Staff
+- **Body**:
+  ```json
+  {
+    "sku": "NEW-SKU",
+    "price": 89.99,
+    "attributes": { "color": "red" }
+  }
+  ```
+- **Response**: Updated Variant object.
+
+### Delete Variant
+
+`DELETE /products/variants/:id`
+
+- **Auth**: Admin only
+- **Response**: 204 No Content
+
+---
+
+## File API
+
+### Upload File
+
+`POST /files/upload`
+
+- **Auth**: Admin, Staff
+- **Body**: `multipart/form-data`
+  - `file`: The file to upload.
+- **Response**:
+  ```json
+  {
+    "url": "https://...",
+    "path": "uploads/...",
+    "size": 12345,
+    "mimetype": "image/jpeg",
+    "filename": "..."
+  }
+  ```
+
+### Delete File
+
+`DELETE /files/:path`
+
+- **Auth**: Admin only
+- **Description**: Deletes a file by its path (e.g., `uploads/image.jpg`). The path parameter can contain slashes.
+- **Response**:
+  ```json
+  {
+    "message": "File deleted successfully",
+    "path": "uploads/..."
+  }
+  ```
+
+---
+
+## Order API
+
+### Create Order
+
+`POST /orders`
+
+- **Auth**: Optional (Guest or Authenticated)
+- **Description**: Creates a new order. If phone number is provided and user doesn't exist, a new customer account is automatically created. The order calculates total amount based on current variant prices and stores price snapshots.
+- **Body**:
+  ```json
+  {
+    "business_id": "uuid",
+    "shipping_address": {
+      "street": "123 Main St",
+      "city": "New York",
+      "state": "NY",
+      "zip": "10001",
+      "country": "USA"
+    },
+    "phone": "+1234567890",
+    "items": [
+      {
+        "product_id": "uuid",
+        "variant_id": "uuid",
+        "quantity": 2
+      }
+    ]
+  }
+  ```
+- **Response**: Created Order object with nested Order Items.
+  ```json
+  {
+    "id": "uuid",
+    "user_id": "uuid",
+    "status": "pending",
+    "total_amount": 199.98,
+    "business_id": "uuid",
+    "shipping_address": { ... },
+    "created_at": "2025-01-15T10:30:00Z",
+    "updated_at": "2025-01-15T10:30:00Z",
+    "order_items": [
+      {
+        "id": "uuid",
+        "product_id": "uuid",
+        "variant_id": "uuid",
+        "quantity": 2,
+        "price_at_purchase": 99.99,
+        "snapshot_name": "Product Name (SKU-123)"
+      }
+    ]
+  }
+  ```
+
+### Get Order by ID
+
+`GET /orders/:id`
+
+- **Auth**: Public
+- **Description**: Retrieves a specific order with its status history. No authentication required.
+- **Response**: Order object with nested Order Items and status history.
+  ```json
+  {
+    "id": "uuid",
+    "user_id": "uuid",
+    "status": "pending",
+    "total_amount": 199.98,
+    "business_id": "uuid",
+    "shipping_address": { ... },
+    "created_at": "2025-01-15T10:30:00Z",
+    "updated_at": "2025-01-15T10:30:00Z",
+    "order_items": [
+      {
+        "id": "uuid",
+        "product_id": "uuid",
+        "variant_id": "uuid",
+        "quantity": 2,
+        "price_at_purchase": 99.99,
+        "snapshot_name": "Product Name (SKU-123)"
+      }
+    ],
+    "history": [
+      {
+        "id": "uuid",
+        "order_id": "uuid",
+        "status": "pending",
+        "comment": null,
+        "changed_at": "2025-01-15T10:30:00Z"
+      }
+    ]
+  }
+  ```
+
+### Get Order Status History
+
+`GET /orders/:id/history`
+
+- **Auth**: Required
+- **Description**: Retrieves the status history for a specific order. Customers can only view their own order history; Admin/Staff can view any order's history.
+- **Response**: Array of status history entries ordered by most recent first.
+  ```json
+  [
+    {
+      "id": "uuid",
+      "order_id": "uuid",
+      "status": "confirmed",
+      "comment": "Order confirmed by staff",
+      "changed_at": "2025-01-15T11:00:00Z"
+    },
+    {
+      "id": "uuid",
+      "order_id": "uuid",
+      "status": "pending",
+      "comment": null,
+      "changed_at": "2025-01-15T10:30:00Z"
+    }
+  ]
+  ```
+
+### Get All Orders
+
+`GET /orders`
+
+- **Auth**: Admin, Staff only
+- **Response**: Array of all Order objects.
+
+### Get Orders by Business
+
+`GET /orders/business/:id`
+
+- **Auth**: Admin, Staff only
+- **Query Params**:
+  - `id`: Business UUID
+- **Response**: Array of Order objects for the specified business.
+
+### Update Order Status
+
+`PATCH /orders/:id/status`
+
+- **Auth**: Admin, Staff only
+- **Body**:
+  ```json
+  {
+    "status": "confirmed"
+  }
+  ```
+- **Valid Status Values**: `pending`, `conducted`, `confirmed`, `paid`, `shipped`, `delivered`, `cancelled`, `returned`, `partially_returned`
+- **Response**: Updated Order object.
+
+### Update Order
+
+`PATCH /orders/:id`
+
+- **Auth**: Admin only
+- **Description**: Full order update (all fields optional except validation constraints).
+- **Body**:
+  ```json
+  {
+    "status": "paid",
+    "total_amount": 149.99,
+    "shipping_address": { ... },
+    "payment_intent_id": "pi_1234567890"
+  }
+  ```
+- **Response**: Updated Order object.

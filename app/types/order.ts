@@ -93,3 +93,31 @@ export interface OrderDetail {
   created_at: string
   updated_at?: string
 }
+
+// Admin order types
+export type OrderStatusType = 'pending' | 'conducted' | 'confirmed' | 'paid' | 'shipped' | 'delivered' | 'cancelled' | 'returned' | 'partially_returned'
+
+export interface AdminOrderListItem {
+  id: string
+  customer_name: string
+  phone: string
+  status: OrderStatusType
+  total_amount: number
+  created_at: string
+}
+
+export interface AdminOrderDetail extends OrderDetail {
+  status: OrderStatusType
+}
+
+export interface UpdateOrderStatusRequest {
+  status: OrderStatusType
+  comment?: string
+}
+
+export interface UpdateOrderRequest {
+  items: Array<{
+    id: string
+    quantity: number
+  }>
+}
