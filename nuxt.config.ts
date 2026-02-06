@@ -3,6 +3,21 @@ import tailwindcss from "@tailwindcss/vite";
 
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
+
+  app: {
+    head: {
+      title: 'UrbanEase',
+      link: [
+        { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+        { rel: 'icon', type: 'image/png', sizes: '16x16', href: '/favicon-16x16.png' },
+        { rel: 'icon', type: 'image/png', sizes: '32x32', href: '/favicon-32x32.png' },
+        { rel: 'apple-touch-icon', sizes: '180x180', href: '/apple-touch-icon.png' },
+        { rel: 'icon', type: 'image/png', sizes: '192x192', href: '/android-chrome-192x192.png' },
+        { rel: 'icon', type: 'image/png', sizes: '512x512', href: '/android-chrome-512x512.png' },
+      ]
+    }
+  },
+
   runtimeConfig: {
     public: {
       supabaseUrl: process.env.SUPABASE_URL,
@@ -38,12 +53,10 @@ export default defineNuxtConfig({
     ],
     defaultLocale: 'bn',
     strategy: 'no_prefix',
-    lazy: true,
     langDir: 'locales/',
     detectBrowserLanguage: {
       useCookie: true,
       cookieKey: 'i18n_locale',
-      cookieMaxAge: 365 * 24 * 60 * 60,
       alwaysRedirect: false,
       fallbackLocale: 'bn'
     },
