@@ -48,6 +48,18 @@ function handleSort(field: keyof AdminOrderListItem) {
 function handleRowClick(order: AdminOrderListItem) {
   emit('row-click', order)
 }
+
+// Get the latest status from history
+function getLatestStatus(order: AdminOrderListItem): string {
+  if (order.history && order.history.length > 0) {
+    // Sort history by changed_at descending and get the first item
+    const sortedHistory = [...order.history].sort((a, b) =>
+      new Date(b.changed_at).getTime() - new Date(a.changed_at).getTime()
+    )
+    return sortedHistory[0].status
+  }
+  return order.status
+}
 </script>
 
 <template>
@@ -113,17 +125,20 @@ function handleRowClick(order: AdminOrderListItem) {
             </td>
             <td class="px-6 py-4 whitespace-nowrap">
               <span class="text-sm text-luxury-text dark:text-luxury-dark-text">
-                {{ order.customer_name }}
+                {{ order.shipping_address?.full_name }}
               </span>
+              <div class="text-sm text-luxury-text-muted dark:text-luxury-dark-text-muted">
+                {{ order.shipping_address?.address }}
+              </div>
             </td>
             <td class="px-6 py-4 whitespace-nowrap">
               <span class="text-sm font-mono text-luxury-text-muted dark:text-luxury-dark-text-muted">
-                {{ order.phone }}
+                {{ order.shipping_address?.mobile }}
               </span>
             </td>
             <td class="px-6 py-4 whitespace-nowrap">
               <OrderDetailStatusBadge
-                :status="order.status"
+                :status="getLatestStatus(order)"
                 :get-status-color="getStatusColor"
               />
             </td>

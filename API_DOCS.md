@@ -278,7 +278,7 @@ Base URL: `https://urbanease-backend.vercel.app/api`
 `POST /orders`
 
 - **Auth**: Optional (Guest or Authenticated)
-- **Description**: Creates a new order. If phone number is provided and user doesn't exist, a new customer account is automatically created. The order calculates total amount based on current variant prices and stores price snapshots.
+- **Description**: Creates a new order. If phone number is provided and user doesn't exist, a new customer account is automatically created. The order calculates total amount based on current variant prices and stores price snapshots. Initial status "pending" is recorded in the status history.
 - **Body**:
   ```json
   {
@@ -300,12 +300,11 @@ Base URL: `https://urbanease-backend.vercel.app/api`
     ]
   }
   ```
-- **Response**: Created Order object with nested Order Items.
+- **Response**: Created Order object with nested Order Items. The `status` field is derived from the latest history entry.
   ```json
   {
     "id": "uuid",
     "user_id": "uuid",
-    "status": "pending",
     "total_amount": 199.98,
     "business_id": "uuid",
     "shipping_address": { ... },
@@ -328,50 +327,166 @@ Base URL: `https://urbanease-backend.vercel.app/api`
 
 `GET /orders/:id`
 
-- **Auth**: public
-- **Description**: Retrieves a specific order. Customers can only view their own orders; Admin/Staff can view any order.
-- **Response**: Order object with nested Order Items.
+- **Auth**: Public
+- **Description**: Retrieves a specific order with its status history and full product details for each order item. No authentication required. The `status` field is derived from the latest status history entry.
+- **Response**: Order object with nested Order Items (including full product details) and status history.
+  ```json
+  {
+    "id": "uuid",
+    "user_id": "uuid",
+    "total_amount": 199.98,
+    "business_id": "uuid",
+    "shipping_address": { ... },
+    "created_at": "2025-01-15T10:30:00Z",
+    "updated_at": "2025-01-15T10:30:00Z",
+    "order_items": [
+      {
+        "id": "uuid",
+        "product_id": "uuid",
+        "variant_id": "uuid",
+        "quantity": 2,
+        "price_at_purchase": 99.99,
+        "snapshot_name": "Product Name (SKU-123)",
+        "product": {
+          "id": "uuid",
+          "name": "Product Name",
+          "slug": "product-slug",
+          "image_urls": ["url1", "url2"],
+          "category": { ... },
+          "variants": [ ... ]
+        }
+      }
+    ],
+    "history": [
+      {
+        "id": "uuid",
+        "order_id": "uuid",
+        "status": "pending",
+        "comment": null,
+        "changed_at": "2025-01-15T10:30:00Z"
+      }
+    ],
+    "status": "pending"
+  }
+  ```
+
+### Get Order Status History
+
+`GET /orders/:id/history`
+
+- **Auth**: Required
+- **Description**: Retrieves the status history for a specific order. Customers can only view their own order history; Admin/Staff can view any order's history.
+- **Response**: Array of status history entries ordered by most recent first.
+  ```json
+  [
+    {
+      "id": "uuid",
+      "order_id": "uuid",
+      "status": "confirmed",
+      "comment": "Order confirmed by staff",
+      "changed_at": "2025-01-15T11:00:00Z"
+    },
+    {
+      "id": "uuid",
+      "order_id": "uuid",
+      "status": "pending",
+      "comment": null,
+      "changed_at": "2025-01-15T10:30:00Z"
+    }
+  ]
+  ```
 
 ### Get All Orders
 
 `GET /orders`
 
 - **Auth**: Admin, Staff only
-- **Response**: Array of all Order objects.
+- **Description**: Retrieves all orders with their status history included. The `status` field is derived from the latest status history entry for each order.
+- **Response**: Array of Order objects with nested status history.
+  ```json
+  [
+    {
+      "id": "uuid",
+      "user_id": "uuid",
+      "total_amount": 199.98,
+      "business_id": "uuid",
+      "shipping_address": { ... },
+      "created_at": "2025-01-15T10:30:00Z",
+      "updated_at": "2025-01-15T10:30:00Z",
+      "order_items": [ ... ],
+      "history": [
+        {
+          "id": "uuid",
+          "order_id": "uuid",
+          "status": "pending",
+          "comment": null,
+          "changed_at": "2025-01-15T10:30:00Z"
+        }
+      ],
+      "status": "pending"
+    }
+  ]
+  ```
 
 ### Get Orders by Business
 
 `GET /orders/business/:id`
 
 - **Auth**: Admin, Staff only
+- **Description**: Retrieves all orders for a specific business with their status history included. The `status` field is derived from the latest status history entry for each order.
 - **Query Params**:
   - `id`: Business UUID
-- **Response**: Array of Order objects for the specified business.
+- **Response**: Array of Order objects for the specified business with nested status history.
+  ```json
+  [
+    {
+      "id": "uuid",
+      "user_id": "uuid",
+      "total_amount": 199.98,
+      "business_id": "uuid",
+      "shipping_address": { ... },
+      "created_at": "2025-01-15T10:30:00Z",
+      "updated_at": "2025-01-15T10:30:00Z",
+      "order_items": [ ... ],
+      "history": [
+        {
+          "id": "uuid",
+          "order_id": "uuid",
+          "status": "pending",
+          "comment": null,
+          "changed_at": "2025-01-15T10:30:00Z"
+        }
+      ],
+      "status": "pending"
+    }
+  ]
+  ```
 
 ### Update Order Status
 
 `PATCH /orders/:id/status`
 
 - **Auth**: Admin, Staff only
+- **Description**: Updates the order status by adding a new entry to the status history. The `status` field is derived from the latest history entry.
 - **Body**:
   ```json
   {
-    "status": "confirmed"
+    "status": "confirmed",
+    "comment": "Order confirmed by staff"
   }
   ```
 - **Valid Status Values**: `pending`, `conducted`, `confirmed`, `paid`, `shipped`, `delivered`, `cancelled`, `returned`, `partially_returned`
-- **Response**: Updated Order object.
+- **Response**: Updated Order object with derived status.
 
 ### Update Order
 
 `PATCH /orders/:id`
 
 - **Auth**: Admin only
-- **Description**: Full order update (all fields optional except validation constraints).
+- **Description**: Full order update (all fields optional except validation constraints). Note: `status` cannot be updated directly via this endpoint - use `PATCH /orders/:id/status` instead. Status is derived from the status history.
 - **Body**:
   ```json
   {
-    "status": "paid",
     "total_amount": 149.99,
     "shipping_address": { ... },
     "payment_intent_id": "pi_1234567890"

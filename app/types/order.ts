@@ -104,6 +104,7 @@ export interface AdminOrderListItem {
   status: OrderStatusType
   total_amount: number
   created_at: string
+  history?: OrderHistory[]
 }
 
 export interface AdminOrderDetail extends OrderDetail {

@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { OrderStatusType } from '~/types/order'
+
 definePageMeta({
   layout: 'admin',
   middleware: 'admin'
@@ -150,6 +152,7 @@ const cancelQuantityEdit = () => {
   showQuantityEditor.value = false
   editingItem.value = null
 }
+
 </script>
 
 <template>
