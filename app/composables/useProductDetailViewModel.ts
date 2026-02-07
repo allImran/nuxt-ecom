@@ -35,9 +35,9 @@ export const useProductDetailViewModel = () => {
     return Object.entries(variant.attributes).map(([key, value]) => ({ key, value: String(value) }))
   }
 
-  // Extract YouTube ID from URL
+  // Extract YouTube ID from URL (supports watch, embed, shorts, and youtu.be URLs)
   const extractYouTubeId = (url: string): string | null => {
-    const regex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/
+    const regex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|shorts\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/
     const match = url.match(regex)
     return match ? match[1]! : null
   }
