@@ -1,7 +1,12 @@
 export default defineNuxtRouteMiddleware(async (to, from) => {
+  if (!import.meta.client) {
+    return
+  }
   const supabase = useSupabase()
   const { data: { session } } = await supabase.auth.getSession()
-  console.log(session, 'ddd')
+
+  
+  // console.log(session, 'ddd')
   // 1. Check if authenticated
   if (!session) {
     return navigateTo('/login')
