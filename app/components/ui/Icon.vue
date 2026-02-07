@@ -17,7 +17,11 @@ const props = withDefaults(defineProps<Props>(), {
 
 // Get the icon component dynamically
 const iconComponent = computed(() => {
-  const iconName = props.name.charAt(0).toUpperCase() + props.name.slice(1)
+  // Convert kebab-case to PascalCase (e.g., trash-2 -> Trash2)
+  const iconName = props.name
+    .split('-')
+    .map(part => part.charAt(0).toUpperCase() + part.slice(1))
+    .join('')
   return (LucideIcons as Record<string, unknown>)[iconName]
 })
 </script>
