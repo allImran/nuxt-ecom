@@ -80,31 +80,7 @@ definePageMeta({
           </p>
 
           <!-- Philosophy Items -->
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <UiBaseCard
-              v-for="(item, index) in $t('about.philosophy.items')"
-              :key="index"
-              hover
-            >
-              <!-- Icon -->
-              <div class="w-12 h-12 rounded-full bg-luxury-gold/10 flex items-center justify-center mb-4">
-                <UiIcon
-                  :name="index === 0 ? 'lightbulb' : index === 1 ? 'award' : 'heart'"
-                  class="w-6 h-6 text-luxury-gold"
-                />
-              </div>
-
-              <!-- Item Title -->
-              <h3 class="text-xl font-semibold text-luxury-text dark:text-luxury-dark-text mb-3">
-                {{ item.title }}
-              </h3>
-
-              <!-- Item Description -->
-              <p class="text-luxury-text-muted dark:text-luxury-dark-text-muted leading-relaxed">
-                {{ item.description }}
-              </p>
-            </UiBaseCard>
-          </div>
+         
         </div>
       </div>
     </section>
