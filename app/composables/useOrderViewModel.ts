@@ -117,6 +117,12 @@ export function useOrderViewModel() {
     const district = districts.find(d => d.id === selectedDistrict.value)
     const upazila = upazilas.find(u => u.id === selectedUpazila.value)
 
+    // Format phone number - add 880 prefix if not present
+    let formattedMobile = mobileNumber.value.replace(/\s/g, '')
+    if (!formattedMobile.startsWith('880')) {
+      formattedMobile = '880' + formattedMobile
+    }
+
     return {
       division: selectedDivision.value || '',
       division_name: division ? getDivisionName(division) : '',
@@ -126,7 +132,7 @@ export function useOrderViewModel() {
       upazila_name: upazila ? getUpazilaName(upazila) : undefined,
       address: fullAddress.value,
       full_name: fullName.value,
-      mobile: mobileNumber.value
+      mobile: formattedMobile
     }
   }
 

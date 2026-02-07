@@ -157,11 +157,17 @@ export const useOrderStore = defineStore('order', () => {
       const firstProduct = products.value.find(p => p.id === productsForSubmission.value[0]?.id)
       const businessId = firstProduct?.category?.business_id || firstProduct?.category?.business?.id
 
+      // Format phone number - add 880 prefix if not present
+      let formattedPhone = mobileNumber.value
+      if (!formattedPhone.startsWith('88')) {
+        formattedPhone = '88' + formattedPhone
+      }
+
       await publicNetwork.createOrder({
         user_id: null,
         status: 'pending',
         // full_name: fullName.value,
-        phone: mobileNumber.value,
+        phone: formattedPhone,
         business_id: businessId,
         shipping_address: shippingAddress,
         items: productsForSubmission.value.map(p => ({
