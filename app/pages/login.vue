@@ -10,7 +10,15 @@ const password = ref('')
 const handleLogin = async () => {
   const result = await authStore.login(identifier.value, password.value)
   if (result.success) {
-    navigateTo('/')
+    // Check user role to determine redirect
+    const user = authStore.user as any
+    const role = user?.user_metadata?.role || user?.app_metadata?.role
+
+    if (role === 'admin' || role === 'staff') {
+      navigateTo('/admin')
+    } else {
+      navigateTo('/')
+    }
   }
 }
 </script>

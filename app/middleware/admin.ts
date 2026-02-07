@@ -24,13 +24,10 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
   
   const user = session.user
   const role = user?.user_metadata?.role || user?.app_metadata?.role
-  
-  // Guardrail: If role check is too strict without knowing the DB structure, I might lock myself out.
-  // But strictness is requested.
-  // I will check if role == 'admin'.
-  
-  if (role !== 'admin') {
-    // Redirect to home if not admin
+
+  // Allow access for admin and staff roles
+  if (role !== 'admin' && role !== 'staff') {
+    // Redirect to home if not admin or staff
     return navigateTo('/')
   }
 })
