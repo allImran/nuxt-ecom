@@ -29,7 +29,7 @@ const emit = defineEmits<{
         SKU: {{ variant.sku }}
       </span>
       <span class="font-bold text-luxury-gold">
-        ${{ variant.price }}
+        {{ variant.price }} TK
       </span>
     </div>
     <ProductVariantAttributes :attributes="attributes" />
