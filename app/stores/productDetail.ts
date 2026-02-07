@@ -35,10 +35,10 @@ export const useProductDetailStore = defineStore('productDetail', () => {
     if (price === null) return null
 
     if (typeof price === 'number') {
-      return `$${price}`
+      return `${price} TK`
     }
 
-    return price.min === price.max ? `$${price.min}` : `$${price.min} - $${price.max}`
+    return price.min === price.max ? `${price.min} TK` : `${price.min} TK - ${price.max} TK`
   })
 
   const orderedMedia = computed(() => {
@@ -118,9 +118,9 @@ export const useProductDetailStore = defineStore('productDetail', () => {
   }
 })
 
-// Helper function to extract YouTube ID
+// Helper function to extract YouTube ID (supports watch, embed, shorts, and youtu.be URLs)
 function extractYouTubeId(url: string): string | null {
-  const regex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/
+  const regex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|shorts\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/
   const match = url.match(regex)
   return match ? match[1] : null
 }
