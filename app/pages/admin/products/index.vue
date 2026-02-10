@@ -281,10 +281,17 @@ const handleCreateProduct = async () => {
 
   creating.value = true
   try {
+    // Find the selected category to get its business_id
+    const selectedCategory = categories.value.find(c => c.id === createForm.category_id)
+    if (!selectedCategory) {
+      throw new Error('Selected category not found')
+    }
+
     const product = await createProductFromVM({
       name: createForm.name,
       slug: createForm.slug,
-      category_id: createForm.category_id
+      category_id: createForm.category_id,
+      business_id: selectedCategory.business_id
     })
     closeCreateModal()
     navigateToProduct(product.id)

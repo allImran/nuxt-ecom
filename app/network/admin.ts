@@ -10,6 +10,7 @@ export interface Product {
   youtube_url?: string
   sections?: ProductSection[]
   category_id: string
+  business_id: string
   category?: Category
   variants?: ProductVariant[]
   created_at?: string
@@ -43,6 +44,7 @@ export interface CreateProductData {
   name: string
   slug: string
   category_id: string
+  business_id: string
   file_paths?: string[]
   youtube_url?: string
   sections?: ProductSection[]

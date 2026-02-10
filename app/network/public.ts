@@ -12,6 +12,7 @@ export interface Product {
   youtube_url?: string
   sections?: ProductSection[]
   category_id: string
+  business_id: string
   category?: Category
   variants?: ProductVariant[]
   created_at?: string

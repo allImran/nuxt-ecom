@@ -46,6 +46,7 @@ export interface OrderProductSnapshot {
     file_paths?: string[]
   }>
   category_id?: string
+  business_id?: string
   youtube_url?: string
   created_at?: string
   updated_at?: string

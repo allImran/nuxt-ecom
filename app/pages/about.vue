@@ -17,7 +17,7 @@ definePageMeta({
 <template>
   <div>
     <!-- Hero Section -->
-    <section class="relative bg-gradient-to-br from-luxury-surface to-luxury-bg dark:from-luxury-dark-surface dark:to-luxury-dark-bg py-16 lg:py-24 transition-colors duration-200">
+    <section class="relative bg-linear-to-br from-luxury-surface to-luxury-bg dark:from-luxury-dark-surface dark:to-luxury-dark-bg py-16 lg:py-24 transition-colors duration-200">
       <div class="container mx-auto px-4 sm:px-6 lg:px-8">
         <div class="max-w-4xl mx-auto text-center">
           <!-- Heading -->
@@ -32,9 +32,9 @@ definePageMeta({
 
           <!-- Decorative Line -->
           <div class="flex items-center justify-center gap-4">
-            <div class="h-px w-16 bg-gradient-to-r from-transparent to-luxury-gold" />
+            <div class="h-px w-16 bg-linear-to-r from-transparent to-luxury-gold" />
             <div class="w-2 h-2 rounded-full bg-luxury-gold" />
-            <div class="h-px w-16 bg-gradient-to-l from-transparent to-luxury-gold" />
+            <div class="h-px w-16 bg-linear-to-l from-transparent to-luxury-gold" />
           </div>
         </div>
       </div>
@@ -102,13 +102,13 @@ definePageMeta({
 
             <!-- Decorative Element -->
             <div class="flex items-center justify-center mt-8 gap-4">
-              <div class="h-px w-20 bg-gradient-to-r from-transparent to-luxury-gold/50" />
+              <div class="h-px w-20 bg-linear-to-r from-transparent to-luxury-gold/50" />
               <div class="flex items-center gap-2">
                 <div class="w-1.5 h-1.5 rounded-full bg-luxury-gold" />
                 <div class="w-1.5 h-1.5 rounded-full bg-luxury-gold" />
                 <div class="w-1.5 h-1.5 rounded-full bg-luxury-gold" />
               </div>
-              <div class="h-px w-20 bg-gradient-to-l from-transparent to-luxury-gold/50" />
+              <div class="h-px w-20 bg-linear-to-l from-transparent to-luxury-gold/50" />
             </div>
           </UiBaseCard>
         </div>

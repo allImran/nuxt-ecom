@@ -12,6 +12,31 @@ Base URL: `https://urbanease-backend.vercel.app/api`
 
 ## Business API
 
+### Business Object Structure
+
+```typescript
+{
+  "id": "uuid",
+  "name": "string",
+  "slug": "string",
+  "logo": "string | null",        // URL to business logo image
+  "slogan": "string | null",      // Business slogan/tagline
+  "primary_color": "string | null", // Hex color code (e.g., "#FFFFFF")
+  "email": "string | null",       // Contact email
+  "social": {                     // Social media links object
+    "facebook": "string | undefined",
+    "instagram": "string | undefined",
+    "twitter": "string | undefined",
+    "linkedin": "string | undefined",
+    "website": "string | undefined"
+  },
+  "address": "string | null",     // Business address
+  "is_active": true,
+  "created_at": "timestamp",
+  "updated_at": "timestamp"
+}
+```
+
 ### Get All Businesses
 
 `GET /businesses`
@@ -35,9 +60,30 @@ Base URL: `https://urbanease-backend.vercel.app/api`
   ```json
   {
     "name": "Business Name",
-    "slug": "business-slug"
+    "slug": "business-slug",
+    "logo": "https://example.com/logo.png",
+    "slogan": "Your trusted partner",
+    "primary_color": "#FF5733",
+    "email": "contact@business.com",
+    "social": {
+      "facebook": "https://facebook.com/business",
+      "instagram": "https://instagram.com/business",
+      "twitter": "https://twitter.com/business",
+      "linkedin": "https://linkedin.com/company/business",
+      "website": "https://business.com"
+    },
+    "address": "123 Main St, City, State 12345"
   }
   ```
+- **Validation**:
+  - `name` (required): Non-empty string
+  - `slug` (required): Non-empty string
+  - `logo` (optional): Valid URL
+  - `slogan` (optional): String
+  - `primary_color` (optional): Hex color code (format: `#XXXXXX`)
+  - `email` (optional): Valid email address
+  - `social` (optional): Object with social media links
+  - `address` (optional): String
 - **Response**: Created Business object.
 
 ### Update Business
@@ -49,9 +95,19 @@ Base URL: `https://urbanease-backend.vercel.app/api`
   ```json
   {
     "name": "Updated Name",
-    "slug": "updated-slug"
+    "slug": "updated-slug",
+    "logo": "https://example.com/new-logo.png",
+    "slogan": "New slogan",
+    "primary_color": "#123456",
+    "email": "newemail@business.com",
+    "social": {
+      "facebook": "https://facebook.com/new-business",
+      "instagram": "https://instagram.com/new-business"
+    },
+    "address": "456 New Address, City, State 67890"
   }
   ```
+- **Validation**: Same as Create Business (all fields optional)
 - **Response**: Updated Business object.
 
 ### Delete Business
@@ -130,6 +186,22 @@ Base URL: `https://urbanease-backend.vercel.app/api`
 
 ## Product API
 
+### Product Object Structure
+
+```typescript
+{
+  "id": "uuid",
+  "name": "string",
+  "slug": "string",
+  "image_urls": ["string"],        // Array of image URLs
+  "sections": [],                   // JSONB - flexible sections for content layout
+  "category_id": "uuid | null",     // Reference to category
+  "business_id": "uuid",            // Reference to business (required)
+  "created_at": "timestamp",
+  "updated_at": "timestamp"
+}
+```
+
 ### Get All Products
 
 `GET /products`
@@ -154,11 +226,19 @@ Base URL: `https://urbanease-backend.vercel.app/api`
   {
     "name": "Product Name",
     "slug": "product-slug",
-    "image_urls": ["url1", "url2"], // optional
-    "sections": [{ "type": "text", "content": "..." }], // optional JSONB
-    "category_id": "uuid"
+    "image_urls": ["url1", "url2"],
+    "sections": [{ "type": "text", "content": "..." }],
+    "category_id": "uuid",
+    "business_id": "uuid"
   }
   ```
+- **Validation**:
+  - `name` (required): Non-empty string
+  - `slug` (required): Non-empty string
+  - `category_id` (required): Valid UUID
+  - `business_id` (required): Valid UUID
+  - `image_urls` (optional): Array of image URLs
+  - `sections` (optional): JSONB array for content layout
 - **Response**: Created Product object.
 
 ### Update Product
@@ -172,9 +252,12 @@ Base URL: `https://urbanease-backend.vercel.app/api`
     "name": "Updated Name",
     "slug": "updated-slug",
     "image_urls": ["url1"],
-    "sections": []
+    "sections": [],
+    "category_id": "uuid",
+    "business_id": "uuid"
   }
   ```
+- **Validation**: All fields optional, must be valid if provided
 - **Response**: Updated Product object.
 
 ### Delete Product

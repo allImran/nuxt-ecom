@@ -53,7 +53,7 @@ export const useProductViewModel = () => {
     productForm.sections = product.sections || []
   }
 
-  const createProduct = async (data: { name: string; slug: string; category_id: string }) => {
+  const createProduct = async (data: { name: string; slug: string; category_id: string; business_id: string }) => {
     return await productStore.createProduct({
       ...data,
       file_paths: productForm.file_paths,
