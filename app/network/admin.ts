@@ -82,9 +82,22 @@ export interface FileUploadResponse {
 export const adminNetwork = {
   // Businesses
   fetchBusinesses: () => useAdminFetch<any[]>('/businesses'),
+  fetchBusinessById: (id: string) => useAdminFetch<any>(`/businesses/${id}`),
   createBusiness: (data: { name: string; slug: string }) => useAdminFetch('/businesses', { method: 'POST', body: data }),
   updateBusiness: (id: string, data: { name: string; slug: string }) => useAdminFetch(`/businesses/${id}`, { method: 'PUT', body: data }),
   deleteBusiness: (id: string) => useAdminFetch(`/businesses/${id}`, { method: 'DELETE' }),
+
+  // Business-specific endpoints
+  fetchProductsByBusiness: (businessId: string) => useAdminFetch<Product[]>(`/products/business/${businessId}`),
+  fetchCategoriesByBusiness: (businessId: string) => useAdminFetch<Category[]>(`/categories?business_id=${businessId}`),
+  fetchOrdersByBusiness: (businessId: string, params?: { status?: string; limit?: number; offset?: number }) => {
+    const query = new URLSearchParams()
+    if (params?.status) query.append('status', params.status)
+    if (params?.limit) query.append('limit', params.limit.toString())
+    if (params?.offset) query.append('offset', params.offset.toString())
+    const queryString = query.toString()
+    return useAdminFetch<any[]>(`/orders/business/${businessId}${queryString ? `?${queryString}` : ''}`)
+  },
 
   // Categories
   fetchCategories: () => useAdminFetch<Category[]>('/categories'),

@@ -1,5 +1,5 @@
 <template>
-  <UiBaseCard hover class="h-full">
+  <UiBaseCard hover class="h-full cursor-pointer" @click="navigateTo(`/business/${business.id}`)">
     <div class="flex justify-between items-start mb-4">
       <div class="flex-1">
         <input
