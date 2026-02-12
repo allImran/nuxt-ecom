@@ -2,6 +2,21 @@
 // Using useAdminFetch which handles auth headers
 
 // Type definitions
+export interface Business {
+  id: string
+  name: string
+  slug: string
+  logo?: string
+  slogan?: string
+  primary_color?: string
+  email?: string
+  social?: Record<string, string>
+  address?: string
+  is_active?: boolean
+  created_at?: string
+  updated_at?: string
+}
+
 export interface Product {
   id: string
   name: string
@@ -82,9 +97,9 @@ export interface FileUploadResponse {
 export const adminNetwork = {
   // Businesses
   fetchBusinesses: () => useAdminFetch<any[]>('/businesses'),
-  fetchBusinessById: (id: string) => useAdminFetch<any>(`/businesses/${id}`),
+  fetchBusinessById: (id: string) => useAdminFetch<Business>(`/businesses/${id}`),
   createBusiness: (data: { name: string; slug: string }) => useAdminFetch('/businesses', { method: 'POST', body: data }),
-  updateBusiness: (id: string, data: { name: string; slug: string }) => useAdminFetch(`/businesses/${id}`, { method: 'PUT', body: data }),
+  updateBusiness: (id: string, data: Partial<Business>) => useAdminFetch(`/businesses/${id}`, { method: 'PUT', body: data }),
   deleteBusiness: (id: string) => useAdminFetch(`/businesses/${id}`, { method: 'DELETE' }),
 
   // Business-specific endpoints

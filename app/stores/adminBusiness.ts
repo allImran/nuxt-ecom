@@ -1,14 +1,7 @@
 import { defineStore } from 'pinia'
-import { adminNetwork } from '~/network/admin'
+import { adminNetwork, type Business } from '~/network/admin'
 
 export const useAdminBusinessStore = defineStore('adminBusiness', () => {
-    interface Business {
-        id: string
-        name: string
-        slug: string
-        [key: string]: any
-    }
-
     const businesses = ref<Business[]>([])
     const loading = ref(false)
 
@@ -38,9 +31,9 @@ export const useAdminBusinessStore = defineStore('adminBusiness', () => {
         }
     }
 
-    const updateBusiness = async (id: string, name: string, slug: string) => {
+    const updateBusiness = async (id: string, data: Partial<Business>) => {
         try {
-            await adminNetwork.updateBusiness(id, { name, slug })
+            await adminNetwork.updateBusiness(id, data)
         } catch (e) {
             console.error('Failed to update business:', e)
             throw e
