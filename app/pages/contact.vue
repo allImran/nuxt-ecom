@@ -1,20 +1,28 @@
 <script setup lang="ts">
-const config = useRuntimeConfig()
+const businessBrandingStore = useBusinessBrandingStore()
+const { business } = storeToRefs(businessBrandingStore)
 
-const socialLinks = {
-  facebook: config.public.facebookUrl as string,
-  whatsapp: config.public.whatsappUrl as string
-}
+// Get social links from business data with fallback to runtime config
+const config = useRuntimeConfig()
+const socialLinks = computed(() => ({
+  facebook: business.value?.social?.facebook || config.public.facebookUrl as string,
+  whatsapp: business.value?.social?.whatsapp || config.public.whatsappUrl as string
+}))
 
 const openLink = (url: string) => {
   window.open(url, '_blank')
 }
 
-// Page metadata
+// Page metadata - dynamic based on business name
+const businessName = computed(() => business.value?.name || 'URBANEASE')
+
 useHead({
-  title: 'Contact Us - URBANEASE',
+  title: computed(() => `Contact Us - ${businessName.value}`),
   meta: [
-    { name: 'description', content: 'Get in touch with URBANEASE through Facebook or WhatsApp.' }
+    computed(() => ({
+      name: 'description',
+      content: `Get in touch with ${businessName.value} through Facebook or WhatsApp.`
+    }))
   ]
 })
 
@@ -33,7 +41,7 @@ definePageMeta({
             Contact Us
           </h1>
           <p class="text-lg text-luxury-text-muted dark:text-luxury-dark-text-muted max-w-2xl mx-auto">
-            Get in touch with us through your preferred platform
+            Get in touch with {{ business?.name || 'us' }} through your preferred platform
           </p>
         </div>
       </div>
@@ -45,6 +53,7 @@ definePageMeta({
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
           <!-- Facebook Card -->
           <UiBaseCard
+            v-if="socialLinks.facebook"
             hover
             class="cursor-pointer group"
             @click="openLink(socialLinks.facebook)"
@@ -81,6 +90,7 @@ definePageMeta({
 
           <!-- WhatsApp Card -->
           <UiBaseCard
+            v-if="socialLinks.whatsapp"
             hover
             class="cursor-pointer group"
             @click="openLink(socialLinks.whatsapp)"

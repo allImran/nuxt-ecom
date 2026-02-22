@@ -43,6 +43,23 @@ export interface ProductVariant {
 export interface Business {
   id: string
   name: string
+  slug: string
+  logo?: string
+  slogan?: string
+  primary_color?: string
+  email?: string
+  social?: {
+    facebook?: string
+    whatsapp?: string
+    youtube?: string
+    instagram?: string
+    twitter?: string
+    linkedin?: string
+  }
+  address?: string
+  is_active?: boolean
+  created_at?: string
+  updated_at?: string
 }
 
 export interface Category {
@@ -78,6 +95,19 @@ export interface CreateOrderRequest {
 }
 
 export const publicNetwork = {
+  // Business - Public endpoints
+  fetchBusinessById: (id: string) => {
+    const config = useRuntimeConfig()
+    const baseURL = config.public.apiBaseURL
+
+    return $fetch<Business>(`/businesses/${id}`, {
+      baseURL,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+  },
+
   // Products - Public endpoints
   fetchFeaturedProducts: (limit = 8) => {
     const config = useRuntimeConfig()

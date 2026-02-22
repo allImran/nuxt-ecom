@@ -2,6 +2,8 @@
 const { t } = useI18n()
 const themeStore = useThemeStore()
 const { isDark } = storeToRefs(themeStore)
+const businessBrandingStore = useBusinessBrandingStore()
+const { business, logoUrl } = storeToRefs(businessBrandingStore)
 
 const isMobileMenuOpen = ref(false)
 
@@ -25,10 +27,16 @@ watch(() => route.path, () => {
     <div class="container mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex items-center justify-between h-16">
         <!-- Logo -->
-        <div class="flex-shrink-0">
+        <div class="shrink-0">
           <NuxtLink to="/" class="flex items-center space-x-2">
-            <span class="text-xl font-bold tracking-luxury text-luxury-text dark:text-luxury-dark-text">
-              URBAN<span class="text-luxury-gold">EASE</span>
+            <img
+              v-if="logoUrl"
+              :src="logoUrl"
+              :alt="business?.name || 'Logo'"
+              class="h-10 w-auto object-contain"
+            />
+            <span v-else class="text-xl font-bold tracking-luxury text-luxury-text dark:text-luxury-dark-text">
+              {{ business?.name || 'URBAN<span class="text-luxury-gold">EASE</span>' }}
             </span>
           </NuxtLink>
         </div>
@@ -119,9 +127,17 @@ watch(() => route.path, () => {
           >
             <div class="p-6">
               <div class="flex items-center justify-between mb-8">
-                <span class="text-lg font-bold tracking-luxury text-luxury-text dark:text-luxury-dark-text">
-                  MENU
-                </span>
+                <div class="flex items-center space-x-2">
+                  <img
+                    v-if="logoUrl"
+                    :src="logoUrl"
+                    :alt="business?.name || 'Logo'"
+                    class="h-8 w-auto object-contain"
+                  />
+                  <span class="text-lg font-bold tracking-luxury text-luxury-text dark:text-luxury-dark-text">
+                    {{ logoUrl ? '' : 'MENU' }}
+                  </span>
+                </div>
                 <button
                   @click="closeMobileMenu"
                   class="p-2 -mr-2 rounded-lg text-luxury-text dark:text-luxury-dark-text hover:bg-luxury-surface dark:hover:bg-luxury-dark-surface"

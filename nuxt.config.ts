@@ -25,6 +25,7 @@ export default defineNuxtConfig({
       apiBaseURL: process.env.API_BASE_URL,
       facebookUrl: process.env.FACEBOOK_URL || 'https://www.facebook.com/theurbanease',
       whatsappUrl: process.env.WHATSAPP_URL || 'https://wa.me/8801521203588',
+      businessId: process.env.BUSINESS_ID || '6cadb262-2726-4a19-8a3e-90ef1b98aba3',
     },
   },
   devtools: { enabled: true },

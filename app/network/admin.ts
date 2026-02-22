@@ -10,7 +10,14 @@ export interface Business {
   slogan?: string
   primary_color?: string
   email?: string
-  social?: Record<string, string>
+  social?: {
+    facebook?: string
+    whatsapp?: string
+    youtube?: string
+    instagram?: string
+    twitter?: string
+    linkedin?: string
+  }
   address?: string
   is_active?: boolean
   created_at?: string
