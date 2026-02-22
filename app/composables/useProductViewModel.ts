@@ -51,6 +51,8 @@ export const useProductViewModel = () => {
     productForm.youtube_url = product.youtube_url || ''
     productForm.file_paths = product.file_paths || []
     productForm.sections = product.sections || []
+    productForm.delivery_type = product.delivery_type || 'flat'
+    productForm.delivery_charge = product.delivery_charge ?? 100
   }
 
   const createProduct = async (data: { name: string; slug: string; category_id: string; business_id: string }) => {
@@ -58,7 +60,9 @@ export const useProductViewModel = () => {
       ...data,
       file_paths: productForm.file_paths,
       youtube_url: productForm.youtube_url || undefined,
-      sections: productForm.sections
+      sections: productForm.sections,
+      delivery_type: productForm.delivery_type,
+      delivery_charge: productForm.delivery_charge
     })
   }
 
@@ -70,7 +74,9 @@ export const useProductViewModel = () => {
       slug: productForm.slug,
       youtube_url: productForm.youtube_url || undefined,
       file_paths: productForm.file_paths,
-      sections: productForm.sections
+      sections: productForm.sections,
+      delivery_type: productForm.delivery_type,
+      delivery_charge: productForm.delivery_charge
     })
   }
 
@@ -262,6 +268,8 @@ export const useProductViewModel = () => {
     productForm.youtube_url = ''
     productForm.file_paths = []
     productForm.sections = []
+    productForm.delivery_type = 'flat'
+    productForm.delivery_charge = 100
     activeTab.value = 'overview'
   }
 

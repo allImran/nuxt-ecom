@@ -28,6 +28,8 @@ export interface Product {
   business_id: string
   category?: Category
   variants?: ProductVariant[]
+  delivery_type: DeliveryType
+  delivery_charge: number
   created_at?: string
   updated_at?: string
 }
@@ -48,6 +50,8 @@ export interface ProductVariant {
   updated_at?: string
 }
 
+export type DeliveryType = 'flat' | 'per_quantity' | 'weight_based' | 'free_over_amount'
+
 export interface Category {
   id: string
   name: string
@@ -63,6 +67,8 @@ export interface CreateProductData {
   file_paths?: string[]
   youtube_url?: string
   sections?: ProductSection[]
+  delivery_type?: DeliveryType
+  delivery_charge?: number
 }
 
 export interface UpdateProductData {
@@ -71,6 +77,8 @@ export interface UpdateProductData {
   file_paths?: string[]
   youtube_url?: string
   sections?: ProductSection[]
+  delivery_type?: DeliveryType
+  delivery_charge?: number
 }
 
 export interface CreateVariantData {

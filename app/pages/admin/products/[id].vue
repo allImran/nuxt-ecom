@@ -97,6 +97,23 @@
             placeholder="e.g., https://youtube.com/watch?v=..."
           />
 
+          <UiLuxurySelect
+            id="product-delivery-type"
+            v-model="productForm.delivery_type"
+            label="Delivery Type"
+            :options="deliveryTypeOptions"
+          />
+
+          <UiLuxuryInput
+            id="product-delivery-charge"
+            v-model.number="productForm.delivery_charge"
+            type="number"
+            label="Delivery Charge"
+            placeholder="e.g., 100"
+            min="0"
+            step="1"
+          />
+
           <div class="p-4 bg-luxury-surface dark:bg-luxury-dark-surface rounded-luxury">
             <p class="text-sm text-luxury-text-muted dark:text-luxury-dark-text-muted">
               <span class="font-medium">Category:</span> {{ currentProduct.category?.name || 'None' }}
@@ -139,6 +156,13 @@ definePageMeta({
 
 const route = useRoute()
 const router = useRouter()
+
+const deliveryTypeOptions = [
+  { value: 'flat', label: 'Flat Rate' },
+  { value: 'per_quantity', label: 'Per Quantity' },
+  { value: 'weight_based', label: 'Weight Based' },
+  { value: 'free_over_amount', label: 'Free Over Amount' }
+]
 
 const productId = computed(() => route.params.id as string)
 

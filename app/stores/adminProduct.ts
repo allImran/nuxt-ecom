@@ -17,7 +17,9 @@ export const useAdminProductStore = defineStore('adminProduct', () => {
     slug: '',
     youtube_url: '',
     file_paths: [] as string[],
-    sections: [] as ProductSection[]
+    sections: [] as ProductSection[],
+    delivery_type: 'flat' as const,
+    delivery_charge: 100
   })
 
   const variantForm = reactive({
@@ -198,6 +200,8 @@ export const useAdminProductStore = defineStore('adminProduct', () => {
     productForm.youtube_url = ''
     productForm.file_paths = []
     productForm.sections = []
+    productForm.delivery_type = 'flat'
+    productForm.delivery_charge = 100
     variantForm.sku = ''
     variantForm.price = 0
     variantForm.attributes = []

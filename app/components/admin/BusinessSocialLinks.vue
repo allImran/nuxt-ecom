@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { nextTick } from 'vue'
+
 interface SocialLink {
   platform: string
   url: string
@@ -16,17 +18,16 @@ const emit = defineEmits<{
 
 const socialLinks = computed({
   get: () => {
-    // Convert record to array for display
+    // Convert record to array for display (don't filter empty URLs)
     return Object.entries(props.modelValue || {})
-      .filter(([_, url]) => url.trim() !== '')
       .map(([platform, url]) => ({ platform, url }))
   },
   set: (links: SocialLink[]) => {
     // Convert array back to record
     const record: Record<string, string> = {}
     for (const link of links) {
-      if (link.platform && link.url) {
-        record[link.platform] = link.url
+      if (link.platform) {
+        record[link.platform] = link.url || ''
       }
     }
     emit('update:modelValue', record)
@@ -45,7 +46,7 @@ const platforms = [
   { value: 'other', label: 'Other', icon: 'link' }
 ]
 
-const addSocialLink = () => {
+const addSocialLink = async () => {
   const newLinks = [...socialLinks.value]
   // Find platforms not already in use
   const usedPlatforms = new Set(newLinks.map(l => l.platform))
@@ -56,16 +57,9 @@ const addSocialLink = () => {
     url: ''
   })
 
-  // socialLinks.value = newLinks
-  socialLinks.value = [
-    {
-        "platform": "facebook",
-        "url": ""
-    }
-]
-  
-  console.log(socialLinks.value)
-  console.log(newLinks)
+  socialLinks.value = newLinks
+  // Use nextTick to ensure Vue processes the change
+  await nextTick()
 }
 
 const removeSocialLink = (index: number) => {
@@ -76,24 +70,14 @@ const removeSocialLink = (index: number) => {
 
 const updatePlatform = (index: number, platform: string) => {
   const newLinks = [...socialLinks.value]
-  newLinks[index] = { ...newLinks[index], platform }
+  newLinks[index] = { ...newLinks[index], platform: platform || '' }
   socialLinks.value = newLinks
 }
 
 const updateUrl = (index: number, url: string) => {
   const newLinks = [...socialLinks.value]
-  newLinks[index] = { ...newLinks[index], url }
+  newLinks[index] = { ...newLinks[index], url: url || '' }
   socialLinks.value = newLinks
-}
-
-const getPlatformIcon = (platform: string) => {
-  const found = platforms.find(p => p.value === platform)
-  return found?.icon || 'link'
-}
-
-const getPlatformLabel = (platform: string) => {
-  const found = platforms.find(p => p.value === platform)
-  return found?.label || platform
 }
 </script>
 

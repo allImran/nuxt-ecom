@@ -3,6 +3,9 @@
 
 import type { OrderDetail, OrderItem, OrderHistory } from '~/types/order'
 
+// Type definitions
+export type DeliveryType = 'flat' | 'per_quantity' | 'weight_based' | 'free_over_amount'
+
 // Type definitions (reused from admin)
 export interface Product {
   id: string
@@ -15,6 +18,8 @@ export interface Product {
   business_id: string
   category?: Category
   variants?: ProductVariant[]
+  delivery_type: DeliveryType
+  delivery_charge: number
   created_at?: string
   updated_at?: string
 }
