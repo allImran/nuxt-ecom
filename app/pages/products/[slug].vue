@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import { getAccessorySlugs } from '~/data/accessories-mapper'
+import { publicNetwork } from '~/network/public'
+
 const route = useRoute()
 const { t } = useI18n()
 // Define layout for this page
@@ -28,11 +31,53 @@ const {
   getAttributeEntries
 } = useProductDetailViewModel()
 
+// Accessories state
+const accessories = ref<import('~/network/public').Product[]>([])
+const loadingAccessories = ref(false)
+
 // Fetch product on mount
-onMounted(() => {
+onMounted(async () => {
   if (slug.value) {
-    loadProduct(slug.value)
+    await loadProduct(slug.value)
+    await loadAccessories(slug.value)
   }
+})
+
+// Load accessories for the current product
+async function loadAccessories(productSlug: string) {
+  const accessorySlugs = getAccessorySlugs(productSlug)
+
+  if (accessorySlugs.length === 0) {
+    return
+  }
+
+  loadingAccessories.value = true
+
+  try {
+    // Fetch all accessory products in parallel
+    const accessoryPromises = accessorySlugs.map(slug =>
+      publicNetwork.fetchProductBySlug(slug)
+    )
+
+    const fetchedAccessories = await Promise.all(accessoryPromises)
+    accessories.value = fetchedAccessories
+  } catch (err) {
+    console.error('Failed to load accessories:', err)
+    // Don't fail the page if accessories fail to load
+  } finally {
+    loadingAccessories.value = false
+  }
+}
+
+// Computed property for all products to pass to Order component
+const productsForOrder = computed(() => {
+  if (!product.value) return []
+
+  // Combine main product with accessories
+  return [
+    product.value,
+    ...accessories.value
+  ]
 })
 
 // Update page metadata
@@ -151,7 +196,7 @@ const handleSelectMedia = (index: number) => {
     <div class="bg-luxury-gold/4 py-20 border-t border-luxury-border dark:border-luxury-dark-border">
       <h2 class="text-xl lg:text-2xl  font-semibold text-center">{{ t('order.title') }}</h2>
 
-      <Order v-if="product" :products="[product]" />
+      <Order v-if="productsForOrder.length > 0" :products="productsForOrder" />
     </div>
   </div>
 </template>
