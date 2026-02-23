@@ -1,4 +1,7 @@
 <script setup lang="ts">
+const businessBrandingStore = useBusinessBrandingStore()
+const { business } = storeToRefs(businessBrandingStore)
+
 const scrollToProducts = () => {
   const element = document.getElementById('products-section')
   element?.scrollIntoView({ behavior: 'smooth' })
@@ -12,7 +15,7 @@ const scrollToProducts = () => {
         <!-- Welcome Badge -->
         <div class="inline-flex items-center px-32 py-2 rounded-full bg-luxury-gold/10 border border-luxury-gold/30 mb-6">
           <span class="text-sm font-medium text-luxury-gold tracking-wide">
-            Welcome to URBANEASE
+            Welcome to {{ business?.name || 'URBANEASE' }}
           </span>
         </div>
 
@@ -24,7 +27,7 @@ const scrollToProducts = () => {
 
         <!-- Description -->
         <p class="text-lg sm:text-xl text-luxury-text-muted dark:text-luxury-dark-text-muted mb-10 max-w-2xl mx-auto leading-relaxed">
-          Experience the finest selection of curated products. Quality meets elegance in every piece we offer.
+          {{ business?.slogan || 'Experience the finest selection of curated products. Quality meets elegance in every piece we offer.' }}
         </p>
 
         <!-- CTA Buttons -->

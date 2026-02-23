@@ -1,9 +1,21 @@
 <script setup lang="ts">
-// Page metadata
+// Get business branding for dynamic content
+const businessBrandingStore = useBusinessBrandingStore()
+const { business } = storeToRefs(businessBrandingStore)
+
+// Page metadata - dynamic based on business
+const businessName = computed(() => business.value?.name || 'URBANEASE')
+const businessSlogan = computed(() =>
+  business.value?.slogan || 'Experience the finest selection of curated products. Quality meets elegance in every piece we offer.'
+)
+
 useHead({
-  title: 'URBANEASE - Premium Luxury Products',
+  title: computed(() => `${businessName.value} - Premium Luxury Products`),
   meta: [
-    { name: 'description', content: 'Discover premium luxury products at URBANEASE. Quality meets elegance in every piece we offer.' }
+    computed(() => ({
+      name: 'description',
+      content: `Discover premium luxury products at ${businessName.value}. ${businessSlogan.value}`
+    }))
   ]
 })
 
