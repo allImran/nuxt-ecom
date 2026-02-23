@@ -7,6 +7,7 @@
     <div class="flex items-center gap-6">
       <OrderQuantityControl
         :quantity="quantity"
+        :is-first-product="isFirstProduct"
         @increase="onIncrease"
         @decrease="onDecrease"
       />
@@ -25,6 +26,7 @@ interface Props {
   product: Product
   productPrice: number
   quantity: number
+  isFirstProduct?: boolean
 }
 
 const props = defineProps<Props>()

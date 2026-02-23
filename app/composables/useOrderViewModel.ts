@@ -77,7 +77,11 @@ export function useOrderViewModel() {
       p => p.id === productId && p.variant_id === variantId
     )
     if (orderProduct) {
-      const newQuantity = Math.max(0, orderProduct.quantity + delta)
+      // Check if this is the first product
+      const isFirstProduct = orderProducts.value[0]?.id === productId
+      // First product has minimum quantity of 1, others have minimum of 0
+      const minQuantity = isFirstProduct ? 1 : 0
+      const newQuantity = Math.max(minQuantity, orderProduct.quantity + delta)
       orderStore.updateQuantity(productId, variantId, newQuantity)
     }
   }

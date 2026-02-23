@@ -2,7 +2,7 @@
   <div class="order-quantity-control bg-gray-100/60 dark:bg-gray-900 p-2 rounded-full flex items-center gap-">
     <button
       type="button"
-      :disabled="quantity <= 0"
+      :disabled="isFirstProduct ? quantity <= 1 : quantity <= 0"
       class="size-8 flex items-center justify-center border rounded-luxury hover:bg-luxury-border dark:hover:bg-luxury-dark-border transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
       @click="onDecrease"
     >
@@ -22,6 +22,7 @@
 <script setup lang="ts">
 interface Props {
   quantity: number
+  isFirstProduct?: boolean
 }
 
 defineProps<Props>()

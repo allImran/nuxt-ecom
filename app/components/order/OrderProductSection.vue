@@ -8,6 +8,7 @@
         :product="item.product"
         :product-price="item.price"
         :quantity="item.quantity"
+        :is-first-product="item.isFirstProduct"
         @increase="onIncrease(item.product.id, item.variantId)"
         @decrease="onDecrease(item.product.id, item.variantId)"
       />
@@ -27,6 +28,7 @@ interface ProductItem {
   price: number
   quantity: number
   variantId: string | null
+  isFirstProduct: boolean
 }
 
 interface Props {
@@ -49,15 +51,15 @@ const emit = defineEmits<{
 
 const productItems = computed((): ProductItem[] => {
   return props.orderProducts
-    .filter(op => op.quantity > 0)
-    .map(op => {
+    .map((op, index) => {
       const product = props.products.find(p => p.id === op.id)
       if (!product) return null
       return {
         product,
         price: props.getProductPrice(product),
         quantity: op.quantity,
-        variantId: op.variant_id
+        variantId: op.variant_id,
+        isFirstProduct: index === 0
       }
     })
     .filter((item): item is ProductItem => item !== null)
