@@ -56,10 +56,10 @@ export const useOrderStore = defineStore('order', () => {
   // Actions - Product management
   function initializeOrderProducts(productList: Product[]) {
     products.value = productList
-    orderProducts.value = productList.map(product => ({
+    orderProducts.value = productList.map((product, index) => ({
       id: product.id,
       variant_id: product.variants?.[0]?.id || null,
-      quantity: 1
+      quantity: index === 0 ? 1 : 0
     }))
   }
 

@@ -1,9 +1,9 @@
 <template>
-  <div class="order-quantity-control bg-gray-100/60 dark:bg-gray-900 p-2 rounded-full flex items-center gap-">
+  <div class="order-quantity-control bg-luxury-gold/10 dark:bg-gray-900 p-2 rounded-full flex items-center gap-">
     <button
       type="button"
       :disabled="isFirstProduct ? quantity <= 1 : quantity <= 0"
-      class="size-8 flex items-center justify-center border rounded-luxury hover:bg-luxury-border dark:hover:bg-luxury-dark-border transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+      class="size-8 flex items-center justify-center border rounded-luxury hover:bg-luxury-gold/60 cursor-pointer dark:hover:bg-luxury-dark-border transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
       @click="onDecrease"
     >
       <span class="text-xl">−</span>
@@ -11,7 +11,7 @@
     <span class="w-12 text-center font-medium">{{ quantity }}</span>
     <button
       type="button"
-      class="size-8 flex items-center justify-center border rounded-luxury hover:bg-luxury-border dark:hover:bg-luxury-dark-border transition-colors"
+      class="size-8 flex items-center justify-center border rounded-luxury hover:bg-luxury-gold/60 cursor-pointer dark:hover:bg-luxury-dark-border transition-colors"
       @click="onIncrease"
     >
       <span class="text-xl">+</span>
