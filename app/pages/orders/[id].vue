@@ -17,6 +17,7 @@ const {
   error,
   hasOrder,
   orderItems,
+  displayTotalAmount,
   formatPrice,
   formatDate,
   getProductImage,
@@ -108,13 +109,13 @@ const navigateBack = () => {
       </div>
 
       <!-- Order Detail -->
-      <div v-else-if="hasOrder" class="space-y-8">
+      <div v-else-if="order" class="space-y-8">
         <!-- Header Section -->
         <OrderDetailHeader
           :order-id="order.id"
           :status="order.status"
           :created-at="order.created_at"
-          :total="order.total_amount"
+          :total="displayTotalAmount"
           :format-date="formatDate"
           :format-price="formatPrice"
           :get-status-color="getStatusColor"
@@ -147,6 +148,7 @@ const navigateBack = () => {
         <OrderDetailTotals
           :items="orderItems"
           :total="order.total_amount"
+          :delivery-charge="order.delivery_charge"
           :format-price="formatPrice"
           :calculate-item-total="calculateItemTotal"
           :calculate-subtotal="calculateSubtotal"

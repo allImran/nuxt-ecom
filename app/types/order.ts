@@ -87,6 +87,7 @@ export interface OrderDetail {
   business_id?: string
   status: string
   total_amount: number
+  delivery_charge?: number | null
   order_items: OrderItem[]
   shipping_address: ShippingAddress
   history?: OrderHistory[]

@@ -83,6 +83,21 @@ export function useOrderDetailViewModel() {
     return orderItems.value.reduce((sum, item) => sum + calculateItemTotal(item), 0)
   }
 
+  // Helper: Get final total amount, factoring in a fallback 100 delivery charge if missing
+  const displayTotalAmount = computed(() => {
+    if (!order.value) return 0
+    const subtotal = calculateSubtotal()
+    const parsedTotal = typeof order.value.total_amount === 'string' 
+      ? parseFloat(order.value.total_amount) 
+      : (order.value.total_amount || 0)
+      
+    // If there's an explicit delivery charge or total already implicitly includes a fee
+    if (order.value.delivery_charge != null || (parsedTotal - subtotal > 0)) {
+      return parsedTotal
+    }
+    return subtotal + 100
+  })
+
   return {
     // State from store
     order,
@@ -92,6 +107,7 @@ export function useOrderDetailViewModel() {
     orderItems,
     statusHistory,
     currentLocale,
+    displayTotalAmount,
 
     // Helpers
     formatPrice,

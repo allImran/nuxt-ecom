@@ -1,6 +1,6 @@
 {
   "hosting": {
-    "site": "urbanease",
+    "site": "indoorshopping",
     "public": ".output/public",
     "ignore": [
       "firebase.json",
