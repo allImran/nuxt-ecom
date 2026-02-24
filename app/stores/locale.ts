@@ -4,8 +4,8 @@ export const useLocaleStore = defineStore('locale', () => {
 
   // Available locales with metadata
   const availableLocales = computed(() => [
-    { code: 'bn', name: 'বাংলা', flag: '🇧🇩' },
-    { code: 'en', name: 'English', flag: '🇬🇧' }
+    { code: 'bn', name: 'ক', flag: '🇧🇩' },
+    { code: 'en', name: 'A', flag: '🇬🇧' }
   ])
 
   // Getters - use the i18n locale directly as source of truth

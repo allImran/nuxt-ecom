@@ -4,6 +4,8 @@ const themeStore = useThemeStore()
 const { isDark } = storeToRefs(themeStore)
 const businessBrandingStore = useBusinessBrandingStore()
 const { business, logoUrl } = storeToRefs(businessBrandingStore)
+const authStore = useAuthStore()
+const { user } = storeToRefs(authStore)
 
 const isMobileMenuOpen = ref(false)
 
@@ -61,8 +63,26 @@ watch(() => route.path, () => {
             <UiIcon v-else name="moon" :size="20" />
           </button>
 
-          <!-- Auth Links (Desktop) -->
-          <div class="hidden md:flex items-center space-x-3">
+          <!-- Auth Section (Desktop) -->
+          <div v-if="user" class="hidden md:flex items-center space-x-3">
+            <!-- User Info -->
+            <div class="flex items-center space-x-2 text-sm">
+              <div class="w-8 h-8 rounded-full bg-luxury-gold/20 flex items-center justify-center">
+                <UiIcon name="user" :size="16" class="text-luxury-gold" />
+              </div>
+              <span class="font-medium text-luxury-text dark:text-luxury-dark-text">
+                {{ user.email?.split('@')[0] || 'User' }}
+              </span>
+            </div>
+            <!-- Logout Button -->
+            <button
+              @click="authStore.logout"
+              class="text-sm font-medium text-luxury-text dark:text-luxury-dark-text hover:text-luxury-gold transition-colors"
+            >
+              {{ t('auth.logout') || 'Logout' }}
+            </button>
+          </div>
+          <div v-else class="hidden md:flex items-center space-x-3">
             <NuxtLink
               to="/login"
               class="text-sm font-medium text-luxury-text dark:text-luxury-dark-text hover:text-luxury-gold transition-colors"
@@ -153,18 +173,40 @@ watch(() => route.path, () => {
                   <div class="flex justify-center">
                     <LayoutLanguageToggle />
                   </div>
-                  <NuxtLink
-                    to="/login"
-                    class="block text-center text-sm font-medium text-luxury-text dark:text-luxury-dark-text hover:text-luxury-gold transition-colors py-2"
-                  >
-                    {{ t('auth.login') }}
-                  </NuxtLink>
-                  <NuxtLink
-                    to="/signup"
-                    class="block text-center text-sm font-medium px-4 py-2 rounded-luxury bg-luxury-gold hover:bg-luxury-gold-hover text-white transition-colors shadow-luxury"
-                  >
-                    {{ t('auth.signup') }}
-                  </NuxtLink>
+                  <!-- Logged In User (Mobile) -->
+                  <div v-if="user" class="space-y-4">
+                    <div class="flex items-center justify-center space-x-2 py-2">
+                      <div class="w-8 h-8 rounded-full bg-luxury-gold/20 flex items-center justify-center">
+                        <UiIcon name="user" :size="16" class="text-luxury-gold" />
+                      </div>
+                      <span class="text-sm font-medium text-luxury-text dark:text-luxury-dark-text">
+                        {{ user.email?.split('@')[0] || 'User' }}
+                      </span>
+                    </div>
+                    <button
+                      @click="authStore.logout"
+                      class="block w-full text-center text-sm font-medium text-luxury-text dark:text-luxury-dark-text hover:text-luxury-gold transition-colors py-2"
+                    >
+                      {{ t('auth.logout') || 'Logout' }}
+                    </button>
+                  </div>
+                  <!-- Logged Out (Mobile) -->
+                  <template v-else>
+                    <NuxtLink
+                      to="/login"
+                      @click="closeMobileMenu"
+                      class="block text-center text-sm font-medium text-luxury-text dark:text-luxury-dark-text hover:text-luxury-gold transition-colors py-2"
+                    >
+                      {{ t('auth.login') }}
+                    </NuxtLink>
+                    <NuxtLink
+                      to="/signup"
+                      @click="closeMobileMenu"
+                      class="block text-center text-sm font-medium px-4 py-2 rounded-luxury bg-luxury-gold hover:bg-luxury-gold-hover text-white transition-colors shadow-luxury"
+                    >
+                      {{ t('auth.signup') }}
+                    </NuxtLink>
+                  </template>
                 </div>
               </div>
             </div>

@@ -1,7 +1,13 @@
 
+interface User {
+    email?: string
+    id?: string
+    [key: string]: any
+}
+
 export const useAuthStore = defineStore('auth', () => {
     const supabase = useSupabase()
-    const user = ref(null)
+    const user = ref<User | null>(null)
     const loading = ref(false)
     const error = ref<string | null>(null)
 
