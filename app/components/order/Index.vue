@@ -5,13 +5,22 @@
       <div class="text-6xl mb-4">✓</div>
       <h2 class="text-2xl font-semibold text-green-600 dark:text-green-400 mb-2">{{ t('common.success') }}</h2>
       <p class="text-luxury-text-muted dark:text-luxury-dark-text-muted">{{ successMessage }}</p>
-      <button
-        type="button"
-        class="mt-6 px-6 py-3 bg-luxury-gold hover:bg-luxury-gold-hover text-white rounded-luxury transition-colors"
-        @click="handleReset"
-      >
-        {{ t('common.confirm') }}
-      </button>
+      <div class="mt-6 flex gap-4 justify-center">
+        <button
+          type="button"
+          class="px-6 py-3 bg-luxury-gold hover:bg-luxury-gold-hover text-white rounded-luxury transition-colors"
+          @click="handleReset"
+        >
+          {{ t('order.continueShopping') }}
+        </button>
+        <button
+          type="button"
+          class="px-6 py-3 border-2 border-luxury-gold text-luxury-gold hover:bg-luxury-gold hover:text-white rounded-luxury transition-colors"
+          @click="handleTrackOrder"
+        >
+          {{ t('order.trackOrder') }}
+        </button>
+      </div>
     </div>
 
     <!-- Order form -->
@@ -104,6 +113,7 @@ const {
   loading,
   error,
   success,
+  orderId,
   getDeliveryFee,
   availableDistricts,
   availableUpazilas,
@@ -157,10 +167,13 @@ async function handleReset() {
 // Submit handler
 async function handleSubmit(e?: Event) {
   e?.preventDefault()
-  const success = await vmHandleSubmit()
-  if (success) {
-    // Form will show success state
-    window.scrollTo({ top: 0, behavior: 'smooth' })
+  await vmHandleSubmit()
+}
+
+// Track order handler
+function handleTrackOrder() {
+  if (orderId.value) {
+    navigateTo(`/orders/${orderId.value}`)
   }
 }
 </script>

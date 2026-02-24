@@ -22,6 +22,7 @@ export const useOrderStore = defineStore('order', () => {
   const loading = ref(false)
   const error = ref<string | null>(null)
   const success = ref(false)
+  const orderId = ref<string | null>(null)
 
   // Constants
   const DELIVERY_FEE = 100
@@ -163,7 +164,7 @@ export const useOrderStore = defineStore('order', () => {
         formattedPhone = '88' + formattedPhone
       }
 
-      await publicNetwork.createOrder({
+      const result = await publicNetwork.createOrder({
         user_id: null,
         status: 'pending',
         // full_name: fullName.value,
@@ -177,6 +178,7 @@ export const useOrderStore = defineStore('order', () => {
         }))
       })
 
+      orderId.value = (result as any).id
       success.value = true
       return true
     } catch (err) {
@@ -198,6 +200,7 @@ export const useOrderStore = defineStore('order', () => {
     fullName.value = ''
     error.value = null
     success.value = false
+    orderId.value = null
   }
 
   return {
@@ -213,6 +216,7 @@ export const useOrderStore = defineStore('order', () => {
     loading,
     error,
     success,
+    orderId,
 
     // Constants
     DELIVERY_FEE,

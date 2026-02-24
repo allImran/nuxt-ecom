@@ -154,6 +154,8 @@
     "selectDistrict": "Select District",
     "selectUpazila": "Select Upazila",
     "optional": "Optional",
-    "paymentMethods": "Payment Methods"
+    "paymentMethods": "Payment Methods",
+    "continueShopping": "Continue Shopping",
+    "trackOrder": "Track Order"
   }
 }

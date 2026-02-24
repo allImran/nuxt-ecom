@@ -154,6 +154,8 @@
     "selectDistrict": "জেলা নির্বাচন করুন",
     "selectUpazila": "উপজেলা নির্বাচন করুন",
     "optional": "ঐচ্ছিক",
-    "paymentMethods": "পেমেন্ট মেথডস"
+    "paymentMethods": "পেমেন্ট মেথডস",
+    "continueShopping": "কেনাকাটা চালিয়ে যান",
+    "trackOrder": "অর্ডার ট্র্যাক করুন"
   }
 }
