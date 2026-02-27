@@ -26,6 +26,9 @@ export default defineNuxtConfig({
       facebookUrl: process.env.FACEBOOK_URL || 'https://www.facebook.com/theurbanease',
       whatsappUrl: process.env.WHATSAPP_URL || 'https://wa.me/8801521203588',
       businessId: process.env.BUSINESS_ID || '6cadb262-2726-4a19-8a3e-90ef1b98aba3',
+      metapixel: {
+        default: { id: process.env.NUXT_PUBLIC_METAPIXEL_DEFAULT_ID!, pageView: '/products/**' },
+      }
     },
   },
   devtools: { enabled: true },
@@ -35,7 +38,7 @@ export default defineNuxtConfig({
     ],
   },
   css: ['./app/assets/css/main.css'],
-  modules: ['@nuxt/image', '@nuxt/content', 'motion-v/nuxt', '@pinia/nuxt', '@nuxtjs/i18n'],
+  modules: ['@nuxt/image', '@nuxt/content', 'motion-v/nuxt', '@pinia/nuxt', '@nuxtjs/i18n', 'nuxt-meta-pixel'],
 
   i18n: {
     locales: [
