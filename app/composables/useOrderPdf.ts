@@ -44,6 +44,10 @@ export function useOrderPdf(): UseOrderPdfReturn {
         format: PDF_CONFIG.document.format
       })
 
+      // Load and set Bengali fonts for Unicode support
+      await loadAndAddFonts(doc)
+      doc.setFont('HindSiliguri', 'normal')
+
       // Track current Y position for layout
       let currentY = PDF_CONFIG.document.margins.top
 
@@ -222,6 +226,7 @@ export function useOrderPdf(): UseOrderPdfReturn {
       body: tableData,
       theme: 'grid',
       styles: {
+        font: 'HindSiliguri',
         fontSize: fonts.body,
         cellPadding: 4,
         textColor: PDF_CONFIG.colors.text,
@@ -295,13 +300,13 @@ export function useOrderPdf(): UseOrderPdfReturn {
 
     // Total (bold, larger)
     doc.setFontSize(fonts.header)
-    doc.setFont('helvetica', 'bold')
+    doc.setFont('HindSiliguri', 'bold')
     doc.setTextColor(...PDF_CONFIG.colors.primary)
     doc.text('Total:', summaryLabelX, currentY, { align: 'right' })
     doc.text(formatCurrency(total), summaryValueX, currentY, { align: 'right' })
 
     // Reset font
-    doc.setFont('helvetica', 'normal')
+    doc.setFont('HindSiliguri', 'normal')
 
     return currentY + 15
   }
@@ -358,6 +363,31 @@ export function useOrderPdf(): UseOrderPdfReturn {
       reader.onerror = reject
       reader.readAsDataURL(blob)
     })
+  }
+
+  /**
+   * Load and register Bengali Unicode fonts
+   */
+  async function loadAndAddFonts(doc: any): Promise<void> {
+    try {
+      // Load Regular Font
+      const regRes = await fetch('/fonts/HindSiliguri-Regular.ttf')
+      const regBlob = await regRes.blob()
+      const regDataUrl = await blobToDataUrl(regBlob)
+      const regBase64 = regDataUrl.split(',')[1]
+      doc.addFileToVFS('HindSiliguri-Regular.ttf', regBase64)
+      doc.addFont('HindSiliguri-Regular.ttf', 'HindSiliguri', 'normal')
+
+      // Load Bold Font
+      const boldRes = await fetch('/fonts/HindSiliguri-Bold.ttf')
+      const boldBlob = await boldRes.blob()
+      const boldDataUrl = await blobToDataUrl(boldBlob)
+      const boldBase64 = boldDataUrl.split(',')[1]
+      doc.addFileToVFS('HindSiliguri-Bold.ttf', boldBase64)
+      doc.addFont('HindSiliguri-Bold.ttf', 'HindSiliguri', 'bold')
+    } catch (err) {
+      console.warn('Failed to load Bengali fonts:', err)
+    }
   }
 
   return {
