@@ -152,6 +152,7 @@ export function useOrderViewModel() {
   // Get error message for display
   const errorMessage = computed(() => {
     if (!error.value) return ''
+    if (error.value === 'formErrors') return t('validation.fillFormCorrectly')
     if (error.value === 'noProducts') return t('order.noProducts')
     if (error.value === 'division') return t('validation.required')
     if (error.value === 'address') return t('validation.required')

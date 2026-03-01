@@ -118,15 +118,15 @@ export const useOrderStore = defineStore('order', () => {
 
     // Check required address fields
     if (!selectedDivision.value) {
-      validationErrors.value.division = 'please select this'
+      validationErrors.value.division = 'please select division'
     }
 
     if (!fullAddress.value.trim()) {
-      validationErrors.value.fullAddress = 'this field is required'
+      validationErrors.value.fullAddress = 'write full address'
     }
 
     if (!mobileNumber.value.trim()) {
-      validationErrors.value.mobileNumber = 'this field is required'
+      validationErrors.value.mobileNumber = 'write mobile number'
     } else {
       // Basic mobile validation (should be numeric and reasonable length)
       const mobileClean = String(mobileNumber.value || '').replace(/\s/g, '')
@@ -137,7 +137,7 @@ export const useOrderStore = defineStore('order', () => {
 
     const hasErrors = Object.keys(validationErrors.value).length > 0
     if (hasErrors) {
-      return { valid: false, message: Object.values(validationErrors.value)[0] || 'Validation failed' }
+      return { valid: false, message: 'formErrors' }
     }
 
     return { valid: true, message: null }
