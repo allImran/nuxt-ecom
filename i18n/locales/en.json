@@ -125,6 +125,7 @@
   },
   "order": {
     "title": "All fields marked with * must be completed to place an order",
+    "scrollToOrder": "Order Now (Cash on Delivery)",
     "order": "Order",
     "items": "Order Items",
     "shippingAddress": "Shipping Address",
