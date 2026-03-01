@@ -40,6 +40,17 @@ onMounted(async () => {
   if (slug.value) {
     await loadProduct(slug.value)
     await loadAccessories(slug.value)
+
+    // Track ViewContent event with Facebook Pixel
+    if (import.meta.client && product.value && (window as any).fbq) {
+      ;(window as any).fbq('track', 'ViewContent', {
+        content_name: product.value.name,
+        content_ids: [product.value.id],
+        content_type: 'product',
+        value: product.value.variants?.[0]?.price || 0,
+        currency: 'BDT'
+      })
+    }
   }
 })
 

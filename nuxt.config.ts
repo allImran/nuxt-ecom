@@ -7,6 +7,19 @@ export default defineNuxtConfig({
   app: {
     head: {
       title: 'UrbanEase',
+      script: [
+        {
+          innerHTML: '!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version=\'2.0\';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window, document,\'script\',\'https://connect.facebook.net/en_US/fbevents.js\');fbq(\'init\', \'1469591844791219\');fbq(\'track\', \'PageView\');',
+          type: 'text/javascript',
+          tagPosition: 'head',
+        }
+      ],
+      noscript: [
+        {
+          innerHTML: '<img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=1469591844791219&ev=PageView&noscript=1" />',
+          tagPosition: 'head',
+        }
+      ],
       link: [
         { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
         { rel: 'icon', type: 'image/png', sizes: '16x16', href: '/favicon-16x16.png' },
@@ -26,9 +39,7 @@ export default defineNuxtConfig({
       facebookUrl: process.env.FACEBOOK_URL || 'https://www.facebook.com/theurbanease',
       whatsappUrl: process.env.WHATSAPP_URL || 'https://wa.me/8801521203588',
       businessId: process.env.BUSINESS_ID || '6cadb262-2726-4a19-8a3e-90ef1b98aba3',
-      metapixel: {
-        default: { id: process.env.NUXT_PUBLIC_METAPIXEL_DEFAULT_ID!, pageView: '/products/**' },
-      }
+      pixelId: process.env.NUXT_PUBLIC_PIXEL_ID,
     },
   },
   devtools: { enabled: true },
@@ -38,7 +49,7 @@ export default defineNuxtConfig({
     ],
   },
   css: ['./app/assets/css/main.css'],
-  modules: ['@nuxt/image', '@nuxt/content', 'motion-v/nuxt', '@pinia/nuxt', '@nuxtjs/i18n', 'nuxt-meta-pixel'],
+  modules: ['@nuxt/image', '@nuxt/content', 'motion-v/nuxt', '@pinia/nuxt', '@nuxtjs/i18n'],
 
   i18n: {
     locales: [
