@@ -125,6 +125,10 @@ export const useOrderStore = defineStore('order', () => {
       validationErrors.value.fullAddress = 'write full address'
     }
 
+    if (!fullName.value.trim()) {
+      validationErrors.value.fullName = 'write full name'
+    }
+
     if (!mobileNumber.value.trim()) {
       validationErrors.value.mobileNumber = 'write mobile number'
     } else {
