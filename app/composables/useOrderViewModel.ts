@@ -31,7 +31,9 @@ export function useOrderViewModel() {
     availableUpazilas,
     productsForSubmission,
     subtotal,
-    total
+    total,
+    validationErrors,
+    submitAttempted
   } = storeToRefs(orderStore)
 
   // Locale helpers
@@ -183,6 +185,8 @@ export function useOrderViewModel() {
     errorMessage,
     successMessage,
     isBangla,
+    validationErrors,
+    submitAttempted,
 
     // Helpers
     getDeliveryFee,

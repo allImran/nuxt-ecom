@@ -1,6 +1,6 @@
 <template>
   <section class="order-product-section space-y-6">
-    
+
     <div v-if="productItems.length > 0" class="space-y-4">
       <OrderProductItem
         v-for="item in productItems"
@@ -16,6 +16,10 @@
 
     <p v-else class="text-center text-luxury-text-muted dark:text-luxury-dark-text-muted py-8">
       {{ t('order.noProducts') }}
+    </p>
+
+    <p v-if="error" class="text-red-600 dark:text-red-400 text-sm mt-2">
+      {{ error }}
     </p>
   </section>
 </template>
@@ -39,6 +43,7 @@ interface Props {
     quantity: number
   }>
   getProductPrice: (product: Product) => number
+  error: string
 }
 
 const props = defineProps<Props>()

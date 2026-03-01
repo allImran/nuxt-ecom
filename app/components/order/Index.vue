@@ -31,6 +31,7 @@
           :products="products"
           :order-products="orderProducts"
           :get-product-price="getProductPrice"
+          :error="submitAttempted ? (validationErrors.products || '') : ''"
           @increase="handleQuantityIncrease"
           @decrease="handleQuantityDecrease"
         />
@@ -53,6 +54,8 @@
           :search-divisions="searchDivisions"
           :search-districts="searchDistricts"
           :search-upazilas="searchUpazilas"
+          :submit-attempted="submitAttempted"
+          :validation-errors="validationErrors"
           @division-change="setDivision"
           @district-change="setDistrict"
           @upazila-change="setUpazila"
@@ -134,7 +137,9 @@ const {
   setMobile,
   setFullName,
   handleSubmit: vmHandleSubmit,
-  resetOrder
+  resetOrder,
+  validationErrors,
+  submitAttempted
 } = vm
 
 const DELIVERY_FEE = getDeliveryFee()

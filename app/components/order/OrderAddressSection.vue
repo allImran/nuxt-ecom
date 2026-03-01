@@ -5,6 +5,7 @@
       :selected-division="selectedDivision"
       :is-bangla="isBangla"
       :search-divisions="searchDivisions"
+      :error="submitAttempted ? (validationErrors.division || '') : ''"
       @division-change="onDivisionChange"
     />
 
@@ -30,16 +31,19 @@
 
     <OrderAddressInput
       :model-value="fullAddress"
+      :error="submitAttempted ? (validationErrors.fullAddress || '') : ''"
       @update:modelValue="onAddressChange"
     />
 
     <OrderFullNameInput
       :model-value="fullName"
+      :error="submitAttempted ? (validationErrors.fullName || '') : ''"
       @update:modelValue="onFullNameChange"
     />
 
     <OrderMobileInput
       :model-value="mobileNumber"
+      :error="submitAttempted ? (validationErrors.mobileNumber || '') : ''"
       @update:modelValue="onMobileChange"
     />
     
@@ -62,6 +66,8 @@ interface Props {
   searchDivisions: (query: string) => LocationData[]
   searchDistricts: (query: string) => LocationData[]
   searchUpazilas: (query: string) => LocationData[]
+  submitAttempted: boolean
+  validationErrors: Record<string, string>
 }
 
 defineProps<Props>()
