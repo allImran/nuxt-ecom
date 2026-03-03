@@ -1,26 +1,27 @@
 <template>
-  <div class="order-summary p-6 border border-luxury-border dark:border-luxury-dark-border rounded-luxury space-y-4">
-    <h3 class="text-lg font-semibold tracking-luxury">{{ t('order.total') }}</h3>
+  <div class="order-summary">
+    <h3 class="text-lg font-bold text-luxury-text dark:text-luxury-dark-text mb-4 tracking-wide uppercase">{{ t('order.total') }}</h3>
 
-    <div class="space-y-2">
-      <div class="flex justify-between text-sm">
-        <span class="text-luxury-text-muted dark:text-luxury-dark-text-muted">{{ t('order.subtotal') }}</span>
-        <span>{{ formatPrice(subtotal) }}</span>
+    <div class="space-y-3 text-sm">
+      <div class="flex justify-between text-luxury-text-muted dark:text-luxury-dark-text-muted">
+        <span>{{ t('order.subtotal') }}</span>
+        <span class="font-medium text-luxury-text dark:text-luxury-dark-text">{{ formatPrice(subtotal) }}</span>
       </div>
-      <div class="flex justify-between text-sm">
-        <span class="text-luxury-text-muted dark:text-luxury-dark-text-muted">{{ t('order.deliveryFee') }}</span>
-        <span>{{ formatPrice(deliveryFee) }}</span>
+      <div class="flex justify-between text-luxury-text-muted dark:text-luxury-dark-text-muted">
+        <span>{{ t('order.deliveryFee') }}</span>
+        <span class="font-medium text-luxury-text dark:text-luxury-dark-text">{{ formatPrice(deliveryFee) }}</span>
       </div>
-      <div class="border-t border-luxury-border dark:border-luxury-dark-border pt-2 flex justify-between font-semibold text-lg">
-        <span>{{ t('order.total') }}</span>
-        <span>{{ formatPrice(total) }}</span>
-      </div>
+    </div>
+
+    <div class="flex justify-between items-center mt-4 pt-4 border-t border-luxury-border dark:border-luxury-dark-border">
+      <span class="text-lg font-bold text-luxury-text dark:text-luxury-dark-text">{{ t('order.total') }}</span>
+      <span class="text-2xl font-bold text-luxury-gold">{{ formatPrice(total) }}</span>
     </div>
 
     <button
       type="button"
       :disabled="isDisabled || loading"
-      class="w-full bg-luxury-gold hover:bg-luxury-gold-hover text-white font-bold py-4 px-6 rounded-xl shadow-lg shadow-luxury-gold/30 transition-all duration-300 transform hover:-translate-y-0.5 active:translate-y-0 active:shadow-md flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-md group"
+      class="mt-6 w-full bg-luxury-gold hover:bg-luxury-gold-hover text-white font-bold py-4 px-6 rounded-xl transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed group"
       @click="onSubmit"
     >
       <span v-if="loading" class="animate-spin text-lg">⟳</span>

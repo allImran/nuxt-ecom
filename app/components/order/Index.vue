@@ -40,30 +40,35 @@
       </div>
 
       <!-- Right column: Address and Summary -->
-      <div class="space-y-8">
-        <OrderAddressSection
-          :full-address="fullAddress"
-          :mobile-number="mobileNumber"
-          :full-name="fullName"
-          :submit-attempted="submitAttempted"
-          :validation-errors="validationErrors"
-          @address-change="setAddress"
-          @mobile-change="setMobile"
-          @full-name-change="setFullName"
-        />
+      <div class="bg-luxury-surface dark:bg-luxury-dark-surface rounded-2xl p-6 lg:p-8 border border-luxury-border dark:border-luxury-dark-border sticky top-8">
+        <h2 class="text-xl font-bold mb-6 text-luxury-text dark:text-luxury-dark-text">Delivery Information</h2>
+        <div class="space-y-5">
+          <OrderAddressSection
+            :full-address="fullAddress"
+            :mobile-number="mobileNumber"
+            :full-name="fullName"
+            :submit-attempted="submitAttempted"
+            :validation-errors="validationErrors"
+            @address-change="setAddress"
+            @mobile-change="setMobile"
+            @full-name-change="setFullName"
+          />
+        </div>
 
-        <OrderSummary
-          :subtotal="subtotal"
-          :delivery-fee="DELIVERY_FEE"
-          :total="total"
-          :loading="loading"
-          :success="success"
-          :error="!!error"
-          :error-message="errorMessage"
-          :success-message="successMessage"
-          :has-products="productsForSubmission.length > 0"
-          @submit="handleSubmit"
-        />
+        <div class="mt-8 pt-8 border-t border-luxury-border dark:border-luxury-dark-border">
+          <OrderSummary
+            :subtotal="subtotal"
+            :delivery-fee="DELIVERY_FEE"
+            :total="total"
+            :loading="loading"
+            :success="success"
+            :error="!!error"
+            :error-message="errorMessage"
+            :success-message="successMessage"
+            :has-products="productsForSubmission.length > 0"
+            @submit="handleSubmit"
+          />
+        </div>
       </div>
     </form>
 
