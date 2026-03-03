@@ -1,11 +1,5 @@
 <template>
   <section class="order-address-section space-y-6">
-    <OrderAddressInput
-      :model-value="fullAddress"
-      :error="submitAttempted ? (validationErrors.fullAddress || '') : ''"
-      @update:modelValue="onAddressChange"
-    />
-
     <OrderFullNameInput
       :model-value="fullName"
       :error="submitAttempted ? (validationErrors.fullName || '') : ''"
@@ -17,7 +11,12 @@
       :error="submitAttempted ? (validationErrors.mobileNumber || '') : ''"
       @update:modelValue="onMobileChange"
     />
-    
+
+    <OrderAddressInput
+      :model-value="fullAddress"
+      :error="submitAttempted ? (validationErrors.fullAddress || '') : ''"
+      @update:modelValue="onAddressChange"
+    />
   </section>
 </template>
 
