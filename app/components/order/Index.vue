@@ -1,7 +1,7 @@
 <template>
   <div class="order-component max-w-4xl mx-auto p-6  pt-12">
     <!-- Success state -->
-    <div v-if="success && !loading" class="text-center py-12">
+    <div v-if="success && !loading" ref="successSection" class="text-center py-12">
       <div class="text-6xl mb-4">✓</div>
       <h2 class="text-2xl font-semibold text-green-600 dark:text-green-400 mb-2">{{ t('common.success') }}</h2>
       <p class="text-luxury-text-muted dark:text-luxury-dark-text-muted">{{ successMessage }}</p>
@@ -120,6 +120,9 @@ const {
 
 const DELIVERY_FEE = getDeliveryFee()
 
+// Success section ref for scrolling
+const successSection = ref<HTMLElement | null>(null)
+
 // Initialize products on mount
 onMounted(() => {
   vm.initializeOrderProducts(props.products)
@@ -129,6 +132,14 @@ onMounted(() => {
 watch(() => props.products, (newProducts) => {
   vm.initializeOrderProducts(newProducts)
 }, { deep: true })
+
+// Scroll to success section when order is successful
+watch(success, async (isSuccess) => {
+  if (isSuccess) {
+    await nextTick()
+    successSection.value?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+  }
+})
 
 // Quantity handlers
 function handleQuantityIncrease(productId: string, variantId: string | null) {
