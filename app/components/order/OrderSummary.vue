@@ -13,7 +13,7 @@
       </div>
     </div>
 
-    <div class="flex justify-between items-center mt-4 pt-4 border-t border-luxury-border dark:border-luxury-dark-border">
+    <div class="flex justify-between items-center mt-4 pt-4 border-t border-luxury-border dark:border-gray-600">
       <span class="text-lg font-bold text-luxury-text dark:text-luxury-dark-text">{{ t('order.total') }}</span>
       <span class="text-2xl font-bold text-luxury-gold">{{ formatPrice(total) }}</span>
     </div>

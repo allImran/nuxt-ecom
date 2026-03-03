@@ -1,5 +1,5 @@
 <template>
-  <div class="order-quantity-control flex items-center bg-luxury-surface/50 dark:bg-gray-800 rounded-full border border-luxury-border dark:border-luxury-dark-border h-8">
+  <div class="order-quantity-control flex items-center bg-luxury-surface/50 dark:bg-gray-800 rounded-full border border-luxury-border dark:border-gray-600 h-8">
     <button
       type="button"
       :disabled="isFirstProduct ? quantity <= 1 : quantity <= 0"

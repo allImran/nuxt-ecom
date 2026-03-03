@@ -1,7 +1,7 @@
 <template>
-  <div class="overflow-hidden order-product-item flex flex-row items-center gap-3 p-3 border border-luxury-border dark:border-luxury-dark-border rounded-xl bg-luxury-surface dark:bg-luxury-dark-surface">
+  <div class="overflow-hidden order-product-item flex flex-row items-center gap-3 p-3 border border-luxury-border dark:border-gray-600 rounded-xl bg-luxury-surface dark:bg-luxury-dark-surface">
     <!-- Product Image -->
-    <div class="w-20 h-20 bg-luxury-bg dark:bg-gray-800 rounded-lg shrink-0 border border-luxury-border dark:border-luxury-dark-border overflow-hidden">
+    <div class="w-20 h-20 bg-luxury-bg dark:bg-gray-800 rounded-lg shrink-0 border border-luxury-border dark:border-gray-600 overflow-hidden">
       <img
         v-if="firstImage"
         :src="firstImage"

@@ -40,7 +40,7 @@
       </div>
 
       <!-- Right column: Address and Summary -->
-      <div class="bg-luxury-surface dark:bg-luxury-dark-surface rounded-2xl p-6 lg:p-8 border border-luxury-border dark:border-luxury-dark-border sticky top-8">
+      <div class="bg-luxury-surface dark:bg-luxury-dark-surface rounded-2xl p-6 lg:p-8 border border-luxury-border dark:border-gray-600 sticky top-8">
         <h2 class="text-xl font-bold mb-6 text-luxury-text dark:text-luxury-dark-text">Delivery Information</h2>
         <div class="space-y-5">
           <OrderAddressSection
@@ -55,7 +55,7 @@
           />
         </div>
 
-        <div class="mt-8 pt-8 border-t border-luxury-border dark:border-luxury-dark-border">
+        <div class="mt-8 pt-8 border-t border-luxury-border dark:border-gray-600">
           <OrderSummary
             :subtotal="subtotal"
             :delivery-fee="DELIVERY_FEE"
