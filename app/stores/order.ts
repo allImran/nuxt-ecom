@@ -117,10 +117,6 @@ export const useOrderStore = defineStore('order', () => {
     }
 
     // Check required address fields
-    if (!selectedDivision.value) {
-      validationErrors.value.division = 'please select division'
-    }
-
     if (!fullAddress.value.trim()) {
       validationErrors.value.fullAddress = 'write full address'
     }
