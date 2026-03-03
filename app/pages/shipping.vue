@@ -105,9 +105,9 @@ const currentShipping = computed(() => shippingTranslations[locale.value] || shi
 
 // Page metadata
 useHead({
-  title: 'Shipping Information - URBANEASE',
+  title: 'Shipping Information',
   meta: [
-    { name: 'description', content: 'Learn about URBANEASE shipping policies, delivery times, and tracking information.' }
+    { name: 'description', content: 'Learn about shipping policies, delivery times, and tracking information.' }
   ]
 })
 

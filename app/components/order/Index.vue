@@ -42,23 +42,11 @@
       <!-- Right column: Address and Summary -->
       <div class="space-y-8">
         <OrderAddressSection
-          :selected-division="selectedDivision"
-          :selected-district="selectedDistrict"
-          :selected-upazila="selectedUpazila"
           :full-address="fullAddress"
           :mobile-number="mobileNumber"
           :full-name="fullName"
-          :is-bangla="isBangla"
-          :available-districts="availableDistricts"
-          :available-upazilas="availableUpazilas"
-          :search-divisions="searchDivisions"
-          :search-districts="searchDistricts"
-          :search-upazilas="searchUpazilas"
           :submit-attempted="submitAttempted"
           :validation-errors="validationErrors"
-          @division-change="setDivision"
-          @district-change="setDistrict"
-          @upazila-change="setUpazila"
           @address-change="setAddress"
           @mobile-change="setMobile"
           @full-name-change="setFullName"
@@ -107,9 +95,6 @@ const { t } = useI18n()
 // Extract state from composable
 const {
   orderProducts,
-  selectedDivision,
-  selectedDistrict,
-  selectedUpazila,
   fullAddress,
   mobileNumber,
   fullName,
@@ -118,28 +103,19 @@ const {
   success,
   orderId,
   getDeliveryFee,
-  availableDistricts,
-  availableUpazilas,
   productsForSubmission,
   subtotal,
   total,
   errorMessage,
   successMessage,
-  isBangla,
   getProductPrice,
-  searchDivisions,
-  searchDistricts,
-  searchUpazilas,
-  setDivision,
-  setDistrict,
-  setUpazila,
-  setAddress,
-  setMobile,
-  setFullName,
   handleSubmit: vmHandleSubmit,
   resetOrder,
   validationErrors,
-  submitAttempted
+  submitAttempted,
+  setAddress,
+  setMobile,
+  setFullName
 } = vm
 
 const DELIVERY_FEE = getDeliveryFee()

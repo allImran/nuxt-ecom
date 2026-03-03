@@ -2,7 +2,7 @@
 // Page metadata
 const { t } = useI18n()
 useHead({
-  title: `URBANEASE - ${t('about.title')}`,
+  title: `${t('about.title')}`,
   meta: [
     { name: 'description', content: t('about.hero.subtitle') }
   ]

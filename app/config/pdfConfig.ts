@@ -39,11 +39,11 @@ export interface PdfConfig {
 
 // Company details for the invoice
 export const COMPANY_DETAILS: CompanyDetails = {
-  name: 'UrbanEase',
+  name: 'IndoorShopping',
   address: 'Dhaka, Bangladesh',
   phone: '+880 1XXX-XXXXXX',
-  email: 'support@urbanease.com',
-  website: 'www.urbanease.com'
+  email: 'support@indoorshopping.com',
+  website: 'www.indoorshopping.web.app'
 }
 
 // PDF configuration

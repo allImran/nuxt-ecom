@@ -83,7 +83,7 @@ const currentYear = computed(() => new Date().getFullYear())
       <div class="mt-8 pt-8 border-t border-luxury-border dark:border-luxury-dark-border">
         <div class="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
           <p class="text-sm text-luxury-text-muted dark:text-luxury-dark-text-muted">
-            &copy; {{ currentYear }} {{ business?.name || 'URBANEASE' }}. All rights reserved.
+            &copy; {{ currentYear }} {{ business?.name }}. All rights reserved.
           </p>
           <div class="flex space-x-6">
             <!-- {{  business?.social?.facebook }} -->

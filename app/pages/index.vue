@@ -4,7 +4,7 @@ const businessBrandingStore = useBusinessBrandingStore()
 const { business } = storeToRefs(businessBrandingStore)
 
 // Page metadata - dynamic based on business
-const businessName = computed(() => business.value?.name || 'URBANEASE')
+const businessName = computed(() => business.value?.name)
 const businessSlogan = computed(() =>
   business.value?.slogan || 'Experience the finest selection of curated products. Quality meets elegance in every piece we offer.'
 )

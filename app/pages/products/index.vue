@@ -1,9 +1,9 @@
 <script setup lang="ts">
 // Page metadata
 useHead({
-  title: 'Products - URBANEASE',
+  title: 'Products',
   meta: [
-    { name: 'description', content: 'Browse our complete collection of premium luxury products at URBANEASE.' }
+    { name: 'description', content: 'Browse our complete collection of premium luxury products.' }
   ]
 })
 

@@ -93,9 +93,9 @@ const currentPrivacy = computed(() => privacyTranslations[locale.value] || priva
 
 // Page metadata
 useHead({
-  title: 'Privacy Policy - URBANEASE',
+  title: 'Privacy Policy',
   meta: [
-    { name: 'description', content: 'Learn about how URBANEASE collects, uses, and protects your personal information.' }
+    { name: 'description', content: 'Learn about how we collects, uses, and protects your personal information.' }
   ]
 })
 

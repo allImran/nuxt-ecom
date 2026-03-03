@@ -21,7 +21,7 @@ export default defineNuxtPlugin(async () => {
 
         // Update page title with business name
         useHead({
-          title: businessData.name || 'UrbanEase'
+          title: businessData.name || '-'
         })
       }
     } catch (error) {

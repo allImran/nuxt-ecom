@@ -95,7 +95,7 @@ const productsForOrder = computed(() => {
 watchEffect(() => {
   if (product.value) {
     useHead({
-      title: `${product.value.name} - URBANEASE`,
+      title: `${product.value.name}`,
       meta: [
         {
           name: 'description',

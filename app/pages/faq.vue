@@ -87,9 +87,9 @@ const toggleQuestion = (id: string) => {
 
 // Page metadata
 useHead({
-  title: 'FAQ - URBANEASE',
+  title: 'FAQ',
   meta: [
-    { name: 'description', content: 'Find answers to frequently asked questions about URBANEASE products, services, and policies.' }
+    { name: 'description', content: 'Find answers to frequently asked questions about products, services, and policies.' }
   ]
 })
 

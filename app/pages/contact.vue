@@ -14,7 +14,7 @@ const openLink = (url: string) => {
 }
 
 // Page metadata - dynamic based on business name
-const businessName = computed(() => business.value?.name || 'URBANEASE')
+const businessName = computed(() => business.value?.name)
 
 useHead({
   title: computed(() => `Contact Us - ${businessName.value}`),
