@@ -3,6 +3,7 @@
     <label class="block text-sm font-medium mb-2">{{ t('order.fullAddress') }} *</label>
     <textarea
       :value="modelValue"
+      name="address"
       :placeholder="t('order.fullAddress')"
       rows="3"
       class="w-full px-4 py-3 border border-luxury-border dark:border-luxury-dark-border rounded-luxury focus:outline-none focus:ring-2 focus:ring-luxury-gold focus:border-transparent resize-none"

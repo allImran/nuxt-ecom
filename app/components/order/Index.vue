@@ -24,7 +24,7 @@
     </div>
 
     <!-- Order form -->
-    <form v-else class="grid grid-cols-1 lg:grid-cols-2 gap-8" @submit.prevent="handleSubmit">
+    <form v-else class="grid grid-cols-1 lg:grid-cols-2 gap-8" autocomplete="on" @submit.prevent="handleSubmit">
       <!-- Left column: Products and Payment -->
       <div class="space-y-8">
         <OrderProductSection
