@@ -20,11 +20,14 @@
     <button
       type="button"
       :disabled="isDisabled || loading"
-      class="w-full py-4 bg-luxury-gold hover:bg-luxury-gold-hover text-white font-medium tracking-luxury rounded-luxury transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+      class="w-full bg-luxury-gold hover:bg-luxury-gold-hover text-white font-bold py-4 px-6 rounded-xl shadow-lg shadow-luxury-gold/30 transition-all duration-300 transform hover:-translate-y-0.5 active:translate-y-0 active:shadow-md flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-md group"
       @click="onSubmit"
     >
-      <span v-if="loading" class="animate-spin">⟳</span>
-      <span>{{ t('order.placeOrder') }}</span>
+      <span v-if="loading" class="animate-spin text-lg">⟳</span>
+      <template v-else>
+        <span>{{ t('order.placeOrder') }}</span>
+        <UiIcon name="arrow-right" :size="18" class="group-hover:translate-x-1 transition-transform" />
+      </template>
     </button>
 
     <p v-if="success" class="text-center text-green-600 dark:text-green-400 text-sm">

@@ -144,7 +144,7 @@
     "subtotal": "Subtotal",
     "deliveryFee": "Delivery Fee",
     "total": "Total",
-    "placeOrder": "Confirm the order",
+    "placeOrder": "Place Order",
     "cashOnDelivery": "Cash on Delivery",
     "othersComingSoon": "Others (coming soon)",
     "noProducts": "Please select at least one product",
@@ -158,6 +158,10 @@
     "optional": "Optional",
     "paymentMethods": "Payment Methods",
     "continueShopping": "Continue Shopping",
-    "trackOrder": "Track Order"
+    "trackOrder": "Track Order",
+    "requiredFieldsInfo": "All fields marked with * must be completed to place an order.",
+    "yourCart": "Your Cart",
+    "deliveryDetails": "Delivery Details",
+    "totalPayable": "Total Payable"
   }
 }

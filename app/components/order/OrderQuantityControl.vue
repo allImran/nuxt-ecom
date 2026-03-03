@@ -1,20 +1,20 @@
 <template>
-  <div class="order-quantity-control bg-luxury-gold/10 dark:bg-gray-900 p-2 rounded-full flex items-center gap-">
+  <div class="order-quantity-control flex items-center bg-luxury-surface/50 dark:bg-gray-800 rounded-full border border-luxury-border dark:border-luxury-dark-border h-8">
     <button
       type="button"
       :disabled="isFirstProduct ? quantity <= 1 : quantity <= 0"
-      class="size-8 flex items-center justify-center border rounded-luxury hover:bg-luxury-gold/60 cursor-pointer dark:hover:bg-luxury-dark-border transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+      class="w-8 h-full flex items-center justify-center text-luxury-text-muted dark:text-luxury-dark-text-muted focus:outline-none hover:text-luxury-gold transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
       @click="onDecrease"
     >
-      <span class="text-xl">−</span>
+      <UiIcon name="minus" :size="16" />
     </button>
-    <span class="w-12 text-center font-medium">{{ quantity }}</span>
+    <span class="w-6 text-center font-bold text-sm text-luxury-text dark:text-luxury-dark-text leading-none">{{ quantity }}</span>
     <button
       type="button"
-      class="size-8 flex items-center justify-center border rounded-luxury hover:bg-luxury-gold/60 cursor-pointer dark:hover:bg-luxury-dark-border transition-colors"
+      class="w-8 h-full flex items-center justify-center rounded-r-full bg-luxury-gold text-white focus:outline-none hover:bg-luxury-gold-hover transition-colors"
       @click="onIncrease"
     >
-      <span class="text-xl">+</span>
+      <UiIcon name="plus" :size="16" />
     </button>
   </div>
 </template>

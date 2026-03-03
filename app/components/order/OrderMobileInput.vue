@@ -1,14 +1,17 @@
 <template>
   <div class="order-mobile-input">
-    <label class="block text-sm font-medium mb-2">{{ t('order.mobileNumber') }} *</label>
-    <input
-      :value="modelValue"
-      type="tel"
-      name="phone"
-      placeholder="01xxxxxxxxx"
-      class="w-full px-4 py-3 border border-luxury-border dark:border-luxury-dark-border rounded-luxury focus:outline-none focus:ring-2 focus:ring-luxury-gold focus:border-transparent"
-      @input="onInput"
-    />
+    <label class="block text-sm font-medium mb-1.5">{{ t('order.mobileNumber') }} *</label>
+    <div class="relative">
+      <input
+        :value="modelValue"
+        type="tel"
+        name="phone"
+        placeholder="01xxxxxxxxx"
+        class="block w-full px-4 py-3 rounded-lg bg-luxury-bg dark:bg-luxury-dark-bg border border-luxury-border dark:border-luxury-dark-border text-luxury-text dark:text-luxury-dark-text placeholder-luxury-text-muted focus:outline-none focus:ring-2 focus:ring-luxury-gold focus:border-transparent transition-all shadow-sm pr-10"
+        @input="onInput"
+      />
+      <UiIcon name="phone" :size="20" class="absolute right-3 top-3.5 text-luxury-text-muted pointer-events-none" />
+    </div>
     <p v-if="error" class="mt-2 text-sm text-red-600 dark:text-red-400">
       {{ error }}
     </p>
