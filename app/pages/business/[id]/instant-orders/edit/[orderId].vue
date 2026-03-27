@@ -1,0 +1,168 @@
+<script setup lang="ts">
+import type { InstantOrder, InstantOrderForm } from '~/types/instantOrder'
+
+// Get route params
+const route = useRoute()
+const router = useRouter()
+const businessId = computed(() => route.params.id as string)
+const orderId = computed(() => route.params.orderId as string)
+
+// Page meta
+definePageMeta({
+  layout: 'admin',
+  middleware: 'admin'
+})
+
+// Store
+const { loading, updating, error, fetchOrderById, updateOrder } = useInstantOrdersStore()
+
+// Toast notification
+const toast = useToast()
+
+// Form composable - will be initialized after fetching order
+const {
+  form,
+  validationErrors,
+  isValid,
+  totalAmount,
+  validate,
+  reset: resetForm
+} = useInstantOrderForm()
+
+// Business info
+const business = ref<any>(null)
+const orderLoaded = ref(false)
+
+// Fetch data on mount
+onMounted(async () => {
+  try {
+    const { adminNetwork } = await import('~/network/admin')
+    const [businessData, orderData] = await Promise.all([
+      adminNetwork.fetchBusinessById(businessId.value),
+      fetchOrderById(orderId.value)
+    ])
+    business.value = businessData
+
+    // Initialize form with order data
+    if (orderData) {
+      form.value = {
+        user_id: orderData.user_id || null,
+        customer_info: { ...orderData.customer_info },
+        order_items: orderData.order_items.map(item => ({
+          title: item.title,
+          price: item.price,
+          quantity: item.quantity,
+          unit: item.unit,
+          description: item.description || ''
+        })),
+        delivery_charge: orderData.delivery_charge,
+        cod_reference: orderData.cod_reference || '',
+        status: orderData.status
+      }
+      orderLoaded.value = true
+    }
+  } catch (err) {
+    console.error('Failed to fetch data:', err)
+  }
+})
+
+// Reset form on unmount
+onUnmounted(() => {
+  resetForm()
+})
+
+// Handle form submission
+async function handleSubmit() {
+  // Validate form
+  const errors = validate()
+  if (Object.keys(errors).length > 0) {
+    return
+  }
+
+  try {
+    // Prepare request data
+    const requestData: Partial<InstantOrderForm> = {
+      user_id: form.value.user_id || undefined,
+      customer_info: form.value.customer_info,
+      order_items: form.value.order_items,
+      delivery_charge: form.value.delivery_charge,
+      cod_reference: form.value.cod_reference || undefined,
+      status: form.value.status
+    }
+
+    // Update order
+    await updateOrder(orderId.value, requestData)
+
+    // Show success message
+    toast.success('Instant order updated successfully!')
+  } catch (err) {
+    console.error('Failed to update instant order:', err)
+
+    // Show error message
+    if (error.value === 'validation') {
+      toast.error('Please fix the validation errors and try again.')
+    } else if (error.value === 'notFound') {
+      toast.error('Order not found.')
+    } else if (error.value === 'unauthorized') {
+      toast.error('You are not authorized to update this order.')
+    } else if (error.value === 'forbidden') {
+      toast.error('You don\'t have permission to update this order.')
+    } else {
+      toast.error('Failed to update instant order. Please try again.')
+    }
+  }
+}
+</script>
+
+<template>
+  <div class="space-y-6">
+    <!-- Header -->
+    <div class="flex items-center gap-4">
+      <UiLuxuryButton variant="ghost" @click="router.push(`/business/${businessId}/instant-orders`)">
+        <UiIcon name="arrow-left" :size="16" class="mr-2" />
+        Back
+      </UiLuxuryButton>
+      <div>
+        <h1 class="text-2xl font-bold text-luxury-text dark:text-luxury-dark-text">
+          Edit Instant Order
+        </h1>
+        <p class="text-sm text-luxury-text-muted dark:text-luxury-dark-text-muted">
+          {{ business?.name || 'Business' }}
+        </p>
+      </div>
+    </div>
+
+    <!-- Loading State -->
+    <div v-if="loading" class="flex items-center justify-center py-12">
+      <UiIcon name="loader-2" :size="32" class="animate-spin text-luxury-gold" />
+    </div>
+
+    <!-- Error States -->
+    <div v-else-if="error === 'notFound'" class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-luxury p-4">
+      <p class="text-red-600 dark:text-red-400">Order not found.</p>
+    </div>
+
+    <div v-else-if="error === 'unauthorized'" class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-luxury p-4">
+      <p class="text-red-600 dark:text-red-400">You are not authorized to view this order.</p>
+    </div>
+
+    <div v-else-if="error === 'forbidden'" class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-luxury p-4">
+      <p class="text-red-600 dark:text-red-400">You don't have permission to view this order.</p>
+    </div>
+
+    <div v-else-if="error" class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-luxury p-4">
+      <p class="text-red-600 dark:text-red-400">Failed to load order. Please try again.</p>
+    </div>
+
+    <!-- Form -->
+    <InstantOrdersForm
+      v-else-if="orderLoaded"
+      v-model="form"
+      :loading="updating"
+      mode="edit"
+      submit-label="Update Order"
+      :validation-errors="validationErrors"
+      @submit="handleSubmit"
+    />
+  </div>
+</template>

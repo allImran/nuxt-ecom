@@ -16,6 +16,16 @@
           </p>
         </div>
       </div>
+      <div class="flex gap-2">
+        <UiLuxuryButton variant="outline" @click="router.push(`/business/${businessId}/instant-orders`)">
+          <UiIcon name="layout-list" :size="16" class="mr-2" />
+          Instant Orders
+        </UiLuxuryButton>
+        <UiLuxuryButton @click="router.push(`/business/${businessId}/instant-orders/create`)">
+          <UiIcon name="plus" :size="16" class="mr-2" />
+          New Instant Order
+        </UiLuxuryButton>
+      </div>
     </div>
 
     <!-- Filters -->
