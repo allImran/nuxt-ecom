@@ -45,15 +45,8 @@ export const useInstantOrdersStore = defineStore('instantOrders', () => {
       const ordersData = response?.data || []
       const paginationData = response?.pagination
 
-      // Map API response to list item format
-      orders.value = ordersData.map((order: any) => ({
-        id: order.id,
-        customer_name: order.customer_info?.name || 'N/A',
-        phone: order.customer_info?.phone || '',
-        status: order.status,
-        total_amount: order.total || 0, // API uses 'total' not 'total_amount'
-        created_at: order.created_at
-      }))
+      // Use orders directly as-is from API (no mapping needed)
+      orders.value = ordersData
 
       pagination.total = paginationData?.total || 0
       pagination.limit = paginationData?.limit || 25
@@ -78,7 +71,7 @@ export const useInstantOrdersStore = defineStore('instantOrders', () => {
   }
 
   // Actions - Fetch order by ID
-  async function fetchOrderById(orderId: string) {
+  async function fetchOrderById(orderId: number) {
     loading.value = true
     error.value = null
 
@@ -94,12 +87,13 @@ export const useInstantOrdersStore = defineStore('instantOrders', () => {
         id: data.id,
         business_id: data.business_id,
         user_id: data.user_id,
+        temp_user_id: data.temp_user_id,
         customer_info: data.customer_info,
         order_items: data.order_items,
         delivery_charge: data.delivery_charge,
         cod_reference: data.cod_reference,
         status: data.status,
-        total_amount: data.total || 0, // API uses 'total' not 'total_amount'
+        total: data.total || 0,
         created_at: data.created_at,
         updated_at: data.updated_at || data.created_at
       }
@@ -160,7 +154,7 @@ export const useInstantOrdersStore = defineStore('instantOrders', () => {
   }
 
   // Actions - Update instant order
-  async function updateOrder(orderId: string, request: UpdateInstantOrderRequest) {
+  async function updateOrder(orderId: number, request: UpdateInstantOrderRequest) {
     updating.value = true
     error.value = null
 

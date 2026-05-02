@@ -39,7 +39,7 @@ onMounted(async () => {
     const { adminNetwork } = await import('~/network/admin')
     const [businessData, orderData] = await Promise.all([
       adminNetwork.fetchBusinessById(businessId.value),
-      fetchOrderById(orderId.value)
+      fetchOrderById(Number(orderId.value))
     ])
     business.value = businessData
 
@@ -91,7 +91,7 @@ async function handleSubmit() {
     }
 
     // Update order
-    await updateOrder(orderId.value, requestData)
+    await updateOrder(Number(orderId.value), requestData)
 
     // Show success message
     toast.success('Instant order updated successfully!')

@@ -42,15 +42,16 @@ export interface InstantOrderItem {
  * Complete instant order from API
  */
 export interface InstantOrder {
-  id: string
+  id: number
   business_id: string
   user_id?: string | null
+  temp_user_id?: number
   customer_info: CustomerInfo
   order_items: InstantOrderItem[]
   delivery_charge: number
-  cod_reference?: string
+  cod_reference?: any
   status: InstantOrderStatus
-  total_amount: number
+  total: number
   created_at: string
   updated_at: string
 }
@@ -84,24 +85,35 @@ export interface CreateInstantOrderRequest {
  * Request payload for updating an instant order
  */
 export interface UpdateInstantOrderRequest {
-  user_id?: string
+  user_id?: string | null
   customer_info?: CustomerInfo
   order_items?: OrderItemForm[]
   delivery_charge?: number
-  cod_reference?: string
+  cod_reference?: string | any
   status?: InstantOrderStatus
 }
 
 /**
  * List view item for instant orders table
+ * Matches the actual API response structure
  */
 export interface InstantOrderListItem {
-  id: string
-  customer_name: string
-  phone: string
-  status: InstantOrderStatus
-  total_amount: number
+  id: number
+  business_id: string
+  user_id: string | null
+  temp_user_id?: number
+  customer_info: {
+    name: string
+    phone: string
+    address: string
+  }
+  delivery_charge: number
+  cod_reference: any
+  order_items: InstantOrderItem[]
   created_at: string
+  status: InstantOrderStatus
+  updated_at: string
+  total: number
 }
 
 /**

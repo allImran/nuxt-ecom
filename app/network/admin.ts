@@ -203,8 +203,8 @@ export const adminNetwork = {
     const queryString = query.toString()
     return useAdminFetch<any[]>(`/instant-orders${queryString ? `?${queryString}` : ''}`)
   },
-  fetchInstantOrder: (id: string) => useAdminFetch<any>(`/instant-orders/${id}`),
+  fetchInstantOrder: (id: number) => useAdminFetch<any>(`/instant-orders/${id}`),
   createInstantOrder: (data: any) => useAdminFetch('/instant-orders', { method: 'POST', body: data }),
-  updateInstantOrder: (id: string, data: any) => useAdminFetch(`/instant-orders/${id}`, { method: 'PATCH', body: data }),
+  updateInstantOrder: (id: number, data: any) => useAdminFetch(`/instant-orders/${id}`, { method: 'PATCH', body: data }),
   searchUsers: (query: string) => useAdminFetch<any[]>(`/temp-users/search?q=${encodeURIComponent(query)}`)
 }

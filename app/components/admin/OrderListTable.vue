@@ -138,7 +138,7 @@ function getLatestStatus(order: AdminOrderListItem): string {
     </div>
 
     <!-- Desktop Table View -->
-    <div v-else class="hidden lg:block overflow-x-auto">
+    <div class="hidden lg:block overflow-x-auto">
       <table class="w-full">
         <thead class="bg-luxury-bg dark:bg-luxury-dark-bg border-b border-luxury-border dark:border-luxury-dark-border">
           <tr>

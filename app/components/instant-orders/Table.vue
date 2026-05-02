@@ -18,15 +18,32 @@ const emit = defineEmits<{
   'row-click': [order: InstantOrderListItem]
 }>()
 
-// Sort state
-const sortField = ref<keyof InstantOrderListItem>('created_at')
+// Sort state - using string type for nested property access
+type SortableField = 'created_at' | 'customer_name' | 'phone' | 'cod_reference' | 'status' | 'total'
+const sortField = ref<SortableField>('created_at')
 const sortDirection = ref<'asc' | 'desc'>('desc')
+
+// Helper to get sort value from order
+function getSortValue(order: InstantOrderListItem, field: SortableField): string | number {
+  switch (field) {
+    case 'customer_name':
+      return order.customer_info?.name || ''
+    case 'phone':
+      return order.customer_info?.phone || ''
+    case 'total':
+      return order.total
+    case 'cod_reference':
+      return order.cod_reference ? 1 : 0
+    default:
+      return order[field]
+  }
+}
 
 // Sorted orders
 const sortedOrders = computed(() => {
   return [...props.orders].sort((a, b) => {
-    const aVal = a[sortField.value]
-    const bVal = b[sortField.value]
+    const aVal = getSortValue(a, sortField.value)
+    const bVal = getSortValue(b, sortField.value)
 
     if (aVal < bVal) return sortDirection.value === 'asc' ? -1 : 1
     if (aVal > bVal) return sortDirection.value === 'asc' ? 1 : -1
@@ -35,7 +52,7 @@ const sortedOrders = computed(() => {
 })
 
 // Handle column header click for sorting
-function handleSort(field: keyof InstantOrderListItem) {
+function handleSort(field: SortableField) {
   if (sortField.value === field) {
     sortDirection.value = sortDirection.value === 'asc' ? 'desc' : 'asc'
   } else {
@@ -77,16 +94,17 @@ function handleRowClick(order: InstantOrderListItem) {
           <tr>
             <th
               v-for="field in [
-                { key: 'id', label: 'Order ID' },
+                // { key: 'id', label: 'Order ID' },
+                { key: 'created_at', label: 'Date' },
                 { key: 'customer_name', label: 'Customer' },
                 { key: 'phone', label: 'Phone' },
+                { key: 'cod_reference', label: 'Delivery Status' },
                 { key: 'status', label: 'Status' },
-                { key: 'total_amount', label: 'Total' },
-                { key: 'created_at', label: 'Date' }
+                { key: 'total', label: 'Total' },
               ] as const"
               :key="field.key"
               class="px-6 py-3 text-left text-xs font-medium text-luxury-text-muted dark:text-luxury-dark-text-muted uppercase tracking-wider cursor-pointer hover:text-luxury-gold transition-colors"
-              @click="handleSort(field.key as keyof InstantOrderListItem)"
+              @click="handleSort(field.key as SortableField)"
             >
               <div class="flex items-center gap-1">
                 {{ field.label }}
@@ -107,18 +125,25 @@ function handleRowClick(order: InstantOrderListItem) {
             @click="handleRowClick(order)"
           >
             <td class="px-6 py-4 whitespace-nowrap">
-              <span class="text-sm font-mono text-luxury-text dark:text-luxury-dark-text">
-                {{ String(order.id).slice(0, 8) }}
+              <span class="text-sm text-luxury-text-muted dark:text-luxury-dark-text-muted">
+                {{ formatDate(order.created_at) }}
               </span>
             </td>
             <td class="px-6 py-4 whitespace-nowrap">
               <span class="text-sm text-luxury-text dark:text-luxury-dark-text">
-                {{ order.customer_name }}
+                {{ order.customer_info?.name || 'N/A' }}
               </span>
             </td>
             <td class="px-6 py-4 whitespace-nowrap">
+              <div>
+                <span class="text-sm font-mono text-luxury-text-muted dark:text-luxury-dark-text-muted">
+                  {{ order.customer_info?.phone || '-' }}
+                </span>
+              </div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
               <span class="text-sm font-mono text-luxury-text-muted dark:text-luxury-dark-text-muted">
-                {{ order.phone }}
+                {{ order.cod_reference ? 'Done' : '-' }}
               </span>
             </td>
             <td class="px-6 py-4 whitespace-nowrap">
@@ -130,12 +155,7 @@ function handleRowClick(order: InstantOrderListItem) {
             </td>
             <td class="px-6 py-4 whitespace-nowrap">
               <span class="text-sm font-medium text-luxury-text dark:text-luxury-dark-text">
-                {{ formatPrice(order.total_amount) }}
-              </span>
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap">
-              <span class="text-sm text-luxury-text-muted dark:text-luxury-dark-text-muted">
-                {{ formatDate(order.created_at) }}
+                {{ formatPrice(order.total) }}
               </span>
             </td>
           </tr>

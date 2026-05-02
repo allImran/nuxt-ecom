@@ -103,9 +103,9 @@ export function useInstantOrdersViewModel() {
     if (searchQuery.value) {
       const query = searchQuery.value.toLowerCase()
       result = result.filter(order => {
-        const customerName = order.customer_name?.toLowerCase() || ''
-        const phone = order.phone?.toLowerCase() || ''
-        const id = order.id?.toLowerCase() || ''
+        const customerName = order.customer_info?.name?.toLowerCase() || ''
+        const phone = order.customer_info?.phone?.toLowerCase() || ''
+        const id = String(order.id)?.toLowerCase() || ''
         return customerName.includes(query) || phone.includes(query) || id.includes(query)
       })
     }
