@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-tertiary": "#ffffff",
+                    "inverse-surface": "#313030",
+                    "primary-fixed": "#ffdcbc",
+                    "on-primary-fixed-variant": "#5c4124",
+                    "error-container": "#ffdad6",
+                    "surface-variant": "#e5e2e1",
+                    "surface-bright": "#fcf9f8",
+                    "tertiary-container": "#97938c",
+                    "on-tertiary-container": "#2e2c27",
+                    "primary-container": "#b08d6a",
+                    "surface-container-low": "#f6f3f2",
+                    "primary": "#765939",
+                    "surface-container-lowest": "#ffffff",
+                    "on-primary-fixed": "#2b1701",
+                    "primary-fixed-dim": "#e7bf99",
+                    "surface-dim": "#dcd9d9",
+                    "on-surface": "#1c1b1b",
+                    "on-background": "#1c1b1b",
+                    "on-error-container": "#93000a",
+                    "on-tertiary-fixed": "#1d1b17",
+                    "surface-container-high": "#eae7e7",
+                    "tertiary": "#615e58",
+                    "surface-container": "#f0eded",
+                    "secondary": "#5e5e5c",
+                    "on-error": "#ffffff",
+                    "on-secondary": "#ffffff",
+                    "on-tertiary-fixed-variant": "#494641",
+                    "surface-container-highest": "#e5e2e1",
+                    "tertiary-fixed-dim": "#cbc6be",
+                    "surface": "#fcf9f8",
+                    "secondary-fixed-dim": "#c8c6c4",
+                    "on-secondary-fixed-variant": "#474745",
+                    "outline": "#81756b",
+                    "secondary-fixed": "#e4e2df",
+                    "background": "#fcf9f8",
+                    "outline-variant": "#d2c4b8",
+                    "inverse-on-surface": "#f3f0ef",
+                    "secondary-container": "#e1dfdc",
+                    "on-secondary-fixed": "#1b1c1a",
+                    "surface-tint": "#765939",
+                    "error": "#ba1a1a",
+                    "on-primary": "#ffffff",
+                    "inverse-primary": "#e7bf99",
+                    "on-primary-container": "#3f270c",
+                    "on-surface-variant": "#4f453c",
+                    "tertiary-fixed": "#e8e2da",
+                    "on-secondary-container": "#636361"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "card-padding": "1.5rem",
+                    "stack-sm": "0.5rem",
+                    "stack-md": "1rem",
+                    "container-margin": "1.25rem",
+                    "stack-lg": "1.5rem",
+                    "gutter": "1rem"
+            },
+            "fontFamily": {
+                    "label-caps": ["Manrope"],
+                    "body-lg": ["Manrope"],
+                    "body-md": ["Manrope"],
+                    "h2": ["Manrope"],
+                    "h1": ["Manrope"],
+                    "caption": ["Manrope"]
+            },
+            "fontSize": {
+                    "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "h2": ["20px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "h1": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "caption": ["12px", {"lineHeight": "16px", "fontWeight": "500"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #F9F7F4;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-surface selection:bg-primary-fixed selection:text-on-primary-fixed">
+<!-- Top Navigation Bar -->
+<header class="fixed top-0 left-0 w-full z-50 bg-[#F9F7F4] dark:bg-stone-950 border-b border-[#EDEDED] dark:border-stone-800 flex items-center justify-between px-5 py-3 h-16">
+<div class="flex items-center gap-3">
+<button class="p-2 -ml-2 hover:bg-stone-100 dark:hover:bg-stone-800 rounded-full transition-opacity active:opacity-70 duration-150">
+<span class="material-symbols-outlined text-[#B08D6A] dark:text-[#D4B99E]">arrow_back</span>
+</button>
+<h1 class="font-manrope text-sm font-semibold tracking-tight text-stone-900 dark:text-stone-100">Orders</h1>
+</div>
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-stone-500 hover:bg-stone-100 p-2 rounded-full transition-colors">search</button>
+<button class="material-symbols-outlined text-stone-500 hover:bg-stone-100 p-2 rounded-full transition-colors">tune</button>
+</div>
+</header>
+<main class="pt-20 px-container-margin max-w-md mx-auto min-h-screen pb-10">
+<!-- Header Section -->
+<section class="mb-stack-lg">
+<h2 class="font-h1 text-h1 text-on-surface">Recent activity</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1">Manage and track your instant orders.</p>
+</section>
+<!-- Orders Vertical List -->
+<div class="flex flex-col gap-gutter">
+<!-- Order Card 1: Pending -->
+<div class="bg-surface-container-lowest rounded-xl p-card-padding shadow-[0_4px_20px_0_rgba(0,0,0,0.03)] border border-[#EDEDED] transition-transform active:scale-[0.98] duration-150">
+<div class="flex justify-between items-start mb-4">
+<div class="flex flex-col">
+<span class="font-label-caps text-label-caps text-on-surface-variant mb-1">MARCH 26, 2026</span>
+<h3 class="font-h2 text-h2 text-on-surface">test tt</h3><p class="font-caption text-caption text-on-surface-variant mt-0.5">123 Dhaka St, Bangladesh</p>
+</div>
+<span class="px-3 py-1 bg-primary-fixed text-on-primary-fixed-variant font-caption text-caption rounded-full">Pending</span>
+</div>
+<div class="h-[1px] w-full bg-[#EDEDED] mb-4"></div>
+<div class="flex justify-between items-center">
+<div class="flex -space-x-3">
+<div class="w-10 h-10 rounded-full border-2 border-surface-container-lowest overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A professional high-end retail flat lay showcasing artisanal handcrafted leather goods on a light cream surface. The scene is illuminated by soft, natural morning light casting gentle shadows, highlighting the fine texture of the brown leather and gold hardware. The minimalist composition reflects a premium, luxury aesthetic with a neutral color palette of tans, creams, and whites." src="https://lh3.googleusercontent.com/aida/ADBb0ugO__XS1HfRJK4A3KrrkkWxIM8fnZFXHFm21WwSdVZVtFn2wLXpK5leVyK0WGh9cm1EQA-N0uBxbOV6tSDCoZc_tKkKWG160SJ443dy9MQllVqoln23fAq_C5OcRJez18aGy6bBAlXEoF510coVWjChY6Z3dXYsxzd3wh1IzcNBCKz4PnfIUy0YyyKnEA7KMN-uCyxxjnOvEUyT7ZoW2vhptnX1C4oXV2iM2jm6ebCkMrDqYBvdO16n-2gKcd3R2zO-KbZFrE61p9A"/>
+</div>
+</div>
+<div class="text-right">
+<span class="block font-caption text-caption text-on-surface-variant">Total Amount</span>
+<span class="font-h2 text-h2 text-primary">BDT 1,030.00</span>
+</div>
+</div>
+</div>
+<!-- Order Card 2: Delivered -->
+<div class="bg-surface-container-lowest rounded-xl p-card-padding shadow-[0_4px_20px_0_rgba(0,0,0,0.03)] border border-[#EDEDED] transition-transform active:scale-[0.98] duration-150">
+<div class="flex justify-between items-start mb-4">
+<div class="flex flex-col">
+<span class="font-label-caps text-label-caps text-on-surface-variant mb-1">MARCH 24, 2026</span>
+<h3 class="font-h2 text-h2 text-on-surface">Zahid Hasan</h3><p class="font-caption text-caption text-on-surface-variant mt-0.5">123 Dhaka St, Bangladesh</p>
+</div>
+<span class="px-3 py-1 bg-secondary-fixed text-on-secondary-fixed-variant font-caption text-caption rounded-full">Delivered</span>
+</div>
+<div class="h-[1px] w-full bg-[#EDEDED] mb-4"></div>
+<div class="flex justify-between items-center">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-outline text-lg">package_2</span>
+<span class="font-body-md text-body-md text-on-surface-variant">3 Items</span>
+</div>
+<div class="text-right">
+<span class="block font-caption text-caption text-on-surface-variant">Total Amount</span>
+<span class="font-h2 text-h2 text-on-surface">BDT 2,450.00</span>
+</div>
+</div>
+</div>
+
+</div>
+</main>
+<!-- Floating Action Button -->
+<button class="fixed right-6 w-14 h-14 bg-primary text-on-primary rounded-full shadow-lg flex items-center justify-center transition-transform active:scale-90 z-[60] bottom-8">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0; font-size: 28px;">add</span>
+</button>
+<!-- Bottom Navigation Bar -->
+</body></html>
