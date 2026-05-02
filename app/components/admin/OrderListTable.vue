@@ -82,8 +82,63 @@ function getLatestStatus(order: AdminOrderListItem): string {
       </p>
     </div>
 
-    <!-- Table -->
-    <div v-else class="overflow-x-auto">
+    <!-- Mobile Card View -->
+    <div v-else class="divide-y divide-luxury-border dark:divide-luxury-dark-border lg:hidden">
+      <div
+        v-for="order in sortedOrders"
+        :key="order.id"
+        class="p-4 cursor-pointer hover:bg-luxury-bg/50 dark:hover:bg-luxury-dark-bg/50 transition-colors"
+        @click="handleRowClick(order)"
+      >
+        <!-- Order Header -->
+        <div class="flex items-start justify-between mb-3">
+          <div>
+            <span class="text-sm font-mono text-luxury-text dark:text-luxury-dark-text font-medium">
+              #{{ order.id.slice(0, 8) }}
+            </span>
+            <p class="text-xs text-luxury-text-muted dark:text-luxury-dark-text-muted mt-1">
+              {{ formatDate(order.created_at) }}
+            </p>
+          </div>
+          <OrderDetailStatusBadge
+            :status="getLatestStatus(order)"
+            :get-status-color="getStatusColor"
+          />
+        </div>
+
+        <!-- Customer Info -->
+        <div class="space-y-2 mb-3">
+          <div class="flex items-start gap-2">
+            <UiIcon name="user" :size="16" class="text-luxury-text-muted dark:text-luxury-dark-text-muted mt-0.5 flex-shrink-0" />
+            <div>
+              <p class="text-sm text-luxury-text dark:text-luxury-dark-text">
+                {{ order.shipping_address?.full_name }}
+              </p>
+              <p class="text-xs text-luxury-text-muted dark:text-luxury-dark-text-muted">
+                {{ order.shipping_address?.address }}
+              </p>
+            </div>
+          </div>
+          <div class="flex items-center gap-2">
+            <UiIcon name="phone" :size="16" class="text-luxury-text-muted dark:text-luxury-dark-text-muted flex-shrink-0" />
+            <p class="text-sm font-mono text-luxury-text-muted dark:text-luxury-dark-text-muted">
+              {{ order.shipping_address?.mobile }}
+            </p>
+          </div>
+        </div>
+
+        <!-- Total -->
+        <div class="flex items-center justify-between pt-3 border-t border-luxury-border/50 dark:border-luxury-dark-border/50">
+          <span class="text-sm text-luxury-text-muted dark:text-luxury-dark-text-muted">Total</span>
+          <span class="text-lg font-semibold text-luxury-text dark:text-luxury-dark-text">
+            {{ formatPrice(order.total_amount) }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Desktop Table View -->
+    <div v-else class="hidden lg:block overflow-x-auto">
       <table class="w-full">
         <thead class="bg-luxury-bg dark:bg-luxury-dark-bg border-b border-luxury-border dark:border-luxury-dark-border">
           <tr>

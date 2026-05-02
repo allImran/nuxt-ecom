@@ -4,7 +4,7 @@ const { toasts, removeToast } = useToast()
 
 <template>
   <Teleport to="body">
-    <div class="fixed bottom-4 right-4 z-50 flex flex-col gap-2 pointer-events-none">
+    <div class="fixed bottom-4 left-4 right-4 sm:left-auto sm:right-4 sm:bottom-4 z-50 flex flex-col gap-2 pointer-events-none sm:max-w-md">
       <TransitionGroup
         name="toast"
         tag="div"
@@ -13,7 +13,7 @@ const { toasts, removeToast } = useToast()
         <div
           v-for="toast in toasts"
           :key="toast.id"
-          class="pointer-events-auto min-w-[300px] max-w-md p-4 rounded-luxury shadow-lg flex items-start gap-3"
+          class="pointer-events-auto w-full sm:min-w-[300px] sm:max-w-md p-4 rounded-luxury shadow-lg flex items-start gap-3"
           :class="{
             'bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800': toast.type === 'success',
             'bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800': toast.type === 'error',
@@ -36,7 +36,7 @@ const { toasts, removeToast } = useToast()
               'text-blue-600 dark:text-blue-400': toast.type === 'info',
               'text-yellow-600 dark:text-yellow-400': toast.type === 'warning'
             }"
-            class="flex-shrink-0 mt-0.5"
+            class="shrink-0 mt-0.5"
           />
 
           <!-- Content -->
@@ -63,7 +63,7 @@ const { toasts, removeToast } = useToast()
           <button
             type="button"
             @click="removeToast(toast.id)"
-            class="flex-shrink-0 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+            class="shrink-0 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
           >
             <UiIcon name="x" :size="16" />
           </button>

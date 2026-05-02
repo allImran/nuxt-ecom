@@ -69,54 +69,66 @@ const hasActiveFilters = computed(() => {
 
 <template>
   <div class="bg-luxury-surface dark:bg-luxury-dark-surface rounded-luxury p-4 sm:p-6 shadow-luxury">
-    <div class="flex flex-col sm:flex-row gap-4">
-      <!-- Status Filter -->
-      <div class="flex-1">
-        <label class="block text-sm font-medium text-luxury-text-muted dark:text-luxury-dark-text-muted mb-1">
-          Status
-        </label>
-        <select
-          v-model="localFilters.status"
-          class="w-full px-3 py-2 bg-luxury-bg dark:bg-luxury-dark-bg border border-luxury-border dark:border-luxury-dark-border rounded-luxury text-luxury-text dark:text-luxury-dark-text focus:outline-none focus:ring-1 focus:ring-luxury-gold"
-        >
-          <option v-for="status in statuses" :key="status.value" :value="status.value">
-            {{ status.label }}
-          </option>
-        </select>
-      </div>
+    <div class="flex flex-col gap-4">
+      <!-- Filter Inputs -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <!-- Status Filter -->
+        <div>
+          <label class="block text-sm font-medium text-luxury-text-muted dark:text-luxury-dark-text-muted mb-1">
+            Status
+          </label>
+          <select
+            v-model="localFilters.status"
+            class="w-full px-3 py-2 bg-luxury-bg dark:bg-luxury-dark-bg border border-luxury-border dark:border-luxury-dark-border rounded-luxury text-luxury-text dark:text-luxury-dark-text focus:outline-none focus:ring-1 focus:ring-luxury-gold"
+          >
+            <option v-for="status in statuses" :key="status.value" :value="status.value">
+              {{ status.label }}
+            </option>
+          </select>
+        </div>
 
-      <!-- Phone Search -->
-      <div class="flex-1">
-        <label class="block text-sm font-medium text-luxury-text-muted dark:text-luxury-dark-text-muted mb-1">
-          Phone Number
-        </label>
-        <input
-          v-model="localFilters.phone"
-          type="text"
-          placeholder="Search by phone..."
-          class="w-full px-3 py-2 bg-luxury-bg dark:bg-luxury-dark-bg border border-luxury-border dark:border-luxury-dark-border rounded-luxury text-luxury-text dark:text-luxury-dark-text placeholder-luxury-text-muted/50 dark:placeholder-luxury-dark-text-muted/50 focus:outline-none focus:ring-1 focus:ring-luxury-gold"
-        />
-      </div>
+        <!-- Phone Search -->
+        <div>
+          <label class="block text-sm font-medium text-luxury-text-muted dark:text-luxury-dark-text-muted mb-1">
+            Phone Number
+          </label>
+          <input
+            v-model="localFilters.phone"
+            type="text"
+            placeholder="Search by phone..."
+            class="w-full px-3 py-2 bg-luxury-bg dark:bg-luxury-dark-bg border border-luxury-border dark:border-luxury-dark-border rounded-luxury text-luxury-text dark:text-luxury-dark-text placeholder-luxury-text-muted/50 dark:placeholder-luxury-dark-text-muted/50 focus:outline-none focus:ring-1 focus:ring-luxury-gold"
+          />
+        </div>
 
-      <!-- Order ID Search -->
-      <div class="flex-1">
-        <label class="block text-sm font-medium text-luxury-text-muted dark:text-luxury-dark-text-muted mb-1">
-          Order ID
-        </label>
-        <input
-          v-model="localFilters.orderId"
-          type="text"
-          placeholder="Search by order ID..."
-          class="w-full px-3 py-2 bg-luxury-bg dark:bg-luxury-dark-bg border border-luxury-border dark:border-luxury-dark-border rounded-luxury text-luxury-text dark:text-luxury-dark-text placeholder-luxury-text-muted/50 dark:placeholder-luxury-dark-text-muted/50 focus:outline-none focus:ring-1 focus:ring-luxury-gold"
-        />
+        <!-- Order ID Search -->
+        <div>
+          <label class="block text-sm font-medium text-luxury-text-muted dark:text-luxury-dark-text-muted mb-1">
+            Order ID
+          </label>
+          <input
+            v-model="localFilters.orderId"
+            type="text"
+            placeholder="Search by order ID..."
+            class="w-full px-3 py-2 bg-luxury-bg dark:bg-luxury-dark-bg border border-luxury-border dark:border-luxury-dark-border rounded-luxury text-luxury-text dark:text-luxury-dark-text placeholder-luxury-text-muted/50 dark:placeholder-luxury-dark-text-muted/50 focus:outline-none focus:ring-1 focus:ring-luxury-gold"
+          />
+        </div>
       </div>
 
       <!-- Action Buttons -->
-      <div class="flex items-end gap-2">
-        <UiLuxuryButton variant="outline" @click="clearFilters" :disabled="!hasActiveFilters || loading">
+      <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3">
+        <UiLuxuryButton
+          variant="outline"
+          @click="clearFilters"
+          :disabled="!hasActiveFilters || loading"
+          class="w-full sm:w-auto"
+        >
           Clear
         </UiLuxuryButton>
-        <UiLuxuryButton @click="applyFilters" :loading="loading">
+        <UiLuxuryButton
+          @click="applyFilters"
+          :loading="loading"
+          class="w-full sm:w-auto"
+        >
           Apply Filters
         </UiLuxuryButton>
       </div>
