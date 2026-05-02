@@ -2,37 +2,26 @@
   <div class="min-h-screen bg-luxury-bg dark:bg-luxury-dark-bg md:min-h-0">
     <!-- Mobile View -->
     <div class="md:hidden">
-      <!-- Mobile Top Navigation Bar -->
-      <header class="fixed top-0 left-0 w-full z-50 bg-luxury-bg dark:bg-luxury-dark-bg border-b border-luxury-border dark:border-luxury-dark-border flex items-center justify-between px-4 py-3 h-16">
-        <div class="flex items-center gap-3">
-          <button
+        <!-- Top Action Buttons -->
+        <div class="flex items-center justify-between gap-3 mb-5">
+            <button
             @click="router.push(`/business/${businessId}`)"
-            class="p-2 -ml-2 hover:bg-luxury-border dark:hover:bg-luxury-dark-border/50 rounded-full transition-opacity active:opacity-70"
+            class=" hover:bg-luxury-border dark:hover:bg-luxury-dark-border/50 rounded-full transition-opacity active:opacity-70"
           >
             <UiIcon name="arrow-left" :size="20" class="text-luxury-accent dark:text-luxury-dark-accent" />
           </button>
-          <h1 class="font-manrope text-sm font-semibold tracking-tight text-luxury-text dark:text-luxury-dark-text">
-            Orders
-          </h1>
-        </div>
-        <div class="flex items-center gap-2">
-          <button
+           <button
             @click="router.push(`/business/${businessId}/instant-orders`)"
-            class="flex items-center gap-1 px-3 py-1.5 text-sm font-medium text-luxury-accent dark:text-luxury-dark-accent hover:bg-luxury-border dark:hover:bg-luxury-dark-border/50 rounded-full transition-colors"
+            class="flex items-center gap-1 text-sm font-medium text-luxury-accent dark:text-luxury-dark-accent hover:bg-luxury-border dark:hover:bg-luxury-dark-border/50 rounded-full transition-colors"
           >
             <UiIcon name="layout-list" :size="18" />
-            <span>Instant</span>
+            <span>Instant Orders</span>
           </button>
         </div>
-      </header>
 
-      <main class="pt-20 px-5 pb-24">
         <!-- Header Section -->
         <section class="mb-6">
-          <h2 class="text-xl font-bold text-luxury-text dark:text-luxury-dark-text">Recent activity</h2>
-          <p class="text-sm text-luxury-text-muted dark:text-luxury-dark-text-muted mt-1">
-            Manage and track your orders.
-          </p>
+            <h2 class="text-xl font-bold text-luxury-text dark:text-luxury-dark-text">Orders</h2>
         </section>
 
         <!-- Mobile Search Bar -->
@@ -85,14 +74,13 @@
             @click="router.push(`/admin/orders/${order.id}`)"
           />
         </div>
-      </main>
 
       <!-- Floating Action Button -->
       <button
         @click="router.push(`/business/${businessId}/instant-orders/create`)"
-        class="fixed right-6 w-14 h-14 bg-[#765939] dark:bg-[#B08D6A] text-white rounded-full shadow-lg flex items-center justify-center active:scale-90 transition-transform z-60 bottom-8"
+        class="fixed right-6 size-10 bg-[#765939] dark:bg-[#B08D6A] text-white rounded-full shadow-lg flex items-center justify-center active:scale-90 transition-transform z-60 bottom-8"
       >
-        <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0; font-size: 28px;">add</span>
+        <UiIcon name="plus" :size="20" />
       </button>
     </div>
 

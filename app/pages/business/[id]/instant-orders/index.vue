@@ -166,9 +166,9 @@ const errorMessage = computed(() => {
       <!-- Floating Action Button -->
       <button
         @click="navigateToCreate"
-        class="fixed right-6 w-14 h-14 bg-[#765939] dark:bg-[#B08D6A] text-white rounded-full shadow-lg flex items-center justify-center active:scale-90 transition-transform z-60 bottom-8"
+        class="fixed right-6 size-10 bg-[#765939] dark:bg-[#B08D6A] text-white rounded-full shadow-lg flex items-center justify-center active:scale-90 transition-transform z-60 bottom-8"
       >
-        <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0; font-size: 28px;">add</span>
+        <UiIcon name="plus" :size="28" />
       </button>
     </div>
 

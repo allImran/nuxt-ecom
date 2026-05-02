@@ -29,9 +29,9 @@ function getMobileStatusBadge(status: string): string {
   const statusLower = status.toLowerCase()
   switch (statusLower) {
     case 'pending':
-      return 'bg-primary-fixed text-on-primary-fixed-variant'
+      return 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300'
     case 'delivered':
-      return 'bg-secondary-fixed text-on-secondary-fixed-variant'
+      return 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300'
     case 'confirmed':
       return 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-300'
     case 'paid':
