@@ -20,18 +20,14 @@ const items = computed({
 })
 
 const unitOptions = [
-  { value: 'pcs', label: 'Pieces' },
-  { value: 'kg', label: 'Kilograms' },
-  { value: 'g', label: 'Grams' },
-  { value: 'lb', label: 'Pounds' },
-  { value: 'oz', label: 'Ounces' },
-  { value: 'l', label: 'Liters' },
-  { value: 'ml', label: 'Milliliters' },
-  { value: 'm', label: 'Meters' },
-  { value: 'cm', label: 'Centimeters' },
-  { value: 'box', label: 'Box' },
-  { value: 'pack', label: 'Pack' },
-  { value: 'set', label: 'Set' }
+  { value: 'piece', label: 'piece' },
+  { value: 'kg', label: 'kg' },
+  { value: 'gram', label: 'gram' },
+  { value: 'lb', label: 'lb' },
+  { value: 'oz', label: 'oz' },
+  { value: 'box', label: 'box' },
+  { value: 'pack', label: 'pack' },
+  { value: 'set', label: 'set' }
 ]
 
 function addItem() {
@@ -41,7 +37,7 @@ function addItem() {
       title: '',
       price: 0,
       quantity: 1,
-      unit: 'pcs',
+      unit: 'piece',
       description: ''
     }
   ]
@@ -56,7 +52,7 @@ function removeItem(index: number) {
       title: '',
       price: 0,
       quantity: 1,
-      unit: 'pcs',
+      unit: 'piece',
       description: ''
     }]
   }
@@ -77,116 +73,144 @@ function getValidationError(index: number, field: string): string | undefined {
   return props.validationErrors[key]
 }
 
-// Calculate total
-const total = computed(() => {
-  return items.value.reduce((sum, item) => sum + getItemSubtotal(item), 0)
-})
+function incrementQuantity(index: number) {
+  const item = items.value[index]
+  if (item) {
+    updateItem(index, 'quantity', (item.quantity || 1) + 1)
+  }
+}
+
+function decrementQuantity(index: number) {
+  const item = items.value[index]
+  if (item && (item.quantity || 1) > 1) {
+    updateItem(index, 'quantity', (item.quantity || 1) - 1)
+  }
+}
 </script>
 
 <template>
-  <div class="space-y-4">
-    <div class="flex items-center justify-between">
-      <h3 class="text-lg font-medium text-luxury-text dark:text-luxury-dark-text">Order Items</h3>
-      <UiLuxuryButton variant="outline" size="sm" @click="addItem">
-        <UiIcon name="plus" :size="16" class="mr-1" />
+  <UiM3Card padding="none" class="overflow-hidden">
+    <!-- Card Header -->
+    <div class="px-card-padding py-4 border-b border-outline-variant/20 flex items-center justify-between">
+      <h2 class="font-h2 text-h2 text-on-surface">Order Items</h2>
+      <UiLuxuryButton
+        type="button"
+        @click="addItem"
+      >
         Add Item
       </UiLuxuryButton>
     </div>
 
-    <div class="space-y-3">
+    <!-- Card Body -->
+    <div class="p-card-padding flex flex-col gap-stack-lg">
+      <!-- Table Header (Desktop Only) -->
+      <div class="hidden md:grid grid-cols-12 gap-4 border-b border-outline-variant/10 pb-2">
+        <div class="col-span-5 font-label-caps text-label-caps text-on-surface-variant">ITEM DETAILS</div>
+        <div class="col-span-2 font-label-caps text-label-caps text-on-surface-variant">UNIT</div>
+        <div class="col-span-4 font-label-caps text-label-caps text-on-surface-variant text-right">PRICE & QTY</div>
+        <div class="col-span-1"></div>
+      </div>
+
+      <!-- Order Items Rows -->
       <div
         v-for="(item, index) in items"
         :key="index"
-        class="p-4 bg-luxury-bg dark:bg-luxury-dark-bg border border-luxury-border dark:border-luxury-dark-border rounded-luxury"
+        class="grid grid-cols-1 md:grid-cols-12 gap-4 items-start group"
       >
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 mb-3">
-          <!-- Title -->
-          <div class="lg:col-span-2">
-            <UiLuxuryInput
-              :model-value="item.title"
-              type="text"
-              label="Item Title"
-              placeholder="e.g., Custom Cake"
-              required
-              :error="getValidationError(index, 'title')"
-              @update:model-value="updateItem(index, 'title', $event)"
-            />
-          </div>
+        <!-- Item Details (Title + Description) -->
+        <div class="col-span-1 md:col-span-5 flex flex-col gap-2">
+          <input
+            :value="item.title"
+            type="text"
+            placeholder="Item Title"
+            class="w-full bg-surface-container-lowest border-none focus:ring-1 focus:ring-primary rounded-lg py-2 px-3 text-on-surface font-semibold transition-all"
+            @input="updateItem(index, 'title', ($event.target as HTMLInputElement).value)"
+          />
+          <textarea
+            :value="item.description || ''"
+            placeholder="Optional Description"
+            rows="1"
+            class="w-full bg-surface-container-lowest border-none focus:ring-1 focus:ring-primary rounded-lg py-2 px-3 text-body-md text-on-surface-variant resize-none transition-all"
+            @input="updateItem(index, 'description', ($event.target as HTMLTextAreaElement).value)"
+          />
+          <p v-if="getValidationError(index, 'title')" class="text-body-md text-error">
+            {{ getValidationError(index, 'title') }}
+          </p>
+        </div>
 
+        <!-- Unit -->
+        <div class="col-span-1 md:col-span-2">
+          <select
+            :value="item.unit"
+            class="w-full bg-surface-container-lowest border-none focus:ring-1 focus:ring-primary rounded-lg py-2 px-3 text-on-surface appearance-none cursor-pointer transition-all"
+            @change="updateItem(index, 'unit', ($event.target as HTMLSelectElement).value)"
+          >
+            <option
+              v-for="unit in unitOptions"
+              :key="unit.value"
+              :value="unit.value"
+            >
+              {{ unit.label }}
+            </option>
+          </select>
+        </div>
+
+        <!-- Price & Quantity Side by Side -->
+        <div class="col-span-1 md:col-span-4 flex items-center gap-3">
           <!-- Price -->
-          <div>
-            <UiLuxuryInput
-              :model-value="item.price"
+          <div class="relative flex-1">
+            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">$</span>
+            <input
+              :value="item.price"
               type="number"
-              label="Price"
-              placeholder="0"
               min="0"
               step="0.01"
-              required
-              :error="getValidationError(index, 'price')"
-              @update:model-value="updateItem(index, 'price', parseFloat($event) || 0)"
+              class="w-full pl-7 bg-surface-container-lowest border-none focus:ring-1 focus:ring-primary rounded-lg py-2 px-3 text-on-surface text-right transition-all"
+              @input="updateItem(index, 'price', parseFloat(($event.target as HTMLInputElement).value) || 0)"
             />
           </div>
 
-          <!-- Quantity & Unit -->
-          <div class="flex gap-2">
-            <div class="flex-1">
-              <UiLuxuryInput
-                :model-value="item.quantity"
-                type="number"
-                label="Quantity"
-                placeholder="1"
-                min="1"
-                required
-                :error="getValidationError(index, 'quantity')"
-                @update:model-value="updateItem(index, 'quantity', parseInt($event) || 1)"
-              />
-            </div>
-            <div class="w-24">
-              <UiLuxurySelect
-                :model-value="item.unit"
-                :options="unitOptions"
-                label="Unit"
-                @update:model-value="updateItem(index, 'unit', $event)"
-              />
-            </div>
+          <!-- Quantity Stepper -->
+          <div class="flex items-center gap-3 bg-surface-container-low px-2 py-1 rounded-full">
+            <button
+              type="button"
+              class="material-symbols-outlined text-sm text-on-surface-variant hover:text-on-surface disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+              :disabled="(item.quantity || 1) <= 1"
+              @click="decrementQuantity(index)"
+            >
+              <UiIcon name="minus" :size="20" />
+            </button>
+            <span class="text-body-md font-bold w-4 text-center">{{ item.quantity || 1 }}</span>
+            <button
+              type="button"
+              class="material-symbols-outlined text-sm text-on-surface-variant hover:text-on-surface transition-colors"
+              @click="incrementQuantity(index)"
+            >
+              <UiIcon name="plus" :size="20" />
+            </button>
           </div>
         </div>
 
-        <!-- Description (optional) -->
-        <div class="mb-3">
-          <UiLuxuryInput
-            :model-value="item.description"
-            type="text"
-            label="Description (optional)"
-            placeholder="Additional details about this item"
-            @update:model-value="updateItem(index, 'description', $event)"
-          />
-        </div>
-
-        <!-- Item Subtotal & Remove Button -->
-        <div class="flex items-center justify-between pt-2 border-t border-luxury-border dark:border-luxury-dark-border">
-          <span class="text-sm text-luxury-text-muted dark:text-luxury-dark-text-muted">
-            Subtotal: <span class="font-medium text-luxury-text dark:text-luxury-dark-text">{{ total.toFixed(2) }}</span>
-          </span>
-          <UiLuxuryButton
-            variant="outline"
-            size="sm"
-            class="text-red-600 hover:text-red-700 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/20"
+        <!-- Actions -->
+        <div class="col-span-1 flex justify-end md:justify-center pt-2">
+          <button
+            v-if="items.length > 1"
+            type="button"
+            class="text-error/70 hover:text-error transition-colors"
             @click="removeItem(index)"
           >
-            <UiIcon name="trash" :size="16" class="mr-1" />
-            Remove
-          </UiLuxuryButton>
+            <span class="material-symbols-outlined">delete</span>
+          </button>
         </div>
       </div>
-    </div>
 
-    <!-- Items Total -->
-    <div class="flex justify-end p-3 bg-luxury-surface dark:bg-luxury-dark-surface border border-luxury-border dark:border-luxury-dark-border rounded-luxury">
-      <span class="text-lg font-medium text-luxury-text dark:text-luxury-dark-text">
-        Items Total: {{ total.toFixed(2) }}
-      </span>
+      <!-- Empty State / Add More -->
+      <div
+        v-if="items.length === 0 || (items.length === 1 && !items[0].title)"
+        class="text-center py-6 text-on-surface-variant"
+      >
+        <p class="text-body-md">No items added yet. Click "Add Line" to add items.</p>
+      </div>
     </div>
-  </div>
+  </UiM3Card>
 </template>

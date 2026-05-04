@@ -127,7 +127,6 @@ function handleSubmit() {
       </p>
 
     <!-- Order Items Section -->
-    <div class="bg-luxury-surface dark:bg-luxury-dark-surface rounded-luxury shadow-luxury p-6">
       <InstantOrdersOrderItemsEditor
         :model-value="form.order_items"
         :validation-errors="validationErrors"
@@ -137,56 +136,72 @@ function handleSubmit() {
       <p v-if="validationErrors['order_items']" class="mt-2 text-sm text-red-600 dark:text-red-400">
         {{ validationErrors['order_items'] }}
       </p>
-    </div>
 
     <!-- Additional Details Section -->
-    <div class="bg-luxury-surface dark:bg-luxury-dark-surface rounded-luxury shadow-luxury p-6">
-      <h3 class="text-lg font-medium text-luxury-text dark:text-luxury-dark-text mb-4">Additional Details</h3>
+    <UiM3Card padding="lg" class="flex flex-col gap-stack-md">
+      <span class="font-label-caps text-label-caps text-on-surface-variant opacity-60 uppercase">ORDER DETAILS</span>
 
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div class="grid grid-cols-1 gap-stack-md">
         <!-- Delivery Charge -->
-        <div>
-          <UiLuxuryInput
-            :model-value="form.delivery_charge"
-            type="number"
-            label="Delivery Charge"
-            placeholder="0"
-            min="0"
-            step="0.01"
-            @update:model-value="form = { ...form, delivery_charge: parseFloat($event) || 0 }"
-          />
+        <div class="flex justify-between items-center border-b border-outline-variant/30 pb-3">
+          <span class="text-body-md text-on-surface-variant">Delivery Charge</span>
+          <div class="flex items-center gap-2">
+            <span class="text-on-surface-variant">$</span>
+            <input
+              :value="form.delivery_charge.toFixed(2)"
+              type="number"
+              min="0"
+              step="0.01"
+              class="w-20 bg-transparent border-none p-0 text-right focus:ring-0 font-bold text-on-surface"
+              @input="form = { ...form, delivery_charge: parseFloat(($event.target as HTMLInputElement).value) || 0 }"
+            />
+          </div>
         </div>
 
         <!-- COD Reference -->
-        <div>
-          <UiLuxuryInput
-            :model-value="form.cod_reference"
+        <div class="flex justify-between items-center border-b border-outline-variant/30 pb-3">
+          <span class="text-body-md text-on-surface-variant">COD Reference</span>
+          <input
+            :value="form.cod_reference"
             type="text"
-            label="COD Reference (optional)"
-            placeholder="Enter COD reference"
-            @update:model-value="form = { ...form, cod_reference: $event }"
+            placeholder="Ref # (Optional)"
+            class="w-36 bg-transparent border-none p-0 text-right focus:ring-0 text-body-md text-on-surface placeholder:text-on-surface-variant/50"
+            @input="form = { ...form, cod_reference: ($event.target as HTMLInputElement).value }"
           />
         </div>
 
-        <!-- Status -->
-        <div>
-          <UiLuxurySelect
-            :model-value="form.status"
-            :options="statusOptions"
-            label="Status"
-            @update:model-value="form = { ...form, status: $event }"
-          />
+        <!-- Order Status -->
+        <div class="flex justify-between items-center pb-1">
+          <span class="text-body-md text-on-surface-variant">Order Status</span>
+          <div class="relative">
+            <select
+              :value="form.status"
+              class="appearance-none bg-transparent border-none p-0 text-right focus:ring-0 pr-6 cursor-pointer font-bold text-primary"
+              @change="form = { ...form, status: ($event.target as HTMLSelectElement).value as InstantOrderStatus }"
+            >
+              <option
+                v-for="option in statusOptions"
+                :key="option.value"
+                :value="option.value"
+              >
+                {{ option.label }}
+              </option>
+            </select>
+            <span class="material-symbols-outlined text-[18px] absolute right-0 top-1/2 -translate-y-1/2 pointer-events-none text-primary">
+              expand_more
+            </span>
+          </div>
         </div>
       </div>
-    </div>
+    </UiM3Card>
 
     <!-- Total Summary -->
-    <div class="bg-luxury-surface dark:bg-luxury-dark-surface rounded-luxury shadow-luxury p-6">
-      <div class="flex justify-between items-center">
+    <!-- <div class="bg-luxury-surface dark:bg-luxury-dark-surface rounded-luxury shadow-luxury p-6"> -->
+      <div class="flex justify-between items-center mt-4">
         <span class="text-lg font-medium text-luxury-text dark:text-luxury-dark-text">Total Amount</span>
-        <span class="text-2xl font-bold text-luxury-gold">{{ totalAmount.toFixed(2) }}</span>
+        <span class="text-3xl font-bold text-luxury-gold">{{ totalAmount.toFixed(2) }}</span>
       </div>
-    </div>
+    <!-- </div> -->
 
     <!-- Form Actions -->
     <div class="flex justify-end gap-3">
