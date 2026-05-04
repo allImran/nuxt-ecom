@@ -40,7 +40,90 @@
 
   /* ---------- Letter spacing ---------- */
   --tracking-luxury: 0.18em;
+
+  /* ---------- Material Design 3 Tokens (mapped to luxury theme) ---------- */
+  /* Surface colors */
+  --color-surface-container-lowest: #f9f7f4;
+  --color-surface-container-low: #f0ebe3;
+  --color-surface-container: #e8e2d8;
+  --color-surface-container-high: #ded6c9;
+  --color-surface-container-highest: #d4cbb9;
+
+  /* On-surface colors */
+  --color-on-surface: #2c2c2c;
+  --color-on-surface-variant: rgba(44, 44, 44, 0.7);
+  --color-on-surface-variant-low: rgba(44, 44, 44, 0.5);
+
+  /* Primary colors */
+  --color-primary: #af8f6f;
+  --color-on-primary: #ffffff;
+  --color-primary-container: #f5efe8;
+  --color-on-primary-container: #3a2e1f;
+
+  /* Outline colors */
+  --color-outline-variant: rgba(44, 44, 44, 0.15);
+
+  /* Error colors */
+  --color-error: #ba1a1a;
+  --color-on-error: #ffffff;
+  --color-error-container: #ffdad6;
+  --color-on-error-container: #410002;
+
+  /* Typography scale (Material Design 3) */
+  --font-h1: 700 2.5rem/1.2 'Hind Siliguri', sans-serif;
+  --font-h2: 700 1.75rem/1.3 'Hind Siliguri', sans-serif;
+  --font-h3: 600 1.375rem/1.3 'Hind Siliguri', sans-serif;
+  --font-title-lg: 500 1.125rem/1.4 'Hind Siliguri', sans-serif;
+  --font-title-md: 500 1rem/1.4 'Hind Siliguri', sans-serif;
+  --font-body-lg: 400 1rem/1.5 'Hind Siliguri', sans-serif;
+  --font-body-md: 400 0.875rem/1.4 'Hind Siliguri', sans-serif;
+  --font-label-caps: 500 0.75rem/1 'Hind Siliguri', sans-serif;
+  --font-caption: 400 0.75rem/1.3 'Hind Siliguri', sans-serif;
+
+  /* Spacing scale */
+  --spacing-card-padding: 1.25rem;
+  --spacing-stack-lg: 1.5rem;
+  --spacing-stack-md: 1rem;
+  --spacing-stack-sm: 0.75rem;
+
+  /* Dark mode MD3 tokens */
+  --color-dark-surface-container-lowest: #1a1a1a;
+  --color-dark-surface-container-low: #232323;
+  --color-dark-on-surface: #f5f5f5;
+  --color-dark-on-surface-variant: #b3b3b3;
+  --color-dark-outline-variant: rgba(255, 255, 255, 0.1);
 }
+
+.dark {
+  --color-surface-container-lowest: var(--color-dark-surface-container-lowest);
+  --color-surface-container-low: var(--color-dark-surface-container-low);
+  --color-on-surface: var(--color-dark-on-surface);
+  --color-on-surface-variant: var(--color-dark-on-surface-variant);
+  --color-outline-variant: var(--color-dark-outline-variant);
+}
+
+/* Material Design 3 Typography utilities */
+.font-h1 { font: var(--font-h1); }
+.font-h2 { font: var(--font-h2); }
+.font-h3 { font: var(--font-h3); }
+.font-title-lg { font: var(--font-title-lg); }
+.font-title-md { font: var(--font-title-md); }
+.font-body-lg { font: var(--font-body-lg); }
+.font-body-md { font: var(--font-body-md); }
+.font-label-caps { font: var(--font-label-caps); }
+.font-caption { font: var(--font-caption); }
+
+.text-h1 { font-size: 2.5rem; line-height: 1.2; }
+.text-h2 { font-size: 1.75rem; line-height: 1.3; }
+.text-label-caps { font-size: 0.75rem; line-height: 1; letter-spacing: 0.08em; text-transform: uppercase; }
+
+/* Material Design 3 Spacing utilities */
+.px-card-padding { padding-left: var(--spacing-card-padding); padding-right: var(--spacing-card-padding); }
+.py-card-padding { padding-top: var(--spacing-card-padding); padding-bottom: var(--spacing-card-padding); }
+.p-card-padding { padding: var(--spacing-card-padding); }
+.gap-stack-lg { gap: var(--spacing-stack-lg); }
+.gap-stack-md { gap: var(--spacing-stack-md); }
+.gap-stack-sm { gap: var(--spacing-stack-sm); }
 
 /* Bangla-specific optimizations */
 html[lang="bn"] body {

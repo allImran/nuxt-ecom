@@ -109,8 +109,6 @@ function handleSubmit() {
 <template>
   <form @submit.prevent="handleSubmit" class="space-y-6">
     <!-- Customer Section -->
-    <div class="bg-luxury-surface dark:bg-luxury-dark-surface rounded-luxury shadow-luxury p-6">
-      <h3 class="text-lg font-medium text-luxury-text dark:text-luxury-dark-text mb-4">Customer Information</h3>
 
       <InstantOrdersCustomerSelector
         :model-value="selectedCustomerUser"
@@ -127,7 +125,6 @@ function handleSubmit() {
       <p v-if="validationErrors['customer_info.name']" class="mt-2 text-sm text-red-600 dark:text-red-400">
         {{ validationErrors['customer_info.name'] }}
       </p>
-    </div>
 
     <!-- Order Items Section -->
     <div class="bg-luxury-surface dark:bg-luxury-dark-surface rounded-luxury shadow-luxury p-6">
