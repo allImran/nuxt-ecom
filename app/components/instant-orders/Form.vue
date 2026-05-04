@@ -146,7 +146,7 @@ function handleSubmit() {
         <div class="flex justify-between items-center border-b border-outline-variant/30 pb-3">
           <span class="text-body-md text-on-surface-variant">Delivery Charge</span>
           <div class="flex items-center gap-2">
-            <span class="text-on-surface-variant">$</span>
+            <!-- <span class="text-on-surface-variant">$</span> -->
             <input
               :value="form.delivery_charge.toFixed(2)"
               type="number"
@@ -176,7 +176,7 @@ function handleSubmit() {
           <div class="relative">
             <select
               :value="form.status"
-              class="appearance-none bg-transparent border-none p-0 text-right focus:ring-0 pr-6 cursor-pointer font-bold text-primary"
+              class="appearance-none bg-transparent border-none p-0 text-right focus:ring-0 pr-6 cursor-pointer y"
               @change="form = { ...form, status: ($event.target as HTMLSelectElement).value as InstantOrderStatus }"
             >
               <option
@@ -187,8 +187,8 @@ function handleSubmit() {
                 {{ option.label }}
               </option>
             </select>
-            <span class="material-symbols-outlined text-[18px] absolute right-0 top-1/2 -translate-y-1/2 pointer-events-none text-primary">
-              expand_more
+            <span class="material-symbols-outlined text-[12px] absolute right-0 top-1/2 -translate-y-1/2 pointer-events-none">
+              <UiIcon name="chevron-down" size="8" />
             </span>
           </div>
         </div>

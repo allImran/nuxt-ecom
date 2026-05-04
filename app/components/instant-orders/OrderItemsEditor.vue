@@ -20,14 +20,14 @@ const items = computed({
 })
 
 const unitOptions = [
-  { value: 'piece', label: 'piece' },
-  { value: 'kg', label: 'kg' },
-  { value: 'gram', label: 'gram' },
-  { value: 'lb', label: 'lb' },
-  { value: 'oz', label: 'oz' },
-  { value: 'box', label: 'box' },
-  { value: 'pack', label: 'pack' },
-  { value: 'set', label: 'set' }
+  { value: 'piece', label: 'Piece' },
+  { value: 'kg', label: 'Kg' },
+  { value: 'gram', label: 'Gram' },
+  { value: 'lb', label: 'Lb' },
+  { value: 'oz', label: 'Oz' },
+  { value: 'box', label: 'Box' },
+  { value: 'pack', label: 'Pack' },
+  { value: 'set', label: 'Set' }
 ]
 
 function addItem() {
@@ -94,10 +94,11 @@ function decrementQuantity(index: number) {
     <div class="px-card-padding py-4 border-b border-outline-variant/20 flex items-center justify-between">
       <h2 class="font-h2 text-h2 text-on-surface">Order Items</h2>
       <UiLuxuryButton
+        variant="outline"
         type="button"
         @click="addItem"
       >
-        Add Item
+        <UiIcon name="plus" />
       </UiLuxuryButton>
     </div>
 
@@ -123,14 +124,14 @@ function decrementQuantity(index: number) {
             :value="item.title"
             type="text"
             placeholder="Item Title"
-            class="w-full bg-surface-container-lowest border-none focus:ring-1 focus:ring-primary rounded-lg py-2 px-3 text-on-surface font-semibold transition-all"
+            class="w-full bg-surface-container-lowest border-none focus:ring-1 focus:ring-primary rounded-lg py-2 px-3 text-body-md text-on-surface transition-all placeholder:text-on-surface-variant/60"
             @input="updateItem(index, 'title', ($event.target as HTMLInputElement).value)"
           />
           <textarea
             :value="item.description || ''"
             placeholder="Optional Description"
-            rows="1"
-            class="w-full bg-surface-container-lowest border-none focus:ring-1 focus:ring-primary rounded-lg py-2 px-3 text-body-md text-on-surface-variant resize-none transition-all"
+            rows="3"
+            class="w-full bg-surface-container-lowest border-none focus:ring-1 focus:ring-primary rounded-lg py-2 px-3 text-body-md text-on-surface resize-none transition-all placeholder:text-on-surface-variant/60"
             @input="updateItem(index, 'description', ($event.target as HTMLTextAreaElement).value)"
           />
           <p v-if="getValidationError(index, 'title')" class="text-body-md text-error">
@@ -142,7 +143,7 @@ function decrementQuantity(index: number) {
         <div class="col-span-1 md:col-span-2">
           <select
             :value="item.unit"
-            class="w-full bg-surface-container-lowest border-none focus:ring-1 focus:ring-primary rounded-lg py-2 px-3 text-on-surface appearance-none cursor-pointer transition-all"
+            class="w-full bg-surface-container-lowest border-none focus:ring-1 focus:ring-primary rounded-lg py-2 px-3 text-body-md text-on-surface appearance-none cursor-pointer transition-all"
             @change="updateItem(index, 'unit', ($event.target as HTMLSelectElement).value)"
           >
             <option
@@ -159,13 +160,13 @@ function decrementQuantity(index: number) {
         <div class="col-span-1 md:col-span-4 flex items-center gap-3">
           <!-- Price -->
           <div class="relative flex-1">
-            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">$</span>
+            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">৳</span>
             <input
               :value="item.price"
               type="number"
               min="0"
               step="0.01"
-              class="w-full pl-7 bg-surface-container-lowest border-none focus:ring-1 focus:ring-primary rounded-lg py-2 px-3 text-on-surface text-right transition-all"
+              class="w-full pl-7 bg-surface-container-lowest border-none focus:ring-1 focus:ring-primary rounded-lg py-2 px-3 text-body-md text-on-surface text-right transition-all placeholder:text-on-surface-variant/60"
               @input="updateItem(index, 'price', parseFloat(($event.target as HTMLInputElement).value) || 0)"
             />
           </div>
