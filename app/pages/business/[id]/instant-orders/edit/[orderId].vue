@@ -22,6 +22,11 @@ const toast = useToast()
 // Courier request loading state
 const courierLoading = ref(false)
 
+// Courier status modal state
+const courierStatusModalOpen = ref(false)
+const courierStatusLoading = ref(false)
+const courierStatusData = ref<any>(null)
+
 // Form composable - will be initialized after fetching order
 const {
   form,
@@ -165,6 +170,57 @@ async function handleCreateCourierRequest() {
     courierLoading.value = false
   }
 }
+
+// Handle check courier status
+async function handleCheckCourierStatus() {
+  if (!form.value.cod_reference?.trim()) return
+
+  courierStatusLoading.value = true
+  courierStatusModalOpen.value = true
+
+  try {
+    const { adminNetwork } = await import('~/network/admin')
+    const trackingCode = form.value.cod_reference.trim()
+    const response = await adminNetwork.fetchCourierStatusByTracking(trackingCode)
+    courierStatusData.value = response
+  } catch (err) {
+    console.error('Failed to fetch courier status:', err)
+    courierStatusData.value = {
+      success: false,
+      delivery_status: 'unknown'
+    }
+    toast.error({ title: 'Failed to fetch courier status. Please try again.' })
+  } finally {
+    courierStatusLoading.value = false
+  }
+}
+
+// Handle modal refresh
+async function handleRefreshCourierStatus() {
+  if (!form.value.cod_reference?.trim()) return
+
+  courierStatusLoading.value = true
+  try {
+    const { adminNetwork } = await import('~/network/admin')
+    const trackingCode = form.value.cod_reference.trim()
+    const response = await adminNetwork.fetchCourierStatusByTracking(trackingCode)
+    courierStatusData.value = response
+  } catch (err) {
+    console.error('Failed to fetch courier status:', err)
+    courierStatusData.value = {
+      success: false,
+      delivery_status: 'unknown'
+    }
+    toast.error({ title: 'Failed to fetch courier status. Please try again.' })
+  } finally {
+    courierStatusLoading.value = false
+  }
+}
+
+// Handle modal close
+function handleCloseCourierModal() {
+  courierStatusModalOpen.value = false
+}
 </script>
 
 <template>
@@ -212,11 +268,23 @@ async function handleCreateCourierRequest() {
       v-model="form"
       :loading="updating"
       :courier-loading="courierLoading"
+      :courier-status-loading="courierStatusLoading"
       mode="edit"
       submit-label="Update Order"
       :validation-errors="validationErrors"
       @submit="handleSubmit"
       @create-courier-request="handleCreateCourierRequest"
+      @check-courier-status="handleCheckCourierStatus"
+    />
+
+    <!-- Courier Status Modal -->
+    <CourierStatusModal
+      :is-open="courierStatusModalOpen"
+      :tracking-code="form.cod_reference || ''"
+      :loading="courierStatusLoading"
+      :status-data="courierStatusData"
+      @close="handleCloseCourierModal"
+      @refresh="handleRefreshCourierStatus"
     />
   </div>
 </template>

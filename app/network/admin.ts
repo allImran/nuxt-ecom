@@ -214,5 +214,11 @@ export const adminNetwork = {
     recipient_phone: string
     recipient_address: string
     cod_amount: number
-  }) => useAdminFetch<any>('/steadfast/create-order', { method: 'POST', body: data })
+  }) => useAdminFetch<any>('/steadfast/create-order', { method: 'POST', body: data }),
+
+  // Courier Status - Public endpoint (no auth, goes through API proxy)
+  fetchCourierStatusByTracking: (trackingCode: string) =>
+    useAdminFetch<any>(`/steadfast/delivery-status/tracking/${trackingCode}`),
+  fetchCourierStatusByCid: (cid: string) =>
+    useAdminFetch<any>(`/steadfast/delivery-status/cid/${cid}`)
 }

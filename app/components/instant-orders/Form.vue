@@ -8,6 +8,7 @@ interface Props {
   submitLabel?: string
   validationErrors?: Record<string, string>
   courierLoading?: boolean
+  courierStatusLoading?: boolean
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -15,13 +16,15 @@ const props = withDefaults(defineProps<Props>(), {
   mode: 'create',
   submitLabel: 'Submit',
   validationErrors: () => ({}),
-  courierLoading: false
+  courierLoading: false,
+  courierStatusLoading: false
 })
 
 const emit = defineEmits<{
   'update:modelValue': [value: InstantOrderForm]
   'submit': [form: InstantOrderForm]
   'createCourierRequest': []
+  'checkCourierStatus': []
 }>()
 
 const form = computed({
@@ -112,6 +115,16 @@ function handleSubmit() {
 function handleCreateCourierRequest() {
   emit('createCourierRequest')
 }
+
+// Handle check courier status
+function handleCheckCourierStatus() {
+  emit('checkCourierStatus')
+}
+
+// Check if tracking code exists
+const hasTrackingCode = computed(() => {
+  return Boolean(form.value.cod_reference?.trim())
+})
 </script>
 
 <template>
@@ -169,13 +182,30 @@ function handleCreateCourierRequest() {
         <!-- COD Reference -->
         <div class="flex justify-between items-center border-b border-outline-variant/30 pb-3">
           <span class="text-body-md text-on-surface-variant">COD Reference</span>
-          <input
-            :value="form.cod_reference"
-            type="text"
-            placeholder="Ref # (Optional)"
-            class="w-36 bg-transparent border-none p-0 text-right focus:ring-0 text-body-md text-on-surface placeholder:text-on-surface-variant/50"
-            @input="form = { ...form, cod_reference: ($event.target as HTMLInputElement).value }"
-          />
+          <div class="flex items-center gap-2">
+            <input
+              :value="form.cod_reference"
+              type="text"
+              placeholder="Ref # (Optional)"
+              class="w-36 bg-transparent border-none p-0 text-right focus:ring-0 text-body-md text-on-surface placeholder:text-on-surface-variant/50"
+              @input="form = { ...form, cod_reference: ($event.target as HTMLInputElement).value }"
+            />
+            <button
+              v-if="mode === 'edit' && hasTrackingCode"
+              type="button"
+              class="p-1 hover:bg-black/5 dark:hover:bg-white/10 rounded transition-colors"
+              :disabled="courierStatusLoading"
+              :title="courierStatusLoading ? 'Checking...' : 'Check courier status'"
+              @click="handleCheckCourierStatus"
+            >
+              <UiIcon
+                name="truck"
+                :size="16"
+                class="text-luxury-gold"
+                :class="{ 'animate-pulse': courierStatusLoading }"
+              />
+            </button>
+          </div>
         </div>
 
         <!-- Order Status -->
@@ -215,7 +245,7 @@ function handleCreateCourierRequest() {
     <div class="flex justify-end gap-3">
       <slot name="actions" :loading="loading" :has-errors="hasErrors">
         <UiLuxuryButton
-          v-if="mode === 'edit'"
+          v-if="mode === 'edit' && !hasTrackingCode"
           type="button"
           variant="secondary"
           :loading="courierLoading"
