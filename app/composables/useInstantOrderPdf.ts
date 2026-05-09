@@ -156,9 +156,9 @@ export function useInstantOrderPdf(): UseInstantOrderPdfReturn {
     }
 
     // Add location link (based on business slug)
-    const locationUrl = `${window.location.origin}/business/${business.slug}`
-    const locationLines = doc.splitTextToSize(`Location: ${locationUrl}`, 100)
-    doc.text(locationLines, businessStartX, businessY)
+    // const locationUrl = `${window.location.origin}/business/${business.slug}`
+    // const locationLines = doc.splitTextToSize(`Location: ${locationUrl}`, 100)
+    // doc.text(locationLines, businessStartX, businessY)
 
     // Add "INVOICE" label (right-aligned, same level as business name)
     // doc.setFontSize(20)
@@ -256,8 +256,8 @@ export function useInstantOrderPdf(): UseInstantOrderPdfReturn {
       columnStyles: {
         0: { cellWidth: 75, halign: 'left' },
         1: { cellWidth: 35, halign: 'center' },
-        2: { cellWidth: 40, halign: 'right' },
-        3: { cellWidth: 40, halign: 'right', fontStyle: 'bold' }
+        2: { cellWidth: 35, halign: 'right' },
+        3: { cellWidth: 35, halign: 'right', fontStyle: 'bold' }
       },
       margin: {
         left: margins.left,
