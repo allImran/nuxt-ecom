@@ -141,12 +141,13 @@ async function handleCreateCourierRequest() {
 
     const response = await adminNetwork.createCourierOrder(courierRequest)
 
-    // Update cod_reference with tracking code
-    form.value.cod_reference = response.consignment.tracking_code
+    // Update cod_reference with entire consignment object (as JSON string)
+    const consignmentJson = JSON.stringify(response.consignment)
+    form.value.cod_reference = consignmentJson
 
     // Update the order with the new cod_reference
     await updateOrder(Number(orderId.value), {
-      cod_reference: response.consignment.tracking_code
+      cod_reference: consignmentJson
     })
 
     toast.success({ title: `Courier request created! Tracking: ${response.consignment.tracking_code}` })
@@ -173,14 +174,14 @@ async function handleCreateCourierRequest() {
 
 // Handle check courier status
 async function handleCheckCourierStatus() {
-  if (!form.value.cod_reference?.trim()) return
+  const trackingCode = extractTrackingCode()
+  if (!trackingCode) return
 
   courierStatusLoading.value = true
   courierStatusModalOpen.value = true
 
   try {
     const { adminNetwork } = await import('~/network/admin')
-    const trackingCode = form.value.cod_reference.trim()
     const response = await adminNetwork.fetchCourierStatusByTracking(trackingCode)
     courierStatusData.value = response
   } catch (err) {
@@ -197,12 +198,12 @@ async function handleCheckCourierStatus() {
 
 // Handle modal refresh
 async function handleRefreshCourierStatus() {
-  if (!form.value.cod_reference?.trim()) return
+  const trackingCode = extractTrackingCode()
+  if (!trackingCode) return
 
   courierStatusLoading.value = true
   try {
     const { adminNetwork } = await import('~/network/admin')
-    const trackingCode = form.value.cod_reference.trim()
     const response = await adminNetwork.fetchCourierStatusByTracking(trackingCode)
     courierStatusData.value = response
   } catch (err) {
@@ -215,6 +216,25 @@ async function handleRefreshCourierStatus() {
   } finally {
     courierStatusLoading.value = false
   }
+}
+
+// Extract tracking code from cod_reference (could be JSON or raw string)
+function extractTrackingCode(): string {
+  if (!form.value.cod_reference) return ''
+
+  // Try to parse as JSON (consignment object)
+  try {
+    const consignment = typeof form.value.cod_reference === 'string'
+      ? JSON.parse(form.value.cod_reference)
+      : form.value.cod_reference
+    if (consignment?.tracking_code) {
+      return consignment.tracking_code
+    }
+  } catch {
+    // Not JSON, treat as raw tracking code
+  }
+
+  return form.value.cod_reference.trim()
 }
 
 // Handle modal close
@@ -280,7 +300,7 @@ function handleCloseCourierModal() {
     <!-- Courier Status Modal -->
     <CourierStatusModal
       :is-open="courierStatusModalOpen"
-      :tracking-code="form.cod_reference || ''"
+      :tracking-code="extractTrackingCode()"
       :loading="courierStatusLoading"
       :status-data="courierStatusData"
       @close="handleCloseCourierModal"

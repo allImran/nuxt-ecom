@@ -123,7 +123,26 @@ function handleCheckCourierStatus() {
 
 // Check if tracking code exists
 const hasTrackingCode = computed(() => {
-  return Boolean(form.value.cod_reference?.trim())
+  return Boolean(getTrackingCode.value)
+})
+
+// Get tracking code from cod_reference (could be JSON string with consignment info or just tracking code)
+const getTrackingCode = computed(() => {
+  if (!form.value.cod_reference) return ''
+
+  // Try to parse as JSON (consignment object)
+  try {
+    const consignment = typeof form.value.cod_reference === 'string'
+      ? JSON.parse(form.value.cod_reference)
+      : form.value.cod_reference
+    if (consignment?.tracking_code) {
+      return consignment.tracking_code
+    }
+  } catch {
+    // Not JSON, treat as raw tracking code
+  }
+
+  return form.value.cod_reference
 })
 </script>
 
@@ -184,7 +203,7 @@ const hasTrackingCode = computed(() => {
           <span class="text-body-md text-on-surface-variant">COD Reference</span>
           <div class="flex items-center gap-2">
             <input
-              :value="form.cod_reference"
+              :value="getTrackingCode"
               type="text"
               placeholder="Ref # (Optional)"
               class="w-36 bg-transparent border-none p-0 text-right focus:ring-0 text-body-md text-on-surface placeholder:text-on-surface-variant/50"
