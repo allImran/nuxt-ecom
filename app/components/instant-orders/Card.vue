@@ -162,6 +162,28 @@ async function handlePrintPdf(event: Event) {
 function handleCloseCourierModal() {
   courierStatusModalOpen.value = false
 }
+
+// Handle modal refresh
+async function handleRefreshCourierStatus() {
+  if (!currentTrackingCode.value) return
+
+  courierStatusLoading.value = true
+  try {
+    const { adminNetwork } = await import('~/network/admin')
+    const response = await adminNetwork.fetchCourierStatusByTracking(currentTrackingCode.value)
+    courierStatusData.value = response
+  } catch (err) {
+    console.error('Failed to fetch courier status:', err)
+    courierStatusData.value = {
+      success: false,
+      delivery_status: 'unknown'
+    }
+    const toast = useToast()
+    toast.error({ title: 'Failed to fetch courier status' })
+  } finally {
+    courierStatusLoading.value = false
+  }
+}
 </script>
 
 <template>
@@ -194,6 +216,42 @@ function handleCloseCourierModal() {
         <span class="text-sm text-luxury-text-muted dark:text-luxury-dark-text-muted">
           {{ order.order_items?.length || 0 }} Items
         </span>
+        <!-- Action buttons -->
+        <template v-if="order.cod_reference">
+          <button
+            type="button"
+            class="p-1.5 hover:bg-luxury-gold/10 rounded-lg transition-colors ml-1"
+            title="Copy tracking link"
+            @click="handleCopyTrackingLink(order.cod_reference, $event)"
+          >
+            <UiIcon name="copy" :size="14" class="text-luxury-gold" />
+          </button>
+          <button
+            type="button"
+            class="p-1.5 hover:bg-luxury-gold/10 rounded-lg transition-colors"
+            title="Check courier status"
+            @click="handleCheckCourierStatus(order.cod_reference, $event)"
+          >
+            <UiIcon name="truck" :size="14" class="text-luxury-gold" />
+          </button>
+        </template>
+        <!-- Print button always visible -->
+        <button
+          type="button"
+          class="p-1.5 hover:bg-luxury-gold/10 rounded-lg transition-colors"
+          :disabled="isGenerating"
+          :title="isGenerating ? 'Generating...' : 'Download PDF'"
+          @click="handlePrintPdf($event)"
+        >
+          <UiIcon
+            name="printer"
+            :size="14"
+            :class="[
+              'text-luxury-gold transition-colors',
+              isGenerating && 'opacity-50 animate-pulse'
+            ]"
+          />
+        </button>
       </div>
       <div class="text-right">
         <span class="block text-xs text-luxury-text-muted dark:text-luxury-dark-text-muted">Total Amount</span>
@@ -202,74 +260,15 @@ function handleCloseCourierModal() {
         </span>
       </div>
     </div>
-
-    <!-- Action buttons -->
-    <div v-if="order.cod_reference" class="flex items-center justify-end gap-1 mt-4 pt-4 border-t border-luxury-border dark:border-luxury-dark-border">
-      <button
-        type="button"
-        class="p-2 hover:bg-luxury-gold/10 rounded-lg transition-colors"
-        title="Copy tracking link"
-        @click="handleCopyTrackingLink(order.cod_reference, $event)"
-      >
-        <UiIcon name="copy" :size="16" class="text-luxury-gold" />
-      </button>
-      <button
-        type="button"
-        class="p-2 hover:bg-luxury-gold/10 rounded-lg transition-colors"
-        title="Check courier status"
-        @click="handleCheckCourierStatus(order.cod_reference, $event)"
-      >
-        <UiIcon name="truck" :size="16" class="text-luxury-gold" />
-      </button>
-      <button
-        type="button"
-        class="p-2 hover:bg-luxury-gold/10 rounded-lg transition-colors"
-        :disabled="isGenerating"
-        :title="isGenerating ? 'Generating...' : 'Download PDF'"
-        @click="handlePrintPdf($event)"
-      >
-        <UiIcon
-          name="printer"
-          :size="16"
-          :class="[
-            'text-luxury-gold transition-colors',
-            isGenerating && 'opacity-50 animate-pulse'
-          ]"
-        />
-      </button>
-    </div>
   </div>
 
   <!-- Courier Status Modal -->
-  <UiModal v-model:open="courierStatusModalOpen" title="Courier Status">
-    <div v-if="courierStatusLoading" class="flex items-center justify-center py-8">
-      <UiLoader size="md" />
-    </div>
-    <div v-else-if="courierStatusData" class="space-y-4">
-      <div v-if="courierStatusData.success !== false" class="space-y-3">
-        <div class="flex items-center justify-between py-2 border-b border-luxury-border dark:border-luxury-dark-border">
-          <span class="text-sm text-luxury-text-muted dark:text-luxury-dark-text-muted">Status</span>
-          <span class="text-sm font-medium text-luxury-text dark:text-luxury-dark-text">
-            {{ courierStatusData.delivery_status || 'Unknown' }}
-          </span>
-        </div>
-        <div v-if="currentTrackingLink" class="flex items-center justify-between py-2">
-          <span class="text-sm text-luxury-text-muted dark:text-luxury-dark-text-muted">Tracking Link</span>
-          <a
-            :href="currentTrackingLink"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="text-sm text-luxury-gold hover:underline"
-          >
-            Open
-          </a>
-        </div>
-      </div>
-      <div v-else class="text-center py-4">
-        <p class="text-sm text-luxury-text-muted dark:text-luxury-dark-text-muted">
-          Unable to fetch courier status
-        </p>
-      </div>
-    </div>
-  </UiModal>
+  <CourierStatusModal
+    :is-open="courierStatusModalOpen"
+    :tracking-code="currentTrackingCode"
+    :loading="courierStatusLoading"
+    :status-data="courierStatusData"
+    @close="handleCloseCourierModal"
+    @refresh="handleRefreshCourierStatus"
+  />
 </template>
