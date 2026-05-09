@@ -23,6 +23,13 @@ type SortableField = 'created_at' | 'customer_name' | 'phone' | 'cod_reference' 
 const sortField = ref<SortableField>('created_at')
 const sortDirection = ref<'asc' | 'desc'>('desc')
 
+// Courier status modal state
+const courierStatusModalOpen = ref(false)
+const courierStatusLoading = ref(false)
+const courierStatusData = ref<any>(null)
+const currentTrackingCode = ref('')
+const currentTrackingLink = ref('')
+
 // Helper to get sort value from order
 function getSortValue(order: InstantOrderListItem, field: SortableField): string | number {
   switch (field) {
@@ -64,6 +71,112 @@ function handleSort(field: SortableField) {
 // Handle row click
 function handleRowClick(order: InstantOrderListItem) {
   emit('row-click', order)
+}
+
+// Extract tracking info from cod_reference
+function extractTrackingInfo(codReference: any) {
+  if (!codReference) return { trackingCode: '', trackingLink: '' }
+
+  // Try to parse as JSON (consignment object)
+  try {
+    const consignment = typeof codReference === 'string'
+      ? JSON.parse(codReference)
+      : codReference
+    if (consignment?.tracking_code) {
+      return {
+        trackingCode: consignment.tracking_code,
+        trackingLink: consignment.tracking_link || ''
+      }
+    }
+  } catch {
+    // Not JSON, treat as raw tracking code (no link available)
+  }
+
+  return {
+    trackingCode: String(codReference),
+    trackingLink: ''
+  }
+}
+
+// Copy tracking link to clipboard
+async function handleCopyTrackingLink(codReference: any, event: Event) {
+  event.stopPropagation()
+  const { trackingLink } = extractTrackingInfo(codReference)
+
+  if (!trackingLink) {
+    const toast = useToast()
+    toast.error({ title: 'No tracking link available' })
+    return
+  }
+
+  try {
+    await navigator.clipboard.writeText(trackingLink)
+    const toast = useToast()
+    toast.success({ title: 'Tracking link copied!' })
+  } catch (err) {
+    const toast = useToast()
+    toast.error({ title: 'Failed to copy link' })
+  }
+}
+
+// Open courier status modal
+async function handleCheckCourierStatus(codReference: any, event: Event) {
+  event.stopPropagation()
+  const { trackingCode, trackingLink } = extractTrackingInfo(codReference)
+
+  if (!trackingCode) {
+    const toast = useToast()
+    toast.error({ title: 'No tracking code available' })
+    return
+  }
+
+  currentTrackingCode.value = trackingCode
+  currentTrackingLink.value = trackingLink
+  courierStatusLoading.value = true
+  courierStatusModalOpen.value = true
+
+  try {
+    const { adminNetwork } = await import('~/network/admin')
+    const response = await adminNetwork.fetchCourierStatusByTracking(trackingCode)
+    courierStatusData.value = response
+  } catch (err) {
+    console.error('Failed to fetch courier status:', err)
+    courierStatusData.value = {
+      success: false,
+      delivery_status: 'unknown'
+    }
+    const toast = useToast()
+    toast.error({ title: 'Failed to fetch courier status' })
+  } finally {
+    courierStatusLoading.value = false
+  }
+}
+
+// Handle modal refresh
+async function handleRefreshCourierStatus() {
+  if (!currentTrackingCode.value) return
+
+  courierStatusLoading.value = true
+  try {
+    const { adminNetwork } = await import('~/network/admin')
+    const response = await adminNetwork.fetchCourierStatusByTracking(currentTrackingCode.value)
+    courierStatusData.value = response
+  } catch (err) {
+    console.error('Failed to fetch courier status:', err)
+    courierStatusData.value = {
+      success: false,
+      delivery_status: 'unknown'
+    }
+    const toast = useToast()
+    toast.error({ title: 'Failed to fetch courier status' })
+  } finally {
+    courierStatusLoading.value = false
+  }
+}
+
+// Handle modal close
+function handleCloseCourierModal() {
+  courierStatusModalOpen.value = false
 }
 </script>
 
@@ -142,8 +255,27 @@ function handleRowClick(order: InstantOrderListItem) {
               </div>
             </td>
             <td class="px-6 py-4 whitespace-nowrap">
-              <span class="text-sm font-mono text-luxury-text-muted dark:text-luxury-dark-text-muted">
-                {{ order.cod_reference ? 'Done' : '-' }}
+              <div v-if="order.cod_reference" class="flex items-center gap-2">
+                <button
+                  type="button"
+                  class="p-1.5 hover:bg-luxury-gold/10 rounded transition-colors"
+                  :title="'Copy tracking link'"
+                  @click="handleCopyTrackingLink(order.cod_reference, $event)"
+                >
+                  <UiIcon name="copy" :size="14" class="text-luxury-gold" />
+                </button>
+                <UiLuxuryButton
+                  variant="ghost"
+                  size="sm"
+                  type="button"
+                  class="py-1! px-2! text-xs!"
+                  @click="handleCheckCourierStatus(order.cod_reference, $event)"
+                >
+                  Check
+                </UiLuxuryButton>
+              </div>
+              <span v-else class="text-sm text-luxury-text-muted dark:text-luxury-dark-text-muted">
+                -
               </span>
             </td>
             <td class="px-6 py-4 whitespace-nowrap">
@@ -162,5 +294,15 @@ function handleRowClick(order: InstantOrderListItem) {
         </tbody>
       </table>
     </div>
+
+    <!-- Courier Status Modal -->
+    <CourierStatusModal
+      :is-open="courierStatusModalOpen"
+      :tracking-code="currentTrackingCode"
+      :loading="courierStatusLoading"
+      :status-data="courierStatusData"
+      @close="handleCloseCourierModal"
+      @refresh="handleRefreshCourierStatus"
+    />
   </div>
 </template>
