@@ -158,6 +158,7 @@ const errorMessage = computed(() => {
             :format-price="formatPrice"
             :format-date="formatDate"
             :get-status-label="getStatusLabel"
+            :business="business"
             @click="handleRowClick"
           />
         </div>
