@@ -234,6 +234,7 @@ const errorMessage = computed(() => {
         :format-date="formatDate"
         :get-status-color="getStatusColor"
         :get-status-label="getStatusLabel"
+		:business="business"
         @row-click="handleRowClick"
       />
     </div>

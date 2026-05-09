@@ -47,6 +47,9 @@ export default defineNuxtConfig({
     plugins: [
       tailwindcss(),
     ],
+    optimizeDeps: {
+      include: ['jspdf', 'jspdf-autotable']
+    }
   },
   css: ['./app/assets/css/main.css'],
   modules: ['@nuxt/image', '@nuxt/content', 'motion-v/nuxt', '@pinia/nuxt', '@nuxtjs/i18n'],
