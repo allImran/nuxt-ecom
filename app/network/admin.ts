@@ -206,5 +206,13 @@ export const adminNetwork = {
   fetchInstantOrder: (id: number) => useAdminFetch<any>(`/instant-orders/${id}`),
   createInstantOrder: (data: any) => useAdminFetch('/instant-orders', { method: 'POST', body: data }),
   updateInstantOrder: (id: number, data: any) => useAdminFetch(`/instant-orders/${id}`, { method: 'PATCH', body: data }),
-  searchUsers: (query: string) => useAdminFetch<any[]>(`/temp-users/search?q=${encodeURIComponent(query)}`)
+  searchUsers: (query: string) => useAdminFetch<any[]>(`/temp-users/search?q=${encodeURIComponent(query)}`),
+
+  // Courier API
+  createCourierOrder: (data: {
+    recipient_name: string
+    recipient_phone: string
+    recipient_address: string
+    cod_amount: number
+  }) => useAdminFetch<any>('/steadfast/create-order', { method: 'POST', body: data })
 }

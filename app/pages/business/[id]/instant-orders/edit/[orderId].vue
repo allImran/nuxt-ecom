@@ -19,6 +19,9 @@ const { loading, updating, error, fetchOrderById, updateOrder } = useInstantOrde
 // Toast notification
 const toast = useToast()
 
+// Courier request loading state
+const courierLoading = ref(false)
+
 // Form composable - will be initialized after fetching order
 const {
   form,
@@ -114,6 +117,54 @@ async function handleSubmit() {
     toast.error({ title: errorMessage })
   }
 }
+
+// Handle courier request creation
+async function handleCreateCourierRequest() {
+  if (courierLoading.value) return
+
+  courierLoading.value = true
+  try {
+    const { adminNetwork } = await import('~/network/admin')
+
+    // Prepare courier request with required fields only
+    const courierRequest = {
+      recipient_name: form.value.customer_info.name,
+      recipient_phone: form.value.customer_info.phone,
+      recipient_address: form.value.customer_info.address,
+      cod_amount: totalAmount.value
+    }
+
+    const response = await adminNetwork.createCourierOrder(courierRequest)
+
+    // Update cod_reference with tracking code
+    form.value.cod_reference = response.consignment.tracking_code
+
+    // Update the order with the new cod_reference
+    await updateOrder(Number(orderId.value), {
+      cod_reference: response.consignment.tracking_code
+    })
+
+    toast.success({ title: `Courier request created! Tracking: ${response.consignment.tracking_code}` })
+  } catch (err) {
+    console.error('Failed to create courier request:', err)
+
+    let errorMessage = 'Failed to create courier request. Please try again.'
+    if (err && typeof err === 'object') {
+      if ('message' in err && typeof err.message === 'string') {
+        errorMessage = err.message
+      } else if ('response' in err && err.response && typeof err.response === 'object') {
+        const data = (err.response as any)._data || (err.response as any).data
+        if (data?.message) {
+          errorMessage = data.message
+        }
+      }
+    }
+
+    toast.error({ title: errorMessage })
+  } finally {
+    courierLoading.value = false
+  }
+}
 </script>
 
 <template>
@@ -160,10 +211,12 @@ async function handleSubmit() {
       v-else-if="orderLoaded"
       v-model="form"
       :loading="updating"
+      :courier-loading="courierLoading"
       mode="edit"
       submit-label="Update Order"
       :validation-errors="validationErrors"
       @submit="handleSubmit"
+      @create-courier-request="handleCreateCourierRequest"
     />
   </div>
 </template>

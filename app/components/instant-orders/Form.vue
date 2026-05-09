@@ -7,18 +7,21 @@ interface Props {
   mode?: 'create' | 'edit'
   submitLabel?: string
   validationErrors?: Record<string, string>
+  courierLoading?: boolean
 }
 
 const props = withDefaults(defineProps<Props>(), {
   loading: false,
   mode: 'create',
   submitLabel: 'Submit',
-  validationErrors: () => ({})
+  validationErrors: () => ({}),
+  courierLoading: false
 })
 
 const emit = defineEmits<{
   'update:modelValue': [value: InstantOrderForm]
   'submit': [form: InstantOrderForm]
+  'createCourierRequest': []
 }>()
 
 const form = computed({
@@ -103,6 +106,11 @@ const hasErrors = computed(() => {
 // Handle form submission
 function handleSubmit() {
   emit('submit', form.value)
+}
+
+// Handle courier request creation
+function handleCreateCourierRequest() {
+  emit('createCourierRequest')
 }
 </script>
 
@@ -207,9 +215,20 @@ function handleSubmit() {
     <div class="flex justify-end gap-3">
       <slot name="actions" :loading="loading" :has-errors="hasErrors">
         <UiLuxuryButton
+          v-if="mode === 'edit'"
+          type="button"
+          variant="secondary"
+          :loading="courierLoading"
+          :disabled="loading || courierLoading || hasErrors"
+          @click="handleCreateCourierRequest"
+        >
+          <UiIcon name="truck" :size="16" class="mr-2" />
+          Create Courier Request
+        </UiLuxuryButton>
+        <UiLuxuryButton
           type="submit"
           :loading="loading"
-          :disabled="loading || hasErrors"
+          :disabled="loading || courierLoading || hasErrors"
         >
           {{ submitLabel }}
         </UiLuxuryButton>
