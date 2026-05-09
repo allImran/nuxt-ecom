@@ -59,10 +59,10 @@ export function useInstantOrderPdf(): UseInstantOrderPdfReturn {
       currentY = addCustomerDetails(doc, order, currentY, margins)
 
       // Add order items table
-      currentY = addItemsTable(doc, order, currentY, margins)
+      currentY = addItemsTable(doc, order, currentY, margins, business)
 
       // Add summary section
-      currentY = addSummary(doc, order, currentY, margins)
+      currentY = addSummary(doc, order, currentY, margins, business)
 
       // Add footer
       addFooter(doc, order, business, margins)
@@ -217,7 +217,7 @@ export function useInstantOrderPdf(): UseInstantOrderPdfReturn {
   /**
    * Add order items table using autoTable plugin
    */
-  function addItemsTable(doc: any, order: InstantOrder | InstantOrderListItem, startY: number, margins: any): number {
+  function addItemsTable(doc: any, order: InstantOrder | InstantOrderListItem, startY: number, margins: any, business: Business): number {
     // Prepare table data
     const tableData = order.order_items.map(item => {
       const price = typeof item.price === 'string' ? parseFloat(item.price) : item.price
@@ -247,7 +247,7 @@ export function useInstantOrderPdf(): UseInstantOrderPdfReturn {
         lineWidth: 0.2
       },
       headStyles: {
-        fillColor: [175, 143, 111],
+        fillColor: hexToRgb(business.primary_color),
         textColor: [255, 255, 255],
         fontStyle: 'bold',
         fontSize: 11,
@@ -271,7 +271,7 @@ export function useInstantOrderPdf(): UseInstantOrderPdfReturn {
   /**
    * Add summary section with subtotal, delivery charge, and total
    */
-  function addSummary(doc: any, order: InstantOrder | InstantOrderListItem, startY: number, margins: any): number {
+  function addSummary(doc: any, order: InstantOrder | InstantOrderListItem, startY: number, margins: any, business: Business): number {
     // Calculate subtotal
     const subtotal = order.order_items.reduce((sum, item) => {
       const price = typeof item.price === 'string' ? parseFloat(item.price) : item.price
@@ -308,7 +308,7 @@ export function useInstantOrderPdf(): UseInstantOrderPdfReturn {
     // Total (bold, larger)
     doc.setFontSize(14)
     doc.setFont('HindSiliguri', 'bold')
-    doc.setTextColor(175, 143, 111)
+    doc.setTextColor(...hexToRgb(business.primary_color))
     doc.text('Total:', summaryLabelX, currentY, { align: 'right' })
     doc.text(formatCurrency(total), summaryValueX, currentY, { align: 'right' })
 
@@ -357,6 +357,27 @@ export function useInstantOrderPdf(): UseInstantOrderPdfReturn {
         { align: 'center' }
       )
     }
+  }
+
+  /**
+   * Convert hex color to RGB array for jsPDF
+   * @param hex - Hex color string (e.g., "#af8f6f" or "af8f6f")
+   * @returns RGB array [r, g, b]
+   */
+  function hexToRgb(hex: string | undefined): [number, number, number] {
+    if (!hex) return [0, 0, 0] // Fallback to black
+
+    // Remove # if present
+    const cleanHex = hex.startsWith('#') ? hex.slice(1) : hex
+
+    // Parse hex values
+    const r = parseInt(cleanHex.substring(0, 2), 16)
+    const g = parseInt(cleanHex.substring(2, 4), 16)
+    const b = parseInt(cleanHex.substring(4, 6), 16)
+
+    // Return RGB array or fallback to black if invalid
+    if (isNaN(r) || isNaN(g) || isNaN(b)) return [0, 0, 0]
+    return [r, g, b]
   }
 
   /**
