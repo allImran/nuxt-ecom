@@ -94,22 +94,24 @@ async function handleSubmit() {
     await updateOrder(Number(orderId.value), requestData)
 
     // Show success message
-    toast.success('Instant order updated successfully!')
+    toast.success({ title: 'Instant order updated successfully!' })
   } catch (err) {
     console.error('Failed to update instant order:', err)
 
-    // Show error message
-    if (error.value === 'validation') {
-      toast.error('Please fix the validation errors and try again.')
-    } else if (error.value === 'notFound') {
-      toast.error('Order not found.')
-    } else if (error.value === 'unauthorized') {
-      toast.error('You are not authorized to update this order.')
-    } else if (error.value === 'forbidden') {
-      toast.error('You don\'t have permission to update this order.')
-    } else {
-      toast.error('Failed to update instant order. Please try again.')
+    // Extract error message from response
+    let errorMessage = 'Failed to update instant order. Please try again.'
+    if (err && typeof err === 'object') {
+      if ('message' in err && typeof err.message === 'string') {
+        errorMessage = err.message
+      } else if ('response' in err && err.response && typeof err.response === 'object') {
+        const data = (err.response as any)._data || (err.response as any).data
+        if (data?.message) {
+          errorMessage = data.message
+        }
+      }
     }
+
+    toast.error({ title: errorMessage })
   }
 }
 </script>
@@ -117,19 +119,18 @@ async function handleSubmit() {
 <template>
   <div class="space-y-6">
     <!-- Header -->
-    <div class="flex items-center gap-4">
-      <UiLuxuryButton variant="ghost" @click="router.push(`/business/${businessId}/instant-orders`)">
-        <UiIcon name="arrow-left" :size="16" class="mr-2" />
-        Back
-      </UiLuxuryButton>
+    <div class="flex justify-between gap-4">
       <div>
+        <p class="text-xs text-luxury-text-muted dark:text-luxury-dark-text-muted">
+          {{ business?.name || 'Business' }}
+        </p>
         <h1 class="text-2xl font-bold text-luxury-text dark:text-luxury-dark-text">
           Edit Instant Order
         </h1>
-        <p class="text-sm text-luxury-text-muted dark:text-luxury-dark-text-muted">
-          {{ business?.name || 'Business' }}
-        </p>
       </div>
+      <UiLuxuryButton variant="secondary" @click="router.push(`/business/${businessId}/instant-orders`)">
+        <UiIcon name="arrow-left" :size="16" class="mr-2" />
+      </UiLuxuryButton>
     </div>
 
     <!-- Loading State -->

@@ -76,7 +76,7 @@ const entryModeOptions = [
   <UiM3Card padding="none" class="overflow-hidden">
     <!-- Card Header with Toggle -->
     <div class="px-card-padding py-4 border-b border-outline-variant/20 flex items-center justify-between flex-wrap gap-3">
-      <h2 class="font-h2 text-h2 text-on-surface">Customer Information</h2>
+      <h2 class="text-2xl font-semibold text-on-surface">Customer Information</h2>
       <div class="flex bg-surface-container-lowest p-1 rounded-lg">
         <UiM3SegmentedButton
           v-model="entryMode"
