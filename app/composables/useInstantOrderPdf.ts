@@ -65,7 +65,7 @@ export function useInstantOrderPdf(): UseInstantOrderPdfReturn {
       currentY = addSummary(doc, order, currentY, margins)
 
       // Add footer
-      addFooter(doc, business, margins)
+      addFooter(doc, order, business, margins)
 
       // Generate filename: instant-order-{id}-{date}.pdf
       const orderDate = new Date(order.created_at).toISOString().split('T')[0]
@@ -141,6 +141,13 @@ export function useInstantOrderPdf(): UseInstantOrderPdfReturn {
       const addressLines = doc.splitTextToSize(business.address, 100)
       doc.text(addressLines, businessStartX, businessY)
       businessY += (addressLines.length * 5) + 2
+    }
+
+    // Add social links if available
+    const socialLinks = getSocialLinks(business.social)
+    for (const link of socialLinks) {
+      doc.text(link, businessStartX, businessY)
+      businessY += 5
     }
 
     if (business.email) {
@@ -312,9 +319,9 @@ export function useInstantOrderPdf(): UseInstantOrderPdfReturn {
   }
 
   /**
-   * Add footer with thank you message
+   * Add footer with consignment info
    */
-  function addFooter(doc: any, business: Business, margins: any): void {
+  function addFooter(doc: any, order: InstantOrder | InstantOrderListItem, business: Business, margins: any): void {
     const pageCount = doc.getNumberOfPages()
 
     for (let i = 1; i <= pageCount; i++) {
@@ -324,26 +331,58 @@ export function useInstantOrderPdf(): UseInstantOrderPdfReturn {
       doc.setFontSize(8)
       doc.setTextColor(80, 80, 80)
 
-      // Thank you message
-      doc.text(
-        'Thank you for your order!',
-        A4_WIDTH / 2,
-        footerY - 10,
-        { align: 'center' }
-      )
+      // Extract consignment_id from cod_reference if available
+      let consignmentId = ''
+      if (order.cod_reference) {
+        try {
+          const consignment = typeof order.cod_reference === 'string'
+            ? JSON.parse(order.cod_reference)
+            : order.cod_reference
+          consignmentId = consignment?.consignment_id || ''
+        } catch {
+          // Not JSON, no consignment_id available
+        }
+      }
 
-      // Business contact info
-      const contactInfo = business.email
-        ? business.email
-        : `${window.location.origin}/business/${business.slug}`
+      // Show consignment_id or contact info
+      doc.setFontSize(16)
+      const footerText = consignmentId
+        ? `#${consignmentId}`
+        : ''
 
       doc.text(
-        contactInfo,
+        footerText,
         A4_WIDTH / 2,
         footerY - 5,
         { align: 'center' }
       )
     }
+  }
+
+  /**
+   * Get formatted social links from business social object
+   */
+  function getSocialLinks(social: Business['social']): string[] {
+    if (!social) return []
+
+    const links: string[] = []
+    const icons: Record<string, string> = {
+      facebook: 'Facebook',
+      instagram: 'Instagram',
+      youtube: 'YouTube',
+      twitter: 'Twitter',
+      linkedin: 'LinkedIn',
+      whatsapp: 'WhatsApp'
+    }
+
+    for (const [platform, url] of Object.entries(social)) {
+      if (url) {
+        const label = icons[platform] || platform.charAt(0).toUpperCase() + platform.slice(1)
+        links.push(`${label}: ${url}`)
+      }
+    }
+
+    return links
   }
 
   /**
