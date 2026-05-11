@@ -4,6 +4,7 @@ import { publicNetwork } from '~/network/public'
 
 const route = useRoute()
 const { t } = useI18n()
+const cartStore = useCartStore()
 // Define layout for this page
 definePageMeta({
   layout: 'default'
@@ -115,6 +116,21 @@ const handleSelectVariant = (variant: import('~/network/public').ProductVariant)
 const handleSelectMedia = (index: number) => {
   setSelectedMediaIndex(index)
 }
+
+// Handle add to cart
+const handleAddToCart = () => {
+  if (!product.value) return
+
+  const firstImage = product.value.media?.[0]
+  cartStore.addItem({
+    id: product.value.id,
+    name: product.value.name,
+    price: selectedVariant.value?.price || product.value.variants?.[0]?.price || 0,
+    slug: slug.value,
+    image: firstImage?.url,
+    variant: selectedVariant.value?.attributes?.map(attr => `${attr.name}: ${attr.value}`).join(', ')
+  })
+}
 </script>
 
 <template>
@@ -192,6 +208,17 @@ const handleSelectMedia = (index: number) => {
             :get-attribute-entries="getAttributeEntries"
             @select-variant="handleSelectVariant"
           />
+
+          <!-- Add to Cart Button -->
+          <UiLuxuryButton
+            class="w-full"
+            @click="handleAddToCart"
+          >
+            <div class="flex items-center justify-center space-x-2">
+              <UiIcon name="shopping-cart" :size="20" />
+              <span>{{ t('cart.addToCart') || 'Add to Cart' }}</span>
+            </div>
+          </UiLuxuryButton>
 
           <!-- Content Sections -->
           <ProductContentSections

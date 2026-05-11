@@ -6,6 +6,12 @@ const businessBrandingStore = useBusinessBrandingStore()
 const { business, logoUrl } = storeToRefs(businessBrandingStore)
 const authStore = useAuthStore()
 const { user } = storeToRefs(authStore)
+const cartStore = useCartStore()
+const { totalItems } = storeToRefs(cartStore)
+
+onMounted(() => {
+  cartStore.loadCart()
+})
 
 const isMobileMenuOpen = ref(false)
 
@@ -52,6 +58,21 @@ watch(() => route.path, () => {
         <div class="flex items-center space-x-4">
           <!-- Language Toggle -->
           <LayoutLanguageToggle />
+
+          <!-- Cart Icon -->
+          <NuxtLink
+            to="/checkout"
+            class="relative p-2 rounded-lg text-luxury-text dark:text-luxury-dark-text hover:bg-luxury-surface dark:hover:bg-luxury-dark-surface transition-colors"
+            aria-label="View cart"
+          >
+            <UiIcon name="shopping-cart" :size="20" />
+            <span
+              v-if="totalItems > 0"
+              class="absolute -top-1 -right-1 bg-luxury-gold text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center"
+            >
+              {{ totalItems }}
+            </span>
+          </NuxtLink>
 
           <!-- Theme Toggle -->
           <button
@@ -173,6 +194,24 @@ watch(() => route.path, () => {
                   <div class="flex justify-center">
                     <LayoutLanguageToggle />
                   </div>
+
+                  <!-- Cart (Mobile) -->
+                  <NuxtLink
+                    to="/checkout"
+                    @click="closeMobileMenu"
+                    class="flex items-center justify-center space-x-2 py-2 text-luxury-text dark:text-luxury-dark-text hover:text-luxury-gold transition-colors"
+                  >
+                    <div class="relative">
+                      <UiIcon name="shopping-cart" :size="20" />
+                      <span
+                        v-if="totalItems > 0"
+                        class="absolute -top-2 -right-2 bg-luxury-gold text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center"
+                      >
+                        {{ totalItems }}
+                      </span>
+                    </div>
+                    <span class="text-sm font-medium">Cart</span>
+                  </NuxtLink>
                   <!-- Logged In User (Mobile) -->
                   <div v-if="user" class="space-y-4">
                     <div class="flex items-center justify-center space-x-2 py-2">
