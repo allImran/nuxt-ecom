@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { ref, watch } from 'vue'
+import { ref, watch, onMounted } from 'vue'
 
 export interface CartItem {
   id: string
@@ -12,22 +12,8 @@ export interface CartItem {
   slug: string
 }
 
-const getInitialCart = (): CartItem[] => {
-  if (import.meta.client) {
-    const savedCart = localStorage.getItem('cart')
-    if (savedCart) {
-      try {
-        return JSON.parse(savedCart)
-      } catch {
-        return []
-      }
-    }
-  }
-  return []
-}
-
 export const useCartStore = defineStore('cart', () => {
-  const items = ref<CartItem[]>(getInitialCart())
+  const items = ref<CartItem[]>([])
 
   const loadCart = () => {
     if (import.meta.client) {
@@ -40,6 +26,13 @@ export const useCartStore = defineStore('cart', () => {
         }
       }
     }
+  }
+
+  // Load cart on mount (client-side only)
+  if (import.meta.client) {
+    onMounted(() => {
+      loadCart()
+    })
   }
 
   const saveCart = () => {

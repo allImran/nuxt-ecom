@@ -69,7 +69,7 @@ export function useInstantOrderPdf(): UseInstantOrderPdfReturn {
 
       // Generate filename: instant-order-{id}-{date}.pdf
       const orderDate = new Date(order.created_at).toISOString().split('T')[0]
-      const filename = `instant-order-${order.id}-${orderDate}.pdf`
+      const filename = `${business?.name + '-' || ''}Order-${order.id}-${orderDate}.pdf`
 
       // Save the PDF
       doc.save(filename)
@@ -345,16 +345,16 @@ export function useInstantOrderPdf(): UseInstantOrderPdfReturn {
       }
 
       // Show consignment_id or contact info
-      doc.setFontSize(16)
+      doc.setFontSize(24)
       const footerText = consignmentId
         ? `#${consignmentId}`
         : ''
 
       doc.text(
         footerText,
-        A4_WIDTH / 2,
-        footerY - 5,
-        { align: 'center' }
+        10,
+        footerY + 10,
+        { align: 'left' }
       )
     }
   }
