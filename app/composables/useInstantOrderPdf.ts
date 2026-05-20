@@ -65,7 +65,7 @@ export function useInstantOrderPdf(): UseInstantOrderPdfReturn {
       currentY = addSummary(doc, order, currentY, margins, business)
 
       // Add footer
-      addFooter(doc, order, business, margins)
+      addFooter(doc, margins)
 
       // Generate filename: instant-order-{id}-{date}.pdf
       const orderDate = new Date(order.created_at).toISOString().split('T')[0]
@@ -165,12 +165,36 @@ export function useInstantOrderPdf(): UseInstantOrderPdfReturn {
     // doc.setTextColor(175, 143, 111)
     // doc.text('INVOICE', A4_WIDTH - margins.right, startY + 8, { align: 'right' })
 
-    // Add order ID and date (right-aligned, below invoice)
+    // Extract consignment_id from cod_reference for tracking ID
+    let consignmentId = ''
+    if (order.cod_reference) {
+      try {
+        const consignment = typeof order.cod_reference === 'string'
+          ? JSON.parse(order.cod_reference)
+          : order.cod_reference
+        consignmentId = consignment?.consignment_id || ''
+      } catch {
+        // Not JSON, no consignment_id available
+      }
+    }
+
+    // Add tracking ID, order ID and date (right-aligned)
+    let infoY = startY + 8
     doc.setFontSize(10)
     doc.setTextColor(0, 0, 0)
+
+    if (consignmentId) {
+      doc.setFontSize(20)
+      doc.setFont('HindSiliguri', 'bold')
+      doc.text(`Tracking: #${consignmentId}`, A4_WIDTH - margins.right, infoY, { align: 'right' })
+      doc.setFontSize(10)
+      doc.setFont('HindSiliguri', 'normal')
+      infoY += 8
+    }
+
     const orderDate = new Date(order.created_at).toLocaleDateString()
-    doc.text(`Order ID: ${order.id}`, A4_WIDTH - margins.right, startY + 8, { align: 'right' })
-    doc.text(`Date: ${orderDate}`, A4_WIDTH - margins.right, startY + 14, { align: 'right' })
+    doc.text(`Order ID: ${order.id}`, A4_WIDTH - margins.right, infoY, { align: 'right' })
+    doc.text(`Date: ${orderDate}`, A4_WIDTH - margins.right, infoY + 6, { align: 'right' })
 
     // Add horizontal line below header
     const lineY = Math.max(startY + logoMaxHeight, businessY) + 10
@@ -319,9 +343,9 @@ export function useInstantOrderPdf(): UseInstantOrderPdfReturn {
   }
 
   /**
-   * Add footer with consignment info
+   * Add footer
    */
-  function addFooter(doc: any, order: InstantOrder | InstantOrderListItem, business: Business, margins: any): void {
+  function addFooter(doc: any, margins: any): void {
     const pageCount = doc.getNumberOfPages()
 
     for (let i = 1; i <= pageCount; i++) {
@@ -330,32 +354,6 @@ export function useInstantOrderPdf(): UseInstantOrderPdfReturn {
 
       doc.setFontSize(8)
       doc.setTextColor(80, 80, 80)
-
-      // Extract consignment_id from cod_reference if available
-      let consignmentId = ''
-      if (order.cod_reference) {
-        try {
-          const consignment = typeof order.cod_reference === 'string'
-            ? JSON.parse(order.cod_reference)
-            : order.cod_reference
-          consignmentId = consignment?.consignment_id || ''
-        } catch {
-          // Not JSON, no consignment_id available
-        }
-      }
-
-      // Show consignment_id or contact info
-      doc.setFontSize(24)
-      const footerText = consignmentId
-        ? `#${consignmentId}`
-        : ''
-
-      doc.text(
-        footerText,
-        10,
-        footerY + 10,
-        { align: 'left' }
-      )
     }
   }
 
