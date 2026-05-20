@@ -186,7 +186,7 @@ export function useInstantOrderPdf(): UseInstantOrderPdfReturn {
     if (consignmentId) {
       doc.setFontSize(20)
       doc.setFont('HindSiliguri', 'bold')
-      doc.text(`Tracking: #${consignmentId}`, A4_WIDTH - margins.right, infoY, { align: 'right' })
+      doc.text(`CN#${consignmentId}`, A4_WIDTH - margins.right, infoY, { align: 'right' })
       doc.setFontSize(10)
       doc.setFont('HindSiliguri', 'normal')
       infoY += 8
