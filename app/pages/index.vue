@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { publicNetwork, type Product } from '~/network/public'
+
 // Get business branding for dynamic content
 const businessBrandingStore = useBusinessBrandingStore()
 const { business } = storeToRefs(businessBrandingStore)
@@ -24,12 +26,13 @@ definePageMeta({
   layout: 'default'
 })
 
-// Load featured products
-const { featuredProducts, loading, loadFeaturedProducts, viewProduct } = useHomeViewModel()
+// Server-side data fetching for featured products
+const { data: featuredProducts, pending: loading } = await useAsyncData<Product[]>(
+  'featured-products',
+  () => publicNetwork.fetchFeaturedProducts(8)
+)
 
-onMounted(() => {
-  loadFeaturedProducts(8)
-})
+const { viewProduct } = useHomeViewModel()
 </script>
 
 <template>
@@ -39,7 +42,7 @@ onMounted(() => {
 
     <!-- Product Showcase -->
     <HomeProductShowcase
-      :products="featuredProducts"
+      :products="featuredProducts ?? []"
       :loading="loading"
       @view-product="viewProduct"
     />
