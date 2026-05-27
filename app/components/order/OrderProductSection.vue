@@ -56,7 +56,7 @@ const productItems = computed((): ProductItem[] => {
       if (!product) return null
       return {
         product,
-        price: props.getProductPrice(product),
+        price: props.getProductPrice(product, op.variant_id),
         quantity: op.quantity,
         variantId: op.variant_id,
         isFirstProduct: index === 0

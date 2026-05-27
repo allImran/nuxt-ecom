@@ -47,7 +47,9 @@ export const useOrderStore = defineStore('order', () => {
   const subtotal = computed(() => {
     return orderProducts.value.reduce((sum, p) => {
       const product = products.value.find(prod => prod.id === p.id)
-      const price = product?.variants?.[0]?.price || 0
+      // Find the price of the selected variant
+      const variant = product?.variants?.find(v => v.id === p.variant_id)
+      const price = variant?.price || product?.variants?.[0]?.price || 0
       return sum + (price * p.quantity)
     }, 0)
   })
@@ -55,13 +57,26 @@ export const useOrderStore = defineStore('order', () => {
   const total = computed(() => subtotal.value + DELIVERY_FEE)
 
   // Actions - Product management
-  function initializeOrderProducts(productList: Product[]) {
+  function initializeOrderProducts(productList: Product[], selectedVariants: Record<string, string> = {}) {
     products.value = productList
-    orderProducts.value = productList.map((product, index) => ({
-      id: product.id,
-      variant_id: product.variants?.[0]?.id || null,
-      quantity: index === 0 ? 1 : 0
-    }))
+    orderProducts.value = productList.map((product, index) => {
+      // Use selected variant if available, otherwise use first variant
+      const variantId = selectedVariants[product.id] || product.variants?.[0]?.id || null
+      return {
+        id: product.id,
+        variant_id: variantId,
+        quantity: index === 0 ? 1 : 0
+      }
+    })
+  }
+
+  function updateSelectedVariants(selectedVariants: Record<string, string>) {
+    // Update variant_id for each product if it exists in selectedVariants
+    orderProducts.value.forEach(op => {
+      if (selectedVariants[op.id]) {
+        op.variant_id = selectedVariants[op.id]
+      }
+    })
   }
 
   function updateQuantity(productId: string, variantId: string | null, quantity: number) {
@@ -254,6 +269,7 @@ export const useOrderStore = defineStore('order', () => {
     // Actions
     initializeOrderProducts,
     updateQuantity,
+    updateSelectedVariants,
     setAddressField,
     validateOrder,
     submitOrder,

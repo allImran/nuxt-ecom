@@ -42,7 +42,11 @@ export function useOrderViewModel() {
     return orderStore.DELIVERY_FEE
   }
 
-  function getProductPrice(product: Product): number {
+  function getProductPrice(product: Product, variantId?: string | null): number {
+    if (variantId) {
+      const variant = product.variants?.find(v => v.id === variantId)
+      if (variant) return variant.price
+    }
     return product.variants?.[0]?.price || 0
   }
 
@@ -198,6 +202,7 @@ export function useOrderViewModel() {
 
     // Actions
     initializeOrderProducts: orderStore.initializeOrderProducts,
+    updateSelectedVariants: orderStore.updateSelectedVariants,
     handleQuantityChange,
     setQuantity,
     setDivision,

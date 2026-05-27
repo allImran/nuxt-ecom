@@ -70,6 +70,8 @@ export const useProductDetailStore = defineStore('productDetail', () => {
       // Reset selection
       selectedVariant.value = null
       selectedMediaIndex.value = 0
+      // Auto-select first variant if available
+      autoSelectFirstVariant()
     } catch (e) {
       console.error('Failed to fetch product by slug:', e)
       error.value = 'Failed to load product'
@@ -82,6 +84,14 @@ export const useProductDetailStore = defineStore('productDetail', () => {
 
   const selectVariant = (variant: ProductVariant) => {
     selectedVariant.value = variant
+  }
+
+  // Auto-select first variant if available
+  const autoSelectFirstVariant = () => {
+    const variants = product.value?.variants
+    if (variants && variants.length > 0 && !selectedVariant.value) {
+      selectedVariant.value = variants[0]
+    }
   }
 
   const setSelectedMediaIndex = (index: number) => {
@@ -114,7 +124,8 @@ export const useProductDetailStore = defineStore('productDetail', () => {
     fetchProductBySlug,
     selectVariant,
     setSelectedMediaIndex,
-    reset
+    reset,
+    autoSelectFirstVariant
   }
 })
 

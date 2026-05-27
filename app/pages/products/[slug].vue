@@ -92,6 +92,19 @@ const productsForOrder = computed(() => {
   ]
 })
 
+// Computed property for selected variants mapping
+const selectedVariantsMap = computed(() => {
+  const map: Record<string, string> = {}
+  if (product.value && selectedVariant.value) {
+    map[product.value.id] = selectedVariant.value.id
+  }
+  // For accessories, use their first variant as default
+  accessories.value.forEach(accessory => {
+    map[accessory.id] = accessory.variants?.[0]?.id || ''
+  })
+  return map
+})
+
 // Update page metadata with functional getters for reactive SEO
 useSeoMeta({
   title: () => product.value ? `${product.value.name} - INDOORSHOPPING` : 'Product - INDOORSHOPPING',
@@ -110,6 +123,14 @@ useSeoMeta({
 const handleSelectVariant = (variant: import('~/network/public').ProductVariant) => {
   selectVariant(variant)
 }
+
+// Watch for variant changes to update the selectedVariantsMap
+watch(selectedVariant, (newVariant) => {
+  if (product.value && newVariant) {
+    // The selectedVariantsMap computed will automatically update
+    // No additional action needed as the Order component watches the prop
+  }
+})
 
 // Handle media selection
 const handleSelectMedia = (index: number) => {
@@ -240,7 +261,7 @@ const handleAddToCart = () => {
     <section class="bg-luxury-gold/4 py-20 border-t border-luxury-border dark:border-luxury-dark-border" aria-labelledby="order-title">
       <h2 id="order-title" class="text-xl lg:text-2xl font-semibold text-center">{{ t('order.title') }}</h2>
 
-      <Order v-if="productsForOrder.length > 0" :products="productsForOrder" />
+      <Order v-if="productsForOrder.length > 0" :products="productsForOrder" :selected-variants="selectedVariantsMap" />
     </section>
   </div>
 </template>

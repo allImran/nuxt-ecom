@@ -94,9 +94,12 @@ import type { Product } from '~/network/public'
 
 interface Props {
   products: Product[]
+  selectedVariants?: Record<string, string> // product_id -> variant_id
 }
 
-const props = defineProps<Props>()
+const props = withDefaults(defineProps<Props>(), {
+  selectedVariants: () => ({})
+})
 
 const vm = useOrderViewModel()
 const { t } = useI18n()
@@ -141,12 +144,17 @@ const DELIVERY_FEE = getDeliveryFee()
 
 // Initialize products on mount
 onMounted(() => {
-  vm.initializeOrderProducts(props.products)
+  vm.initializeOrderProducts(props.products, props.selectedVariants)
 })
 
 // Watch for products prop changes
 watch(() => props.products, (newProducts) => {
-  vm.initializeOrderProducts(newProducts)
+  vm.initializeOrderProducts(newProducts, props.selectedVariants)
+}, { deep: true })
+
+// Watch for selectedVariants prop changes
+watch(() => props.selectedVariants, (newSelectedVariants) => {
+  vm.updateSelectedVariants(newSelectedVariants)
 }, { deep: true })
 
 // Quantity handlers
