@@ -16,7 +16,7 @@ defineProps<Props>()
     <div
       v-for="attr in attributes"
       :key="attr.key"
-      class="flex justify-between items-center text-sm"
+      class="flex gap-x-2 capitalize items-center text-sm"
     >
       <span class="text-luxury-text-muted dark:text-luxury-dark-text-muted capitalize">
         {{ attr.key }}:
