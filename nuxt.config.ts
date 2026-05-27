@@ -37,9 +37,9 @@ export default defineNuxtConfig({
         { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
         { rel: 'icon', type: 'image/png', sizes: '16x16', href: '/favicon-16x16.png' },
         { rel: 'icon', type: 'image/png', sizes: '32x32', href: '/favicon-32x32.png' },
-        { rel: 'apple-touch-icon', sizes: '180x180', href: '/apple-touch-icon.png' },
+        { rel: 'apple-touch-icon', sizes: '180x180', href: '/apple-icon-180x180.png' },
         { rel: 'icon', type: 'image/png', sizes: '192x192', href: '/android-chrome-192x192.png' },
-        { rel: 'icon', type: 'image/png', sizes: '512x512', href: '/android-chrome-512x512.png' },
+        // { rel: 'icon', type: 'image/png', sizes: '512x512', href: '/android-chrome-512x512.png' },
       ]
     }
   },
@@ -51,7 +51,7 @@ export default defineNuxtConfig({
       apiBaseURL: process.env.API_BASE_URL,
       facebookUrl: process.env.FACEBOOK_URL || 'https://www.facebook.com/theINDOORSHOPPING',
       whatsappUrl: process.env.WHATSAPP_URL || 'https://wa.me/8801521203588',
-      businessId: process.env.BUSINESS_ID || '6cadb262-2726-4a19-8a3e-90ef1b98aba3',
+      businessId: process.env.BUSINESS_ID || '71beba50-acf2-41b1-9f9b-d58e3166c16d',
       pixelId: process.env.NUXT_PUBLIC_PIXEL_ID,
     },
   },
