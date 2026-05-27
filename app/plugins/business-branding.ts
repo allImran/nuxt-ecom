@@ -8,8 +8,8 @@ export default defineNuxtPlugin(async () => {
   const config = useRuntimeConfig()
   const businessId = config.public.businessId
 
-  // Only fetch on client side
-  if (process.client && businessId) {
+  // Fetch on both server and client
+  if (businessId) {
     try {
       businessBrandingStore.setLoading(true)
 
