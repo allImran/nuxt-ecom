@@ -43,9 +43,8 @@ watch(() => route.path, () => {
               :alt="business?.name || 'Logo'"
               class="h-10 w-auto object-contain"
             />
-            <span v-else class="text-xl font-bold tracking-luxury text-luxury-text dark:text-luxury-dark-text">
-              {{ business?.name || 'URBAN<span class="text-luxury-gold">EASE</span>' }}
-            </span>
+            <UiIcon v-else="LoaderCircle" class="animate-spin" name="sun" :size="20" />
+            
           </NuxtLink>
         </div>
 

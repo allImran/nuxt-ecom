@@ -4,22 +4,16 @@
 
 import { storeToRefs } from 'pinia'
 import type { Product } from '~/network/public'
-import type { LocationData } from '~/types/location'
 import type { ShippingAddress } from '~/types/order'
-import { divisions, districts, upazilas, getLocationName, searchLocations } from '~/utils/location'
 
 export function useOrderViewModel() {
   const orderStore = useOrderStore()
-  const localeStore = useLocaleStore()
   const { t } = useI18n()
 
   // Extract reactive state from store
   const {
     orderProducts,
     products,
-    selectedDivision,
-    selectedDistrict,
-    selectedUpazila,
     fullAddress,
     mobileNumber,
     fullName,
@@ -27,15 +21,12 @@ export function useOrderViewModel() {
     error,
     success,
     orderId,
-    availableDistricts,
-    availableUpazilas,
     productsForSubmission,
     subtotal,
-    total
+    total,
+    validationErrors,
+    submitAttempted
   } = storeToRefs(orderStore)
-
-  // Locale helpers
-  const isBangla = computed(() => localeStore.isBangla)
 
   // Price helpers
   function getDeliveryFee(): number {
@@ -48,32 +39,6 @@ export function useOrderViewModel() {
       if (variant) return variant.price
     }
     return product.variants?.[0]?.price || 0
-  }
-
-  // Location name helpers (bilingual)
-  function getDivisionName(division: LocationData): string {
-    return getLocationName(division, isBangla.value)
-  }
-
-  function getDistrictName(district: LocationData): string {
-    return getLocationName(district, isBangla.value)
-  }
-
-  function getUpazilaName(upazila: LocationData): string {
-    return getLocationName(upazila, isBangla.value)
-  }
-
-  // Search functions
-  function searchDivisions(query: string): LocationData[] {
-    return searchLocations(divisions, query)
-  }
-
-  function searchDistricts(query: string): LocationData[] {
-    return searchLocations(availableDistricts.value, query)
-  }
-
-  function searchUpazilas(query: string): LocationData[] {
-    return searchLocations(availableUpazilas.value, query)
   }
 
   // Quantity handlers
@@ -96,18 +61,6 @@ export function useOrderViewModel() {
   }
 
   // Address handlers
-  function setDivision(value: string | null) {
-    orderStore.setAddressField('selectedDivision', value)
-  }
-
-  function setDistrict(value: string | null) {
-    orderStore.setAddressField('selectedDistrict', value)
-  }
-
-  function setUpazila(value: string | null) {
-    orderStore.setAddressField('selectedUpazila', value)
-  }
-
   function setAddress(value: string) {
     orderStore.setAddressField('fullAddress', value)
   }
@@ -122,10 +75,6 @@ export function useOrderViewModel() {
 
   // Build shipping address for API submission
   function buildShippingAddress(): ShippingAddress {
-    const division = divisions.find(d => d.id === selectedDivision.value)
-    const district = districts.find(d => d.id === selectedDistrict.value)
-    const upazila = upazilas.find(u => u.id === selectedUpazila.value)
-
     // Format phone number - add 880 prefix if not present
     let formattedMobile = mobileNumber.value.replace(/\s/g, '')
     if (!formattedMobile.startsWith('880')) {
@@ -133,12 +82,12 @@ export function useOrderViewModel() {
     }
 
     return {
-      division: selectedDivision.value || '',
-      division_name: division ? getDivisionName(division) : '',
-      district: selectedDistrict.value || undefined,
-      district_name: district ? getDistrictName(district) : undefined,
-      upazila: selectedUpazila.value || undefined,
-      upazila_name: upazila ? getUpazilaName(upazila) : undefined,
+      division: '',
+      division_name: '',
+      district: undefined,
+      district_name: undefined,
+      upazila: undefined,
+      upazila_name: undefined,
       address: fullAddress.value,
       full_name: fullName.value,
       mobile: formattedMobile
@@ -154,8 +103,8 @@ export function useOrderViewModel() {
   // Get error message for display
   const errorMessage = computed(() => {
     if (!error.value) return ''
+    if (error.value === 'formErrors') return t('validation.fillFormCorrectly')
     if (error.value === 'noProducts') return t('order.noProducts')
-    if (error.value === 'division') return t('validation.required')
     if (error.value === 'address') return t('validation.required')
     if (error.value === 'mobile') return t('validation.required')
     if (error.value === 'invalidPhone') return t('order.invalidPhone')
@@ -169,9 +118,6 @@ export function useOrderViewModel() {
     // State from store
     orderProducts,
     products,
-    selectedDivision,
-    selectedDistrict,
-    selectedUpazila,
     fullAddress,
     mobileNumber,
     fullName,
@@ -179,35 +125,23 @@ export function useOrderViewModel() {
     error,
     success,
     orderId,
-    availableDistricts,
-    availableUpazilas,
     productsForSubmission,
     subtotal,
     total,
     errorMessage,
     successMessage,
-    isBangla,
+    validationErrors,
+    submitAttempted,
 
     // Helpers
     getDeliveryFee,
     getProductPrice,
-    getDivisionName,
-    getDistrictName,
-    getUpazilaName,
-
-    // Search
-    searchDivisions,
-    searchDistricts,
-    searchUpazilas,
 
     // Actions
     initializeOrderProducts: orderStore.initializeOrderProducts,
     updateSelectedVariants: orderStore.updateSelectedVariants,
     handleQuantityChange,
     setQuantity,
-    setDivision,
-    setDistrict,
-    setUpazila,
     setAddress,
     setMobile,
     setFullName,

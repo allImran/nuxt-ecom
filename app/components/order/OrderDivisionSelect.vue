@@ -37,6 +37,9 @@
     <p v-if="selectedDivisionName" class="mt-2 text-sm text-luxury-text-muted dark:text-luxury-dark-text-muted">
       {{ t('order.selectDivision') }}: {{ selectedDivisionName }}
     </p>
+    <p v-if="error" class="mt-2 text-sm text-red-600 dark:text-red-400">
+      {{ error }}
+    </p>
   </div>
 </template>
 
@@ -48,6 +51,7 @@ interface Props {
   isBangla: boolean
   searchDivisions: (query: string) => LocationData[]
   onDivisionChange: (value: string | null) => void
+  error: string
 }
 
 const props = defineProps<Props>()

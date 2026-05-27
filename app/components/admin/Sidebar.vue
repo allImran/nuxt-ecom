@@ -1,14 +1,7 @@
 <template>
-  <aside class="w-64 bg-luxury-surface dark:bg-luxury-dark-surface border-r border-luxury-border dark:border-luxury-dark-border flex flex-col transition-colors duration-200 h-full">
-    <div class="h-16 flex items-center justify-between px-4 border-b border-luxury-border dark:border-luxury-dark-border">
-      <h1 class="text-xl font-bold text-luxury-text dark:text-luxury-dark-text tracking-luxury">DB Admin</h1>
-      <!-- Close button on mobile -->
-      <button
-        @click="emit('close')"
-        class="lg:hidden p-2 rounded-lg hover:bg-luxury-bg/50 dark:hover:bg-luxury-dark-bg/50 transition-colors"
-      >
-        <UiIcon name="x" :size="20" />
-      </button>
+  <aside class="w-64 bg-luxury-surface dark:bg-luxury-dark-surface border-r border-luxury-border dark:border-luxury-dark-border flex flex-col transition-colors duration-200">
+    <div class="h-16 flex items-center justify-center border-b border-luxury-border dark:border-luxury-dark-border">
+      <h1 class="text-xl font-bold text-luxury-text dark:text-luxury-dark-text tracking-luxury">Dashboard</h1>
     </div>
 
     <nav class="flex-1 overflow-y-auto py-4">

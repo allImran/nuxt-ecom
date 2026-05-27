@@ -199,7 +199,7 @@ const handleAddToCart = () => {
       <!-- Product Detail -->
       <div v-else-if="hasProduct" class="grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-12">
         <!-- Left Column - Media Gallery (60%) -->
-        <div class="lg:col-span-2">
+        <div class="lg:col-span-2 space-y-6">
           <ProductMediaGallery
             v-if="hasMedia"
             :media="orderedMedia"
@@ -210,6 +210,22 @@ const handleAddToCart = () => {
           <div v-else class="w-full aspect-square bg-luxury-surface dark:bg-luxury-dark-surface rounded-lg flex items-center justify-center">
             <UiIcon name="image" :size="80" class="text-luxury-text-muted dark:text-luxury-dark-text-muted" />
           </div>
+
+          <!-- Animated Scroll to Order Button -->
+          <button
+            @click="scrollToOrder"
+            class="group relative w-full overflow-hidden rounded-lg bg-gradient-to-r from-luxury-gold to-amber-600 px-8 py-4 text-lg font-semibold text-white shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-[1.02] active:scale-[0.98]"
+          >
+            <span class="relative z-10 flex items-center justify-center gap-3">
+              <span>{{ t('order.scrollToOrder') }}</span>
+              <UiIcon
+                name="arrow-down"
+                :size="20"
+                class="animate-bounce"
+              />
+            </span>
+            <div class="absolute inset-0 -translate-x-full group-hover:animate-shimmer bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+          </button>
         </div>
 
         <!-- Right Column - Product Info (40%) -->

@@ -46,7 +46,8 @@
     "required": "This field is required",
     "email": "Please provide a valid email address",
     "minLength": "Minimum {min} characters required",
-    "maxLength": "Maximum {max} characters allowed"
+    "maxLength": "Maximum {max} characters allowed",
+    "fillFormCorrectly": "Fill out the form correctly"
   },
   "errors": {
     "generic": "Something went wrong. Please try again.",
@@ -125,6 +126,7 @@
   },
   "order": {
     "title": "All fields marked with * must be completed to place an order",
+    "scrollToOrder": "Order Now (Cash on Delivery)",
     "order": "Order",
     "items": "Order Items",
     "shippingAddress": "Shipping Address",
@@ -142,7 +144,7 @@
     "subtotal": "Subtotal",
     "deliveryFee": "Delivery Fee",
     "total": "Total",
-    "placeOrder": "Confirm the order",
+    "placeOrder": "Place Order",
     "cashOnDelivery": "Cash on Delivery",
     "othersComingSoon": "Others (coming soon)",
     "noProducts": "Please select at least one product",
@@ -156,6 +158,10 @@
     "optional": "Optional",
     "paymentMethods": "Payment Methods",
     "continueShopping": "Continue Shopping",
-    "trackOrder": "Track Order"
+    "trackOrder": "Track Order",
+    "requiredFieldsInfo": "All fields marked with * must be completed to place an order.",
+    "yourCart": "Your Cart",
+    "deliveryDetails": "Delivery Details",
+    "totalPayable": "Total Payable"
   }
 }

@@ -1,7 +1,7 @@
 <template>
   <div class="order-component max-w-4xl mx-auto p-6  pt-12">
     <!-- Success state -->
-    <div v-if="success && !loading" class="text-center py-12">
+    <div v-if="success && !loading" ref="successSection" class="text-center py-12">
       <div class="text-6xl mb-4">✓</div>
       <h2 class="text-2xl font-semibold text-green-600 dark:text-green-400 mb-2">{{ t('common.success') }}</h2>
       <p class="text-luxury-text-muted dark:text-luxury-dark-text-muted">{{ successMessage }}</p>
@@ -24,13 +24,14 @@
     </div>
 
     <!-- Order form -->
-    <form v-else class="grid grid-cols-1 lg:grid-cols-2 gap-8" @submit.prevent="handleSubmit">
+    <form v-else class="grid grid-cols-1 lg:grid-cols-2 gap-8" autocomplete="on" @submit.prevent="handleSubmit">
       <!-- Left column: Products and Payment -->
       <div class="space-y-8">
         <OrderProductSection
           :products="products"
           :order-products="orderProducts"
           :get-product-price="getProductPrice"
+          :error="submitAttempted ? (validationErrors.products || '') : ''"
           @increase="handleQuantityIncrease"
           @decrease="handleQuantityDecrease"
         />
@@ -39,40 +40,35 @@
       </div>
 
       <!-- Right column: Address and Summary -->
-      <div class="space-y-8">
-        <OrderAddressSection
-          :selected-division="selectedDivision"
-          :selected-district="selectedDistrict"
-          :selected-upazila="selectedUpazila"
-          :full-address="fullAddress"
-          :mobile-number="mobileNumber"
-          :full-name="fullName"
-          :is-bangla="isBangla"
-          :available-districts="availableDistricts"
-          :available-upazilas="availableUpazilas"
-          :search-divisions="searchDivisions"
-          :search-districts="searchDistricts"
-          :search-upazilas="searchUpazilas"
-          @division-change="setDivision"
-          @district-change="setDistrict"
-          @upazila-change="setUpazila"
-          @address-change="setAddress"
-          @mobile-change="setMobile"
-          @full-name-change="setFullName"
-        />
+      <div class="bg-luxury-surface dark:bg-luxury-dark-surface rounded-2xl p-6 lg:p-8 border border-luxury-border dark:border-gray-600 sticky top-8">
+        <h2 class="text-xl font-bold mb-6 text-luxury-text dark:text-luxury-dark-text">Delivery Information</h2>
+        <div class="space-y-5">
+          <OrderAddressSection
+            :full-address="fullAddress"
+            :mobile-number="mobileNumber"
+            :full-name="fullName"
+            :submit-attempted="submitAttempted"
+            :validation-errors="validationErrors"
+            @address-change="setAddress"
+            @mobile-change="setMobile"
+            @full-name-change="setFullName"
+          />
+        </div>
 
-        <OrderSummary
-          :subtotal="subtotal"
-          :delivery-fee="DELIVERY_FEE"
-          :total="total"
-          :loading="loading"
-          :success="success"
-          :error="!!error"
-          :error-message="errorMessage"
-          :success-message="successMessage"
-          :has-products="productsForSubmission.length > 0"
-          @submit="handleSubmit"
-        />
+        <div class="mt-8 pt-8 border-t border-luxury-border dark:border-gray-600">
+          <OrderSummary
+            :subtotal="subtotal"
+            :delivery-fee="DELIVERY_FEE"
+            :total="total"
+            :loading="loading"
+            :success="success"
+            :error="!!error"
+            :error-message="errorMessage"
+            :success-message="successMessage"
+            :has-products="productsForSubmission.length > 0"
+            @submit="handleSubmit"
+          />
+        </div>
       </div>
     </form>
 
@@ -107,9 +103,6 @@ const { t } = useI18n()
 // Extract state from composable
 const {
   orderProducts,
-  selectedDivision,
-  selectedDistrict,
-  selectedUpazila,
   fullAddress,
   mobileNumber,
   fullName,
@@ -118,29 +111,25 @@ const {
   success,
   orderId,
   getDeliveryFee,
-  availableDistricts,
-  availableUpazilas,
   productsForSubmission,
   subtotal,
   total,
   errorMessage,
   successMessage,
-  isBangla,
   getProductPrice,
-  searchDivisions,
-  searchDistricts,
-  searchUpazilas,
-  setDivision,
-  setDistrict,
-  setUpazila,
+  handleSubmit: vmHandleSubmit,
+  resetOrder,
+  validationErrors,
+  submitAttempted,
   setAddress,
   setMobile,
-  setFullName,
-  handleSubmit: vmHandleSubmit,
-  resetOrder
+  setFullName
 } = vm
 
 const DELIVERY_FEE = getDeliveryFee()
+
+// Success section ref for scrolling
+const successSection = ref<HTMLElement | null>(null)
 
 // Initialize products on mount
 onMounted(() => {
@@ -156,6 +145,14 @@ watch(() => props.products, (newProducts) => {
 watch(() => props.selectedVariants, (newSelectedVariants) => {
   vm.updateSelectedVariants(newSelectedVariants)
 }, { deep: true })
+
+// Scroll to success section when order is successful
+watch(success, async (isSuccess) => {
+  if (isSuccess) {
+    await nextTick()
+    successSection.value?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+  }
+})
 
 // Quantity handlers
 function handleQuantityIncrease(productId: string, variantId: string | null) {

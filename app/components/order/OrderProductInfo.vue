@@ -1,26 +1,8 @@
 <template>
-  <div class="order-product-info flex items-center gap-3 ">
-    <div class="flex flex-col items-center gap-3 bg-luxury-gold/10 py-2 px-5" v-if="firstImage">
-      <img
-        
-        :src="firstImage"
-        :alt="product.name"
-        class="size-16 object-cover rounded-lg"
-      />
-      <div>
-      <!-- <h3 class="font-medium text-luxury-text dark:text-luxury-dark-text">{{ product.name }}</h3> -->
-      <p class="text-sm text-luxury-text-muted dark:text-luxury-dark-text-muted">
-        {{ formatPrice(productPrice) }}
-      </p>
-    </div>
-    </div>
-    <div
-      v-else
-      class="size-16 bg-luxury-border dark:bg-luxury-dark-border rounded-lg flex items-center justify-center"
-    >
-      <span class="text-luxury-text-muted dark:text-luxury-dark-text-muted text-xs">No image</span>
-    </div>
-    
+  <div class="order-product-info flex-1 min-w-0 flex flex-col justify-center h-full">
+    <h3 class="font-bold text-base text-luxury-text dark:text-luxury-dark-text truncate leading-tight pr-1" :title="product.name">{{ product.name }}</h3>
+    <p class="text-xs text-luxury-text-muted dark:text-luxury-dark-text-muted mt-0.5 truncate">{{ product.category?.name || '' }}</p>
+    <p class="text-luxury-gold font-bold text-sm mt-1">{{ formatPrice(productPrice) }}</p>
   </div>
 </template>
 

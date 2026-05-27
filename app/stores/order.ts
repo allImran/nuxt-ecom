@@ -24,6 +24,12 @@ export const useOrderStore = defineStore('order', () => {
   const success = ref(false)
   const orderId = ref<string | null>(null)
 
+  // Validation errors state for individual fields
+  const validationErrors = ref<Record<string, string>>({})
+
+  // Whether form has been attempted to submit (to trigger error display)
+  const submitAttempted = ref(false)
+
   // Constants
   const DELIVERY_FEE = 100
 
@@ -117,28 +123,36 @@ export const useOrderStore = defineStore('order', () => {
 
   // Actions - Validation
   function validateOrder(): { valid: boolean; message: string | null } {
+    // Clear previous errors
+    validationErrors.value = {}
+
     // Check if at least one product has quantity > 0
     if (productsForSubmission.value.length === 0) {
-      return { valid: false, message: 'noProducts' }
+      validationErrors.value.products = 'add a product'
     }
 
     // Check required address fields
-    if (!selectedDivision.value) {
-      return { valid: false, message: 'division' }
+    if (!fullAddress.value.trim()) {
+      validationErrors.value.fullAddress = 'write full address'
     }
 
-    if (!fullAddress.value.trim()) {
-      return { valid: false, message: 'address' }
+    if (!fullName.value.trim()) {
+      validationErrors.value.fullName = 'write full name'
     }
 
     if (!mobileNumber.value.trim()) {
-      return { valid: false, message: 'mobile' }
+      validationErrors.value.mobileNumber = 'write mobile number'
+    } else {
+      // Basic mobile validation (should be numeric and reasonable length)
+      const mobileClean = String(mobileNumber.value || '').replace(/\s/g, '')
+      if (!/^\d{10,15}$/.test(mobileClean)) {
+        validationErrors.value.mobileNumber = 'invalid phone number'
+      }
     }
 
-    // Basic mobile validation (should be numeric and reasonable length)
-    const mobileClean = String(mobileNumber.value || '').replace(/\s/g, '')
-    if (!/^\d{10,15}$/.test(mobileClean)) {
-      return { valid: false, message: 'invalidPhone' }
+    const hasErrors = Object.keys(validationErrors.value).length > 0
+    if (hasErrors) {
+      return { valid: false, message: 'formErrors' }
     }
 
     return { valid: true, message: null }
@@ -156,6 +170,7 @@ export const useOrderStore = defineStore('order', () => {
     mobile: string
     full_name?: string
   }) {
+    submitAttempted.value = true
     const validation = validateOrder()
     if (!validation.valid) {
       error.value = validation.message || 'Validation failed'
@@ -239,6 +254,8 @@ export const useOrderStore = defineStore('order', () => {
     error.value = null
     success.value = false
     orderId.value = null
+    validationErrors.value = {}
+    submitAttempted.value = false
   }
 
   return {
@@ -255,6 +272,8 @@ export const useOrderStore = defineStore('order', () => {
     error,
     success,
     orderId,
+    validationErrors,
+    submitAttempted,
 
     // Constants
     DELIVERY_FEE,

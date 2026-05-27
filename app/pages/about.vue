@@ -15,6 +15,12 @@ if (import.meta.server) {
     twitterDescription: t('about.hero.subtitle'),
   })
 }
+useHead({
+  title: `${t('about.title')}`,
+  meta: [
+    { name: 'description', content: t('about.hero.subtitle') }
+  ]
+})
 
 // Define layout for this page
 definePageMeta({
