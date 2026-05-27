@@ -1,12 +1,20 @@
 <script setup lang="ts">
 // Page metadata
 const { t } = useI18n()
-useHead({
-  title: `URBANEASE - ${t('about.title')}`,
-  meta: [
-    { name: 'description', content: t('about.hero.subtitle') }
-  ]
-})
+
+// Server-side optimized SEO
+if (import.meta.server) {
+  useSeoMeta({
+    title: `INDOORSHOPPING - ${t('about.title')}`,
+    description: t('about.hero.subtitle'),
+    ogTitle: `INDOORSHOPPING - ${t('about.title')}`,
+    ogDescription: t('about.hero.subtitle'),
+    ogType: 'website',
+    twitterCard: 'summary_large_image',
+    twitterTitle: `INDOORSHOPPING - ${t('about.title')}`,
+    twitterDescription: t('about.hero.subtitle'),
+  })
+}
 
 // Define layout for this page
 definePageMeta({

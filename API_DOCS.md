@@ -1,6 +1,6 @@
 # API Documentation
 
-Base URL: `https://urbanease-backend.vercel.app/api`
+Base URL: `https://INDOORSHOPPING-backend.vercel.app/api`
 
 ## Authentication
 

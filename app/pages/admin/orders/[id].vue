@@ -51,20 +51,13 @@ onMounted(() => {
   }
 })
 
-// Update page metadata
-watchEffect(() => {
-  if (orderDetail.value) {
-    useHead({
-      title: `Order ${orderDetail.value.id.slice(0, 8)} - Admin`,
-      meta: [
-        {
-          name: 'description',
-          content: `Order details for ${orderDetail.value.id}`
-        }
-      ]
-    })
-  }
-})
+// Server-side SEO - admin pages should not be indexed
+if (import.meta.server) {
+  useSeoMeta({
+    title: () => orderDetail.value ? `Order ${orderDetail.value.id.slice(0, 8)} - Admin` : 'Order Details - Admin',
+    robots: 'noindex, nofollow',
+  })
+}
 
 // Clean up on unmount
 onUnmounted(() => {
@@ -168,6 +161,9 @@ const cancelQuantityEdit = () => {
 
 <template>
   <div class="space-y-6">
+    <!-- Screen reader only h1 for SEO -->
+    <h1 class="sr-only">Admin Order Details</h1>
+
     <!-- Back Button -->
      <div class="flex justify-between">
        <button

@@ -103,13 +103,19 @@ const shippingTranslations: Record<string, any> = {
 
 const currentShipping = computed(() => shippingTranslations[locale.value] || shippingTranslations.en)
 
-// Page metadata
-useHead({
-  title: 'Shipping Information - URBANEASE',
-  meta: [
-    { name: 'description', content: 'Learn about URBANEASE shipping policies, delivery times, and tracking information.' }
-  ]
-})
+// Page metadata - server-side optimized SEO
+if (import.meta.server) {
+  useSeoMeta({
+    title: 'Shipping Information',
+    description: 'Learn about INDOORSHOPPING shipping policies, delivery times, and tracking information.',
+    ogTitle: 'Shipping Information | INDOORSHOPPING',
+    ogDescription: 'Learn about INDOORSHOPPING shipping policies, delivery times, and tracking information.',
+    ogType: 'website',
+    twitterCard: 'summary_large_image',
+    twitterTitle: 'Shipping Information | INDOORSHOPPING',
+    twitterDescription: 'Learn about INDOORSHOPPING shipping policies, delivery times, and tracking information.',
+  })
+}
 
 definePageMeta({
   layout: 'default'

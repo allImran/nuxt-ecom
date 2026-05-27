@@ -1,5 +1,7 @@
 <template>
   <div class="space-y-6">
+    <h1 class="sr-only">Categories Management</h1>
+
     <AdminHeader
       title="Categories"
       v-model="searchQuery"

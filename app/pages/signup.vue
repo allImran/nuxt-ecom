@@ -3,6 +3,15 @@ definePageMeta({
   layout: 'default'
 })
 
+// Server-side optimized SEO - auth pages should not be indexed
+if (import.meta.server) {
+  useSeoMeta({
+    title: 'Create Account',
+    description: 'Create a new INDOORSHOPPING account to enjoy a personalized shopping experience.',
+    robots: 'noindex, nofollow',
+  })
+}
+
 const authStore = useAuthStore()
 const identifier = ref('')
 const password = ref('')

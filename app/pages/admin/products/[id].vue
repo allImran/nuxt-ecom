@@ -205,6 +205,14 @@ onMounted(() => {
   loadProduct()
 })
 
+// Server-side SEO - admin pages should not be indexed
+if (import.meta.server) {
+  useSeoMeta({
+    title: () => currentProduct.value ? `${currentProduct.value.name} - Admin` : 'Edit Product - Admin',
+    robots: 'noindex, nofollow',
+  })
+}
+
 // Watch for route changes
 watch(productId, () => {
   reset()

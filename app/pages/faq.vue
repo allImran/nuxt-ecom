@@ -85,13 +85,19 @@ const toggleQuestion = (id: string) => {
   expandedQuestion.value = expandedQuestion.value === id ? null : id
 }
 
-// Page metadata
-useHead({
-  title: 'FAQ - URBANEASE',
-  meta: [
-    { name: 'description', content: 'Find answers to frequently asked questions about URBANEASE products, services, and policies.' }
-  ]
-})
+// Page metadata - server-side optimized SEO
+if (import.meta.server) {
+  useSeoMeta({
+    title: 'FAQ',
+    description: 'Find answers to frequently asked questions about INDOORSHOPPING products, services, and policies.',
+    ogTitle: 'FAQ | INDOORSHOPPING',
+    ogDescription: 'Find answers to frequently asked questions about INDOORSHOPPING products, services, and policies.',
+    ogType: 'website',
+    twitterCard: 'summary_large_image',
+    twitterTitle: 'FAQ | INDOORSHOPPING',
+    twitterDescription: 'Find answers to frequently asked questions about INDOORSHOPPING products, services, and policies.',
+  })
+}
 
 definePageMeta({
   layout: 'default'

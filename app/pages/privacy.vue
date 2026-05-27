@@ -91,13 +91,19 @@ const privacyTranslations: Record<string, any> = {
 
 const currentPrivacy = computed(() => privacyTranslations[locale.value] || privacyTranslations.en)
 
-// Page metadata
-useHead({
-  title: 'Privacy Policy - URBANEASE',
-  meta: [
-    { name: 'description', content: 'Learn about how URBANEASE collects, uses, and protects your personal information.' }
-  ]
-})
+// Page metadata - server-side optimized SEO
+if (import.meta.server) {
+  useSeoMeta({
+    title: 'Privacy Policy',
+    description: 'Learn about how INDOORSHOPPING collects, uses, and protects your personal information.',
+    ogTitle: 'Privacy Policy | INDOORSHOPPING',
+    ogDescription: 'Learn about how INDOORSHOPPING collects, uses, and protects your personal information.',
+    ogType: 'website',
+    twitterCard: 'summary_large_image',
+    twitterTitle: 'Privacy Policy | INDOORSHOPPING',
+    twitterDescription: 'Learn about how INDOORSHOPPING collects, uses, and protects your personal information.',
+  })
+}
 
 definePageMeta({
   layout: 'default'

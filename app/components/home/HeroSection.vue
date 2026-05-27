@@ -15,7 +15,7 @@ const scrollToProducts = () => {
         <!-- Welcome Badge -->
         <div class="inline-flex items-center px-32 py-2 rounded-full bg-luxury-gold/10 border border-luxury-gold/30 mb-6">
           <span class="text-sm font-medium text-luxury-gold tracking-wide">
-            Welcome to {{ business?.name || 'URBANEASE' }}
+            Welcome to {{ business?.name || 'INDOORSHOPPING' }}
           </span>
         </div>
 

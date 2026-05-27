@@ -48,13 +48,13 @@ The generated PDF SHALL be a native A4-sized document (210mm × 297mm) with prof
 - **AND** all elements are positioned precisely
 - **AND** fonts, colors, and styling are embedded in the PDF
 
-### Requirement: PDF Content - UrbanEase Logo
+### Requirement: PDF Content - INDOORSHOPPING Logo
 
-The generated PDF SHALL include the UrbanEase logo in the document header.
+The generated PDF SHALL include the INDOORSHOPPING logo in the document header.
 
 #### Scenario: Logo display in header
 
-- **GIVEN** the UrbanEase logo file exists at `/public/urban-ease-logo.png`
+- **GIVEN** the INDOORSHOPPING logo file exists at `/public/urban-ease-logo.png`
 - **WHEN** the PDF is generated
 - **THEN** the logo is displayed in the top-left of the header
 - **AND** the logo width is approximately 40-50mm
@@ -63,7 +63,7 @@ The generated PDF SHALL include the UrbanEase logo in the document header.
 
 #### Scenario: Logo missing or unavailable
 
-- **GIVEN** the UrbanEase logo file is not available
+- **GIVEN** the INDOORSHOPPING logo file is not available
 - **WHEN** the PDF is generated
 - **THEN** the PDF still generates successfully
 - **AND** the company name is displayed as text fallback
@@ -83,7 +83,7 @@ The generated PDF SHALL include company details at the top of the document in a 
 - **AND** includes company email
 - **AND** displays "INVOICE" label prominently
 - **AND** displays order ID and order date
-- **AND** the UrbanEase logo is positioned to the left of company details
+- **AND** the INDOORSHOPPING logo is positioned to the left of company details
 
 #### Scenario: Company details are configurable
 

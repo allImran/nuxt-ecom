@@ -92,19 +92,18 @@ const productsForOrder = computed(() => {
   ]
 })
 
-// Update page metadata
-watchEffect(() => {
-  if (product.value) {
-    useHead({
-      title: `${product.value.name} - URBANEASE`,
-      meta: [
-        {
-          name: 'description',
-          content: product.value.name
-        }
-      ]
-    })
-  }
+// Update page metadata with functional getters for reactive SEO
+useSeoMeta({
+  title: () => product.value ? `${product.value.name} - INDOORSHOPPING` : 'Product - INDOORSHOPPING',
+  description: () => product.value?.description || product.value?.name || 'Discover premium luxury products at INDOORSHOPPING.',
+  ogTitle: () => product.value ? `${product.value.name} - INDOORSHOPPING` : 'Product - INDOORSHOPPING',
+  ogDescription: () => product.value?.description || product.value?.name || 'Discover premium luxury products at INDOORSHOPPING.',
+  ogType: 'website',
+  ogImage: () => product.value?.media?.[0]?.url || '/og-image.jpg',
+  twitterCard: 'summary_large_image',
+  twitterTitle: () => product.value ? `${product.value.name} - INDOORSHOPPING` : 'Product - INDOORSHOPPING',
+  twitterDescription: () => product.value?.description || product.value?.name || 'Discover premium luxury products at INDOORSHOPPING.',
+  twitterImage: () => product.value?.media?.[0]?.url || '/og-image.jpg',
 })
 
 // Handle variant selection
@@ -135,23 +134,25 @@ const handleAddToCart = () => {
 
 <template>
   <div class="min-h-screen bg-luxury-bg dark:bg-luxury-dark-bg">
-    <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <!-- Breadcrumbs -->
-      <ProductBreadcrumbs>
-        <ProductBreadcrumbsItem href="/">Home</ProductBreadcrumbsItem>
-        <ProductBreadcrumbsItem :href="`/products/${slug}`" :last="true">
-          {{ product?.name || 'Product' }}
-        </ProductBreadcrumbsItem>
-      </ProductBreadcrumbs>
+      <nav aria-label="Breadcrumb">
+        <ProductBreadcrumbs>
+          <ProductBreadcrumbsItem href="/">Home</ProductBreadcrumbsItem>
+          <ProductBreadcrumbsItem :href="`/products/${slug}`" :last="true">
+            {{ product?.name || 'Product' }}
+          </ProductBreadcrumbsItem>
+        </ProductBreadcrumbs>
+      </nav>
 
       <!-- Error State -->
       <div v-if="error && !loading" class="text-center py-12">
         <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-luxury-surface dark:bg-luxury-dark-surface mb-4">
           <UiIcon name="alert-circle" :size="40" class="text-luxury-text-muted dark:text-luxury-dark-text-muted" />
         </div>
-        <h2 class="text-2xl font-bold text-luxury-text dark:text-luxury-dark-text mb-2">
+        <h1 class="text-2xl font-bold text-luxury-text dark:text-luxury-dark-text mb-2">
           Product Not Found
-        </h2>
+        </h1>
         <p class="text-luxury-text-muted dark:text-luxury-dark-text-muted mb-6">
           {{ error }}
         </p>
@@ -192,6 +193,11 @@ const handleAddToCart = () => {
 
         <!-- Right Column - Product Info (40%) -->
         <div class="lg:col-span-3 space-y-8">
+          <!-- Product Name (h1 for SEO) -->
+          <h1 class="text-3xl sm:text-4xl font-bold text-luxury-text dark:text-luxury-dark-text">
+            {{ product?.name || 'Product' }}
+          </h1>
+
           <!-- Basic Info -->
           <ProductInfoSection
             :name="product?.name"
@@ -229,12 +235,12 @@ const handleAddToCart = () => {
         </div>
       </div>
 
-    </div>
+    </main>
 
-    <div class="bg-luxury-gold/4 py-20 border-t border-luxury-border dark:border-luxury-dark-border">
-      <h2 class="text-xl lg:text-2xl  font-semibold text-center">{{ t('order.title') }}</h2>
+    <section class="bg-luxury-gold/4 py-20 border-t border-luxury-border dark:border-luxury-dark-border" aria-labelledby="order-title">
+      <h2 id="order-title" class="text-xl lg:text-2xl font-semibold text-center">{{ t('order.title') }}</h2>
 
       <Order v-if="productsForOrder.length > 0" :products="productsForOrder" />
-    </div>
+    </section>
   </div>
 </template>

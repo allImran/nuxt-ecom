@@ -1,11 +1,17 @@
 <script setup lang="ts">
-// Page metadata
-useHead({
-  title: 'Products - URBANEASE',
-  meta: [
-    { name: 'description', content: 'Browse our complete collection of premium luxury products at URBANEASE.' }
-  ]
-})
+// Page metadata - server-side optimized SEO
+if (import.meta.server) {
+  useSeoMeta({
+    title: 'Products',
+    description: 'Browse our complete collection of premium luxury products at INDOORSHOPPING.',
+    ogTitle: 'Products | INDOORSHOPPING',
+    ogDescription: 'Browse our complete collection of premium luxury products at INDOORSHOPPING.',
+    ogType: 'website',
+    twitterCard: 'summary_large_image',
+    twitterTitle: 'Products | INDOORSHOPPING',
+    twitterDescription: 'Browse our complete collection of premium luxury products at INDOORSHOPPING.',
+  })
+}
 
 // Define layout for this page
 definePageMeta({

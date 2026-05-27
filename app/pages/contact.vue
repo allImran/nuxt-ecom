@@ -14,17 +14,21 @@ const openLink = (url: string) => {
 }
 
 // Page metadata - dynamic based on business name
-const businessName = computed(() => business.value?.name || 'URBANEASE')
+const businessName = computed(() => business.value?.name || 'INDOORSHOPPING')
 
-useHead({
-  title: computed(() => `Contact Us - ${businessName.value}`),
-  meta: [
-    computed(() => ({
-      name: 'description',
-      content: `Get in touch with ${businessName.value} through Facebook or WhatsApp.`
-    }))
-  ]
-})
+// Server-side optimized SEO
+if (import.meta.server) {
+  useSeoMeta({
+    title: () => `Contact Us - ${businessName.value}`,
+    description: () => `Get in touch with ${businessName.value} through Facebook or WhatsApp.`,
+    ogTitle: () => `Contact Us - ${businessName.value}`,
+    ogDescription: () => `Get in touch with ${businessName.value} through Facebook or WhatsApp.`,
+    ogType: 'website',
+    twitterCard: 'summary_large_image',
+    twitterTitle: () => `Contact Us - ${businessName.value}`,
+    twitterDescription: () => `Get in touch with ${businessName.value} through Facebook or WhatsApp.`,
+  })
+}
 
 definePageMeta({
   layout: 'default'

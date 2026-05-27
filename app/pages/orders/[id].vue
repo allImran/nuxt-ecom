@@ -36,19 +36,11 @@ onMounted(() => {
   }
 })
 
-// Update page metadata
-watchEffect(() => {
-  if (order.value) {
-    useHead({
-      title: `Order ${order.value.id} - URBANEASE`,
-      meta: [
-        {
-          name: 'description',
-          content: `Order details for order ${order.value.id}`
-        }
-      ]
-    })
-  }
+// Update page metadata with functional getters for reactive SEO
+useSeoMeta({
+  title: () => order.value ? `Order ${order.value.id} - INDOORSHOPPING` : 'Order Details - INDOORSHOPPING',
+  description: () => order.value ? `Order details for order ${order.value.id}. Status: ${order.value.status}.` : 'View your order details.',
+  robots: 'noindex, nofollow',
 })
 
 // Clean up on unmount
@@ -64,7 +56,7 @@ const navigateBack = () => {
 
 <template>
   <div class="min-h-screen bg-luxury-bg dark:bg-luxury-dark-bg">
-    <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <!-- Back Button -->
       <button
         @click="navigateBack"
@@ -79,9 +71,9 @@ const navigateBack = () => {
         <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-luxury-surface dark:bg-luxury-dark-surface mb-4">
           <UiIcon name="alert-circle" :size="40" class="text-luxury-text-muted dark:text-luxury-dark-text-muted" />
         </div>
-        <h2 class="text-2xl font-bold text-luxury-text dark:text-luxury-dark-text mb-2">
+        <h1 class="text-2xl font-bold text-luxury-text dark:text-luxury-dark-text mb-2">
           {{ error === 'notFound' ? t('order.notFound') : t('errors.generic') }}
-        </h2>
+        </h1>
         <p class="text-luxury-text-muted dark:text-luxury-dark-text-muted mb-6">
           {{ error === 'notFound' ? t('order.notFoundMessage') : t('errors.genericMessage') }}
         </p>
@@ -110,6 +102,9 @@ const navigateBack = () => {
 
       <!-- Order Detail -->
       <div v-else-if="order" class="space-y-8">
+        <!-- Page Title (hidden visually but present for SEO) -->
+        <h1 class="sr-only">Order {{ order.id }}</h1>
+
         <!-- Header Section -->
         <OrderDetailHeader
           :order-id="order.id"
@@ -154,6 +149,6 @@ const navigateBack = () => {
           :calculate-subtotal="calculateSubtotal"
         />
       </div>
-    </div>
+    </main>
   </div>
 </template>

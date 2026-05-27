@@ -197,6 +197,14 @@ onMounted(async () => {
   await fetchBusiness(businessId.value)
 })
 
+// Server-side SEO - admin pages should not be indexed
+if (import.meta.server) {
+  useSeoMeta({
+    title: () => currentBusiness.value ? `Edit ${currentBusiness.value.name}` : 'Edit Business - Admin',
+    robots: 'noindex, nofollow',
+  })
+}
+
 // Watch for route changes
 watch(businessId, async (newId) => {
   if (newId) {

@@ -81,6 +81,14 @@ onMounted(async () => {
   ])
 })
 
+// Server-side SEO - admin pages should not be indexed
+if (import.meta.server) {
+  useSeoMeta({
+    title: () => business.value ? `Categories - ${business.value.name}` : 'Categories - Business Admin',
+    robots: 'noindex, nofollow',
+  })
+}
+
 watch(businessId, () => {
   reset()
   fetchCategories(businessId.value)

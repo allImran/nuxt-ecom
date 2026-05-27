@@ -5,8 +5,9 @@
 The order detail page currently displays all order information in the browser. We need to add a **native PDF generation service** that creates a professional A4-sized PDF invoice from order data. This is **NOT** an HTML-to-PDF conversion - the PDF will be programmatically generated with precise layout control.
 
 ### Requirements
+
 - PDF must be **A4 size** (210mm × 297mm)
-- PDF must include: UrbanEase logo, company details, user details, items list with quantities, shipping details, summary (subtotal, delivery charge, total)
+- PDF must include: INDOORSHOPPING logo, company details, user details, items list with quantities, shipping details, summary (subtotal, delivery charge, total)
 - PDF generation is a **separate service** - not converting existing HTML to PDF
 - Delivery charge is fixed at 100 BDT for now
 - PDF should be generated client-side (no server-side rendering)
@@ -15,6 +16,7 @@ The order detail page currently displays all order information in the browser. W
 ## Goals / Non-Goals
 
 ### Goals
+
 - Generate professional-looking PDF invoices from order data
 - Support client-side PDF generation for quick user experience
 - Include all essential order information in a readable format
@@ -22,6 +24,7 @@ The order detail page currently displays all order information in the browser. W
 - Make the PDF template maintainable and customizable
 
 ### Non-Goals
+
 - Server-side PDF generation (can be added later if needed)
 - Emailing PDFs (separate feature)
 - Multi-page invoice support (will be handled naturally by the library)
@@ -36,6 +39,7 @@ The order detail page currently displays all order information in the browser. W
 **Important**: This is **NOT** HTML-to-PDF conversion. We are creating a dedicated PDF generation service that programmatically builds the PDF document with precise control over layout, fonts, positioning, and formatting.
 
 **Alternatives considered**:
+
 1. **jsPDF** (CHOSEN):
    - Pros: Native PDF generation, lightweight, mature, good documentation, client-side only, works well with Nuxt/Vue, precise control over every element
    - Cons: Requires manual layout management (but this gives us control)
@@ -49,15 +53,16 @@ The order detail page currently displays all order information in the browser. W
    - Pros: Declarative API, better layout control
    - Cons: Larger bundle size, requires virtual filesystem setup in browser
 
-**Rationale**: jsPDF is the most mature and widely used client-side PDF library for JavaScript. It provides native PDF generation (not HTML conversion) with precise control over positioning, fonts, and formatting. This allows us to create a truly professional A4 invoice with the UrbanEase logo, proper table layout, and exact control over every element on the page.
+**Rationale**: jsPDF is the most mature and widely used client-side PDF library for JavaScript. It provides native PDF generation (not HTML conversion) with precise control over positioning, fonts, and formatting. This allows us to create a truly professional A4 invoice with the INDOORSHOPPING logo, proper table layout, and exact control over every element on the page.
 
 ### Decision 2: PDF Template Structure (A4 Professional Invoice)
 
 **Document Size**: A4 (210mm × 297mm)
 
 **Layout**: Standard invoice format
+
 - **Header** (top 25% of page):
-  - UrbanEase logo (left-aligned, ~40mm width)
+  - INDOORSHOPPING logo (left-aligned, ~40mm width)
   - Company name (next to logo or below)
   - "INVOICE" label (prominent, right-aligned)
   - Order ID and date (right-aligned, below invoice label)
@@ -80,6 +85,7 @@ The order detail page currently displays all order information in the browser. W
   - Page numbers (if multi-page)
 
 **Styling**:
+
 - Clean, professional look
 - Use standard fonts (Helvetica/Arial for compatibility)
 - Font sizes: 10-12pt body, 14-16pt headers, 18-20pt invoice title
@@ -89,7 +95,8 @@ The order detail page currently displays all order information in the browser. W
 - Logo should be high-quality and properly sized
 
 **Logo Handling**:
-- UrbanEase logo will be loaded from `/public/urban-ease-logo.png`
+
+- INDOORSHOPPING logo will be loaded from `/public/urban-ease-logo.png`
 - Logo will be embedded as base64 or loaded from public directory
 - Logo size: approximately 40-50mm width, maintaining aspect ratio
 - Logo positioned in top-left of header
@@ -105,6 +112,7 @@ The order detail page currently displays all order information in the browser. W
 **This is a separate PDF generation service**, not integrated with the existing order detail page rendering.
 
 **Components**:
+
 - `composables/useOrderPdf.ts` - PDF generation service/logic (new)
 - `utils/pdfConfig.ts` - Company details and PDF configuration constants (new)
 - `utils/pdfTemplates.ts` - PDF layout template functions (new, optional)
@@ -112,18 +120,20 @@ The order detail page currently displays all order information in the browser. W
 - Optional: `components/OrderPdfButton.vue` - Reusable button component (new)
 
 **Data Flow**:
+
 1. User views order detail page (existing functionality)
 2. User clicks "Download PDF" button
 3. PDF generation service `useOrderPdf.generateOrderPdf(order)` is called with order data
 4. jsPDF creates new A4 PDF document from scratch (not HTML conversion)
 5. PDF is populated with:
-   - UrbanEase logo (loaded from `/public/urban-ease-logo.png`)
+   - INDOORSHOPPING logo (loaded from `/public/urban-ease-logo.png`)
    - Company details from config
    - Order data (customer, items, shipping, totals)
 6. Browser downloads the generated PDF file
 7. Order detail page remains unchanged (separate concerns)
 
 **Separation of Concerns**:
+
 - The order detail page continues to render HTML for web display
 - The PDF service is independent and generates a completely separate document
 - Changes to order detail page HTML do not affect PDF generation
@@ -132,23 +142,27 @@ The order detail page currently displays all order information in the browser. W
 ## Risks / Trade-offs
 
 ### Risk 1: Bundle Size Increase
+
 - **Risk**: Adding jsPDF increases bundle size (~100KB gzipped)
 - **Mitigation**: Library is reasonably sized; can be code-split if needed (lazy load only when button clicked)
 
 ### Risk 2: Client-Side Performance
+
 - **Risk**: Large orders with many items may cause brief UI freeze during PDF generation
 - **Mitigation**: PDF generation is typically fast (< 1 second). Can add loading indicator if needed.
 
 ### Risk 3: PDF Layout Complexity
+
 - **Risk**: Manual PDF layout may be time-consuming to get right
 - **Mitigation**: Start with simple invoice template, iterate based on feedback. autotable plugin handles most complexity.
 
 ## Migration Plan
 
 ### Implementation Steps
+
 1. **Setup**:
    - Install dependencies (`npm install jspdf jspdf-autotable`)
-   - Verify UrbanEase logo exists at `/public/urban-ease-logo.png`
+   - Verify INDOORSHOPPING logo exists at `/public/urban-ease-logo.png`
    - Install TypeScript types (`npm install --save-dev @types/jspdf`)
 
 2. **Configuration**:
@@ -180,6 +194,7 @@ The order detail page currently displays all order information in the browser. W
    - Verify currency formatting (৳ symbol)
 
 ### Rollback
+
 - Remove PDF generation code if issues arise
 - Revert dependency installation
 - Remove download button from order detail page

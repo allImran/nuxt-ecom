@@ -74,6 +74,14 @@ onMounted(async () => {
   }
 })
 
+// Server-side SEO - admin pages should not be indexed
+if (import.meta.server) {
+  useSeoMeta({
+    title: 'Edit Instant Order',
+    robots: 'noindex, nofollow',
+  })
+}
+
 // Reset form on unmount
 onUnmounted(() => {
   resetForm()
