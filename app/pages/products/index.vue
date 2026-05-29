@@ -59,7 +59,7 @@ onMounted(() => {
     </section>
 
     <!-- Product Grid - Reusing the same component from home page -->
-    <ProductShowcase
+    <HomeProductShowcase
       :products="filteredProducts"
       :loading="loading"
       @view-product="viewProduct"

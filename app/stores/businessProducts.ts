@@ -13,6 +13,7 @@ export const useBusinessProductsStore = defineStore('businessProducts', () => {
     error.value = null
     try {
       const data = await publicNetwork.fetchProductsByBusiness(businessId, limit)
+      console.log('Fetched products:', data)
       products.value = data || []
     } catch (e) {
       console.error('Failed to fetch business products:', e)
