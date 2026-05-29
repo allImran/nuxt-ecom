@@ -39,6 +39,14 @@ onMounted(() => {
   if (businessId) {
     fetchProducts(businessId, 100)
   }
+
+  // Smooth scroll to product section after page load
+  nextTick(() => {
+    const productSection = document.getElementById('products-section')
+    if (productSection) {
+      productSection.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
+  })
 })
 </script>
 
