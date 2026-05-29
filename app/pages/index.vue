@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { publicNetwork, type Product } from '~/network/public'
+import { storeToRefs } from 'pinia'
 
 // Get business branding for dynamic content
 const businessBrandingStore = useBusinessBrandingStore()
@@ -30,13 +30,21 @@ definePageMeta({
   layout: 'default'
 })
 
-// Server-side data fetching for featured products
-const { data: featuredProducts, pending: loading } = await useAsyncData<Product[]>(
-  'featured-products',
-  () => publicNetwork.fetchFeaturedProducts(8)
-)
+// Get business ID from runtime config
+const config = useRuntimeConfig()
+const businessId = config.public.businessId as string | undefined
+
+// Use business products view model
+const { filteredProducts, loading, fetchProducts } = useBusinessProductsViewModel()
 
 const { viewProduct } = useHomeViewModel()
+
+// Load products on mounted
+onMounted(() => {
+  if (businessId) {
+    fetchProducts(businessId, 8)
+  }
+})
 </script>
 
 <template>
@@ -47,7 +55,7 @@ const { viewProduct } = useHomeViewModel()
     <!-- Product Showcase -->
     <main id="products-section">
       <HomeProductShowcase
-        :products="featuredProducts ?? []"
+        :products="filteredProducts"
         :loading="loading"
         @view-product="viewProduct"
       />

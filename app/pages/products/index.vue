@@ -1,15 +1,20 @@
 <script setup lang="ts">
+import { storeToRefs } from 'pinia'
+
 // Page metadata - server-side optimized SEO
 if (import.meta.server) {
+  const businessBrandingStore = useBusinessBrandingStore()
+  const { business } = storeToRefs(businessBrandingStore)
+
   useSeoMeta({
-    title: 'Products',
-    description: 'Browse our complete collection of premium luxury products at INDOORSHOPPING.',
-    ogTitle: 'Products | INDOORSHOPPING',
-    ogDescription: 'Browse our complete collection of premium luxury products at INDOORSHOPPING.',
+    title: business.value ? `Products | ${business.value.name}` : 'Products',
+    description: `Browse our complete collection of premium luxury products${business.value ? ` at ${business.value.name}` : ' at INDOORSHOPPING'}.`,
+    ogTitle: business.value ? `Products | ${business.value.name}` : 'Products | INDOORSHOPPING',
+    ogDescription: `Browse our complete collection of premium luxury products${business.value ? ` at ${business.value.name}` : ' at INDOORSHOPPING'}.`,
     ogType: 'website',
     twitterCard: 'summary_large_image',
-    twitterTitle: 'Products | INDOORSHOPPING',
-    twitterDescription: 'Browse our complete collection of premium luxury products at INDOORSHOPPING.',
+    twitterTitle: business.value ? `Products | ${business.value.name}` : 'Products | INDOORSHOPPING',
+    twitterDescription: `Browse our complete collection of premium luxury products${business.value ? ` at ${business.value.name}` : ' at INDOORSHOPPING'}.`,
   })
 }
 
@@ -18,12 +23,22 @@ definePageMeta({
   layout: 'default'
 })
 
-// Load all products using the same logic as home page
-const { featuredProducts, loading, loadFeaturedProducts, viewProduct } = useHomeViewModel()
+const config = useRuntimeConfig()
+const businessId = config.public.businessId as string | undefined
 
-// Load products on mounted - fetch all products (or a larger limit)
+// Use business products view model
+const { filteredProducts, loading, fetchProducts } = useBusinessProductsViewModel()
+
+// Navigate to product detail page
+const viewProduct = (slug: string) => {
+  navigateTo(`/products/${slug}`)
+}
+
+// Load products on mounted
 onMounted(() => {
-  loadFeaturedProducts(100)
+  if (businessId) {
+    fetchProducts(businessId, 100)
+  }
 })
 </script>
 
@@ -44,8 +59,8 @@ onMounted(() => {
     </section>
 
     <!-- Product Grid - Reusing the same component from home page -->
-    <HomeProductShowcase
-      :products="featuredProducts"
+    <ProductShowcase
+      :products="filteredProducts"
       :loading="loading"
       @view-product="viewProduct"
     />

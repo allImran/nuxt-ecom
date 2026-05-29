@@ -7,8 +7,8 @@ export const useBusinessProductsViewModel = () => {
 
   const searchQuery = ref('')
 
-  const fetchProducts = async (businessId: string) => {
-    await store.fetchProductsByBusiness(businessId)
+  const fetchProducts = async (businessId: string, limit?: number) => {
+    await store.fetchProductsByBusiness(businessId, limit)
   }
 
   const filteredProducts = computed(() => {
