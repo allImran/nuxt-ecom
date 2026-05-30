@@ -133,6 +133,19 @@ export const publicNetwork = {
     })
   },
 
+  fetchProductsByBusiness: (businessId: string, limit?: number) => {
+    const config = useRuntimeConfig()
+    const baseURL = config.public.apiBaseURL
+    const query = limit ? `?limit=${limit}` : ''
+
+    return $fetch<Product[]>(`/products/business/${businessId}${query}`, {
+      baseURL,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+  },
+
   // Orders - Public endpoints
   createOrder: (request: CreateOrderRequest) => {
     const config = useRuntimeConfig()

@@ -211,26 +211,19 @@ export const useOrderStore = defineStore('order', () => {
       orderId.value = (result as any).id
       success.value = true
 
-      // Track Purchase event with Facebook Pixel
-      if (import.meta.client && (window as any).fbq) {
-        const orderItems = productsForSubmission.value.map(p => {
-          const product = products.value.find(prod => prod.id === p.id)
-          return {
-            content_name: product?.name || 'Product',
-            content_ids: [p.id],
-            quantity: p.quantity
-          }
-        })
+      // Track Purchase event with Meta Pixel
+      if (import.meta.client) {
+        const { trackPurchase } = usePixel()
+        const contentIds = productsForSubmission.value.map(p => p.id)
+        const numItems = productsForSubmission.value.reduce((sum, p) => sum + p.quantity, 0)
 
-        ;(window as any).fbq('track', 'Purchase', {
-          content_ids: productsForSubmission.value.map(p => p.id),
-          content_name: 'Order',
-          contents: orderItems,
-          content_type: 'product',
-          value: total.value,
-          currency: 'BDT',
-          num_items: productsForSubmission.value.reduce((sum, p) => sum + p.quantity, 0)
-        })
+        trackPurchase(
+          orderId.value || '',
+          total.value,
+          contentIds,
+          numItems,
+          'BDT'
+        )
       }
 
       return true

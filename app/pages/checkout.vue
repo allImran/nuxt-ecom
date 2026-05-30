@@ -28,6 +28,20 @@ const loading = ref(false)
 onMounted(async () => {
   cartStore.loadCart()
   await fetchCartProducts()
+
+  // Track InitiateCheckout event with Meta Pixel
+  if (items.value.length > 0) {
+    const { trackInitiateCheckout } = usePixel()
+    const contentIds = items.value.map(item => item.productId)
+    const numItems = items.value.reduce((sum, item) => sum + item.quantity, 0)
+
+    trackInitiateCheckout(
+      cartStore.totalPrice,
+      numItems,
+      contentIds,
+      'BDT'
+    )
+  }
 })
 
 async function fetchCartProducts() {

@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { adminNetwork, type Product } from '~/network/admin'
+import { publicNetwork, type Product } from '~/network/public'
 
 export const useBusinessProductsStore = defineStore('businessProducts', () => {
   // State
@@ -8,11 +8,12 @@ export const useBusinessProductsStore = defineStore('businessProducts', () => {
   const error = ref<string | null>(null)
 
   // Actions
-  const fetchProductsByBusiness = async (businessId: string) => {
+  const fetchProductsByBusiness = async (businessId: string, limit?: number) => {
     loading.value = true
     error.value = null
     try {
-      const data = await adminNetwork.fetchProductsByBusiness(businessId)
+      const data = await publicNetwork.fetchProductsByBusiness(businessId, limit)
+      console.log('Fetched products:', data)
       products.value = data || []
     } catch (e) {
       console.error('Failed to fetch business products:', e)
