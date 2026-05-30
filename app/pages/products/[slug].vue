@@ -42,15 +42,16 @@ onMounted(async () => {
     await loadProduct(slug.value)
     await loadAccessories(slug.value)
 
-    // Track ViewContent event with Facebook Pixel
-    if (import.meta.client && product.value && (window as any).fbq) {
-      ;(window as any).fbq('track', 'ViewContent', {
-        content_name: product.value.name,
-        content_ids: [product.value.id],
-        content_type: 'product',
-        value: product.value.variants?.[0]?.price || 0,
-        currency: 'BDT'
-      })
+    // Track ViewContent event with Meta Pixel
+    if (product.value) {
+      const { trackViewContent } = usePixel()
+      trackViewContent(
+        product.value.id,
+        product.value.name,
+        product.value.variants?.[0]?.price || 0,
+        'BDT',
+        product.value.category?.name
+      )
     }
   }
 })
@@ -142,14 +143,26 @@ const handleAddToCart = () => {
   if (!product.value) return
 
   const firstImage = product.value.media?.[0]
+  const price = selectedVariant.value?.price || product.value.variants?.[0]?.price || 0
+
   cartStore.addItem({
     id: product.value.id,
     name: product.value.name,
-    price: selectedVariant.value?.price || product.value.variants?.[0]?.price || 0,
+    price,
     slug: slug.value,
     image: firstImage?.url,
     variant: selectedVariant.value?.attributes?.map(attr => `${attr.name}: ${attr.value}`).join(', ')
   })
+
+  // Track AddToCart event with Meta Pixel
+  const { trackAddToCart } = usePixel()
+  trackAddToCart(
+    product.value.id,
+    product.value.name,
+    price,
+    1,
+    'BDT'
+  )
 }
 </script>
 
