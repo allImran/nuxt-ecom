@@ -9,20 +9,29 @@ const scrollToProducts = () => {
 </script>
 
 <template>
-  <section class="relative bg-linear-to-br from-luxury-surface to-luxury-bg dark:from-luxury-dark-surface dark:to-luxury-dark-bg py-20 lg:py-32 transition-colors duration-200">
-    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+  <section class="relative py-20 lg:py-32 transition-colors duration-200 min-h-[600px] flex items-center">
+    <!-- Background Image -->
+    <div class="absolute inset-0 z-0">
+      <img
+        src="/cover.webp"
+        alt="Hero background"
+        class="w-full h-full object-cover blur-xs"
+      />
+    </div>
+    <div class="absolute inset-0 bg-white/70 dark:bg-black/50" />
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
       <div class="max-w-4xl mx-auto text-center">
         <!-- Welcome Badge -->
-        <div class="inline-flex items-center px-32 py-2 rounded-full bg-luxury-gold/10 border border-luxury-gold/30 mb-6">
-          <span class="text-sm font-medium text-luxury-gold tracking-wide">
+        <!-- <div class="inline-flex items-center px-32 py-2 rounded-full bg-luxury-gold/10 border border-luxury-gold/30 mb-6">
+          <span class="text-sm shadow-lg font-medium text-luxury-gold tracking-wide">
             Welcome to {{ business?.name || 'INDOORSHOPPING' }}
           </span>
-        </div>
+        </div> -->
 
         <!-- Heading -->
         <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-luxury text-luxury-text dark:text-luxury-dark-text mb-6">
           Discover Premium
-          <span class="block text-luxury-gold mt-2">Luxury Products</span>
+          <span class="text-shadow-lg text-luxury-gold mt-2">Luxury Products</span>
         </h1>
 
         <!-- Description -->
@@ -50,7 +59,7 @@ const scrollToProducts = () => {
     </div>
 
     <!-- Decorative Elements -->
-    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+    <div class="absolute inset-0 overflow-hidden pointer-events-none z-20">
       <div class="absolute -top-40 -right-40 w-80 h-80 bg-luxury-gold/5 rounded-full blur-3xl" />
       <div class="absolute -bottom-40 -left-40 w-80 h-80 bg-luxury-gold/5 rounded-full blur-3xl" />
     </div>
