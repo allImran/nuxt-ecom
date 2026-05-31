@@ -35,9 +35,9 @@ const scrollToProducts = () => {
         </h1>
 
         <!-- Description -->
-        <p class="text-lg sm:text-xl text-luxury-text-muted dark:text-luxury-dark-text-muted mb-10 max-w-2xl mx-auto leading-relaxed">
+        <!-- <p class="text-lg sm:text-xl text-luxury-text-muted dark:text-luxury-dark-text-muted mb-10 max-w-2xl mx-auto leading-relaxed">
           {{ business?.slogan || 'Experience the finest selection of curated products. Quality meets elegance in every piece we offer.' }}
-        </p>
+        </p> -->
 
         <!-- CTA Buttons -->
         <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
