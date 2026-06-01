@@ -11,14 +11,14 @@ const scrollToProducts = () => {
 <template>
   <section class="relative py-20 lg:py-32 transition-colors duration-200 min-h-[600px] flex items-center">
     <!-- Background Image -->
-    <div class="absolute inset-0 z-0">
+    <div class="absolute inset-0 z-0 overflow-clip">
       <img
         src="/cover.webp"
         alt="Hero background"
         class="w-full h-full object-cover blur-xs"
       />
     </div>
-    <div class="absolute inset-0 bg-white/70 dark:bg-black/50" />
+    <div class="absolute inset-0 bg-white/70 dark:bg-black/80" />
     <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
       <div class="max-w-4xl mx-auto text-center">
         <!-- Welcome Badge -->
