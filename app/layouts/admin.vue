@@ -26,7 +26,7 @@
       leave-to-class="-translate-x-full"
     >
       <AdminSidebar
-        v-if="sidebarOpen"
+        v-if="!isMobile || sidebarOpen"
         :class="['fixed inset-y-0 left-0 z-50 lg:static lg:translate-x-0', sidebarOpen ? 'translate-x-0' : '-translate-x-full']"
         @close="closeSidebar"
       />
@@ -58,7 +58,16 @@
 </template>
 
 <script setup lang="ts">
+// Check if we're on mobile (client-side only)
+const isMobile = ref(false)
 const sidebarOpen = ref(false)
+
+const checkMobile = () => {
+  isMobile.value = window.innerWidth < 1024
+  if (!isMobile.value) {
+    sidebarOpen.value = true
+  }
+}
 
 function openSidebar() {
   sidebarOpen.value = true
@@ -68,22 +77,11 @@ function closeSidebar() {
   sidebarOpen.value = false
 }
 
-// Close sidebar when window resizes to lg breakpoint
 onMounted(() => {
-  const handleResize = () => {
-    if (window.innerWidth >= 1024) {
-      sidebarOpen.value = true
-    } else {
-      sidebarOpen.value = false
-    }
-  }
-
-  // Set initial state
-  handleResize()
-
-  window.addEventListener('resize', handleResize)
+  checkMobile()
+  window.addEventListener('resize', checkMobile)
   onUnmounted(() => {
-    window.removeEventListener('resize', handleResize)
+    window.removeEventListener('resize', checkMobile)
   })
 })
 </script>
