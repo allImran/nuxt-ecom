@@ -108,6 +108,8 @@ export interface AdminOrderListItem {
   total_amount: number
   created_at: string
   history?: OrderHistory[]
+  shipping_address?: ShippingAddress
+  cod_reference?: string | null
 }
 
 export interface AdminOrderDetail extends OrderDetail {

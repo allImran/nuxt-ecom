@@ -22,11 +22,19 @@ const emit = defineEmits<{
 const sortField = ref<keyof AdminOrderListItem>('created_at')
 const sortDirection = ref<'asc' | 'desc'>('desc')
 
+// Helper to get sort value from order
+function getSortValue(order: AdminOrderListItem, field: keyof AdminOrderListItem) {
+  if (field === 'cod_reference') {
+    return order.cod_reference ? 1 : 0
+  }
+  return order[field] ?? ''
+}
+
 // Sorted orders
 const sortedOrders = computed(() => {
   return [...props.orders].sort((a, b) => {
-    const aVal = a[sortField.value]
-    const bVal = b[sortField.value]
+    const aVal = getSortValue(a, sortField.value)
+    const bVal = getSortValue(b, sortField.value)
 
     if (aVal < bVal) return sortDirection.value === 'asc' ? -1 : 1
     if (aVal > bVal) return sortDirection.value === 'asc' ? 1 : -1
@@ -59,6 +67,103 @@ function getLatestStatus(order: AdminOrderListItem): string {
     return sortedHistory[0].status
   }
   return order.status
+}
+
+// Courier status modal state
+const courierStatusModalOpen = ref(false)
+const courierStatusLoading = ref(false)
+const courierStatusData = ref<any>(null)
+const currentReference = ref<{ code: string; type: 'tracking' | 'cid' } | null>(null)
+
+// Extract tracking info from cod_reference (JSON consignment object or raw consignment ID)
+function extractTrackingInfo(codReference: any) {
+  if (!codReference) return { trackingCode: '', trackingLink: '', cid: '' }
+
+  // Try to parse as JSON (consignment object)
+  try {
+    const consignment = typeof codReference === 'string'
+      ? JSON.parse(codReference)
+      : codReference
+    if (consignment?.tracking_code || consignment?.consignment_id) {
+      return {
+        trackingCode: consignment.tracking_code || '',
+        trackingLink: consignment.tracking_link || '',
+        cid: consignment.consignment_id ? String(consignment.consignment_id) : ''
+      }
+    }
+  } catch {
+    // Not JSON, treat as raw consignment ID
+  }
+
+  return { trackingCode: '', trackingLink: '', cid: String(codReference).trim() }
+}
+
+// Copy tracking link (or consignment ID) to clipboard
+async function handleCopyTrackingLink(codReference: any, event: Event) {
+  event.stopPropagation()
+  const { trackingLink, trackingCode, cid } = extractTrackingInfo(codReference)
+  const toast = useToast()
+
+  const value = trackingLink || trackingCode || cid
+  if (!value) {
+    toast.error({ title: 'No tracking reference available' })
+    return
+  }
+
+  try {
+    await navigator.clipboard.writeText(value)
+    toast.success({ title: trackingLink ? 'Tracking link copied!' : 'Tracking reference copied!' })
+  } catch (err) {
+    toast.error({ title: 'Failed to copy' })
+  }
+}
+
+// Fetch courier delivery status for the current reference
+async function fetchCourierStatus() {
+  if (!currentReference.value) return
+
+  courierStatusLoading.value = true
+  try {
+    const { adminNetwork } = await import('~/network/admin')
+    const response = currentReference.value.type === 'tracking'
+      ? await adminNetwork.fetchCourierStatusByTracking(currentReference.value.code)
+      : await adminNetwork.fetchCourierStatusByCid(currentReference.value.code)
+    courierStatusData.value = response
+  } catch (err) {
+    console.error('Failed to fetch courier status:', err)
+    courierStatusData.value = {
+      success: false,
+      delivery_status: 'unknown'
+    }
+    const toast = useToast()
+    toast.error({ title: 'Failed to fetch courier status' })
+  } finally {
+    courierStatusLoading.value = false
+  }
+}
+
+// Open courier status modal
+function handleCheckCourierStatus(codReference: any, event: Event) {
+  event.stopPropagation()
+  const { trackingCode, cid } = extractTrackingInfo(codReference)
+
+  if (!trackingCode && !cid) {
+    const toast = useToast()
+    toast.error({ title: 'No tracking reference available' })
+    return
+  }
+
+  currentReference.value = trackingCode
+    ? { code: trackingCode, type: 'tracking' }
+    : { code: cid, type: 'cid' }
+  courierStatusData.value = null
+  courierStatusModalOpen.value = true
+  fetchCourierStatus()
+}
+
+// Handle modal close
+function handleCloseCourierModal() {
+  courierStatusModalOpen.value = false
 }
 </script>
 
@@ -134,6 +239,33 @@ function getLatestStatus(order: AdminOrderListItem): string {
             {{ formatPrice(order.total_amount) }}
           </span>
         </div>
+
+        <!-- Delivery Actions -->
+        <div
+          v-if="order.cod_reference"
+          class="flex items-center justify-between pt-3 mt-3 border-t border-luxury-border/50 dark:border-luxury-dark-border/50"
+        >
+          <span class="text-sm text-luxury-text-muted dark:text-luxury-dark-text-muted">Delivery</span>
+          <div class="flex items-center gap-2">
+            <button
+              type="button"
+              class="p-1.5 hover:bg-luxury-gold/10 rounded transition-colors"
+              title="Copy tracking reference"
+              @click="handleCopyTrackingLink(order.cod_reference, $event)"
+            >
+              <UiIcon name="copy" :size="14" class="text-luxury-gold" />
+            </button>
+            <UiLuxuryButton
+              variant="ghost"
+              size="sm"
+              type="button"
+              class="py-1! px-2! text-xs!"
+              @click="handleCheckCourierStatus(order.cod_reference, $event)"
+            >
+              Check
+            </UiLuxuryButton>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -147,6 +279,7 @@ function getLatestStatus(order: AdminOrderListItem): string {
                 { key: 'id', label: 'Order ID' },
                 { key: 'customer_name', label: 'Customer' },
                 { key: 'phone', label: 'Phone' },
+                { key: 'cod_reference', label: 'Delivery' },
                 { key: 'status', label: 'Status' },
                 { key: 'total_amount', label: 'Total' },
                 { key: 'created_at', label: 'Date' }
@@ -192,6 +325,30 @@ function getLatestStatus(order: AdminOrderListItem): string {
               </span>
             </td>
             <td class="px-6 py-4 whitespace-nowrap">
+              <div v-if="order.cod_reference" class="flex items-center gap-2">
+                <button
+                  type="button"
+                  class="p-1.5 hover:bg-luxury-gold/10 rounded transition-colors"
+                  title="Copy tracking reference"
+                  @click="handleCopyTrackingLink(order.cod_reference, $event)"
+                >
+                  <UiIcon name="copy" :size="14" class="text-luxury-gold" />
+                </button>
+                <UiLuxuryButton
+                  variant="ghost"
+                  size="sm"
+                  type="button"
+                  class="py-1! px-2! text-xs!"
+                  @click="handleCheckCourierStatus(order.cod_reference, $event)"
+                >
+                  Check
+                </UiLuxuryButton>
+              </div>
+              <span v-else class="text-sm text-luxury-text-muted dark:text-luxury-dark-text-muted">
+                -
+              </span>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
               <OrderDetailStatusBadge
                 :status="getLatestStatus(order)"
                 :get-status-color="getStatusColor"
@@ -211,5 +368,15 @@ function getLatestStatus(order: AdminOrderListItem): string {
         </tbody>
       </table>
     </div>
+
+    <!-- Courier Status Modal -->
+    <CourierStatusModal
+      :is-open="courierStatusModalOpen"
+      :tracking-code="currentReference?.code || ''"
+      :loading="courierStatusLoading"
+      :status-data="courierStatusData"
+      @close="handleCloseCourierModal"
+      @refresh="fetchCourierStatus"
+    />
   </div>
 </template>
