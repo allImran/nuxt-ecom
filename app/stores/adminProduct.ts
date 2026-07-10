@@ -15,6 +15,7 @@ export const useAdminProductStore = defineStore('adminProduct', () => {
   const productForm = reactive({
     name: '',
     slug: '',
+    category_id: '',
     youtube_url: '',
     file_paths: [] as string[],
     sections: [] as ProductSection[],
@@ -197,6 +198,7 @@ export const useAdminProductStore = defineStore('adminProduct', () => {
     error.value = null
     productForm.name = ''
     productForm.slug = ''
+    productForm.category_id = ''
     productForm.youtube_url = ''
     productForm.file_paths = []
     productForm.sections = []

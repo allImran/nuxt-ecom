@@ -48,6 +48,7 @@ export const useProductViewModel = () => {
   const populateProductForm = (product: Product) => {
     productForm.name = product.name
     productForm.slug = product.slug
+    productForm.category_id = product.category_id || ''
     productForm.youtube_url = product.youtube_url || ''
     productForm.file_paths = product.file_paths || []
     productForm.sections = product.sections || []
@@ -72,6 +73,7 @@ export const useProductViewModel = () => {
     return await productStore.updateProduct(currentProduct.value.id, {
       name: productForm.name,
       slug: productForm.slug,
+      category_id: productForm.category_id || undefined,
       youtube_url: productForm.youtube_url || undefined,
       file_paths: productForm.file_paths,
       sections: productForm.sections,
@@ -265,6 +267,7 @@ export const useProductViewModel = () => {
     productStore.reset()
     productForm.name = ''
     productForm.slug = ''
+    productForm.category_id = ''
     productForm.youtube_url = ''
     productForm.file_paths = []
     productForm.sections = []

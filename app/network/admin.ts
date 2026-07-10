@@ -81,6 +81,7 @@ export interface CreateProductData {
 export interface UpdateProductData {
   name?: string
   slug?: string
+  category_id?: string
   file_paths?: string[]
   youtube_url?: string
   sections?: ProductSection[]

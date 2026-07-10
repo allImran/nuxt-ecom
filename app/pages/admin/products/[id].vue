@@ -114,14 +114,13 @@
             step="1"
           />
 
-          <div class="p-4 bg-luxury-surface dark:bg-luxury-dark-surface rounded-luxury">
-            <p class="text-sm text-luxury-text-muted dark:text-luxury-dark-text-muted">
-              <span class="font-medium">Category:</span> {{ currentProduct.category?.name || 'None' }}
-            </p>
-            <p class="text-xs text-luxury-text-muted/70 dark:text-luxury-dark-text-muted/70 mt-1">
-              Category cannot be changed after creation.
-            </p>
-          </div>
+          <UiLuxurySelect
+            id="product-category"
+            v-model="productForm.category_id"
+            label="Category"
+            placeholder="Select a category"
+            :options="categoryOptions"
+          />
         </div>
 
         <!-- Media Tab -->
@@ -148,6 +147,7 @@
 
 <script setup lang="ts">
 import { useProductViewModel } from '~/composables/useProductViewModel'
+import { useBusinessCategoriesStore } from '~/stores/businessCategories'
 
 definePageMeta({
   layout: 'admin',
@@ -156,6 +156,12 @@ definePageMeta({
 
 const route = useRoute()
 const router = useRouter()
+
+const categoriesStore = useBusinessCategoriesStore()
+const { categories } = storeToRefs(categoriesStore)
+const categoryOptions = computed(() =>
+  categories.value.map(c => ({ value: c.id, label: c.name }))
+)
 
 const deliveryTypeOptions = [
   { value: 'flat', label: 'Flat Rate' },
@@ -183,7 +189,10 @@ const {
 
 // Fetch product
 const loadProduct = async () => {
-  await fetchProduct(productId.value)
+  const product = await fetchProduct(productId.value)
+  if (product?.business_id) {
+    await categoriesStore.fetchCategoriesByBusiness(product.business_id)
+  }
 }
 
 // Save product
@@ -222,5 +231,6 @@ watch(productId, () => {
 // Cleanup on unmount
 onUnmounted(() => {
   reset()
+  categoriesStore.reset()
 })
 </script>
