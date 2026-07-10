@@ -131,6 +131,17 @@ export function useAdminOrderViewModel() {
     return orderDetail.value.order_items.reduce((sum, item) => sum + calculateItemTotal(item), 0)
   }
 
+  // Helper: Get final total amount, factoring in a fallback 100 delivery charge if missing
+  const displayTotalAmount = computed(() => {
+    if (!orderDetail.value) return 0
+    const subtotal = calculateSubtotal()
+    const deliveryCharge = orderDetail.value.delivery_charge
+    const deliveryFee = deliveryCharge != null
+      ? (typeof deliveryCharge === 'string' ? parseFloat(deliveryCharge) : deliveryCharge)
+      : 100
+    return subtotal + deliveryFee
+  })
+
   // Helper: Validate status transition
   function validateStatusTransition(currentStatus: OrderStatusType, newStatus: OrderStatusType): boolean {
     // Allow cancellation and return from any status
@@ -199,6 +210,7 @@ export function useAdminOrderViewModel() {
     totalPages,
     orderItems,
     currentLocale,
+    displayTotalAmount,
 
     // Helpers
     formatPrice,

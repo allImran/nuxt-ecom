@@ -21,6 +21,7 @@ const {
   error,
   hasOrderDetail,
   orderItems,
+  displayTotalAmount,
   formatPrice,
   formatDate,
   getProductImage,
@@ -251,7 +252,7 @@ const cancelQuantityEdit = () => {
               @status-select="handleStatusSelect"
             />
             <OrderDetailHeaderTotal
-              :total="orderDetail.total_amount"
+              :total="displayTotalAmount"
               :format-price="formatPrice"
             />
           </div>
@@ -286,7 +287,7 @@ const cancelQuantityEdit = () => {
       <!-- Totals Section -->
       <OrderDetailTotals
         :items="orderItems"
-        :total="orderDetail.total_amount"
+        :delivery-charge="orderDetail.delivery_charge"
         :format-price="formatPrice"
         :calculate-item-total="calculateItemTotal"
         :calculate-subtotal="calculateSubtotal"

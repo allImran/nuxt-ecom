@@ -87,15 +87,11 @@ export function useOrderDetailViewModel() {
   const displayTotalAmount = computed(() => {
     if (!order.value) return 0
     const subtotal = calculateSubtotal()
-    const parsedTotal = typeof order.value.total_amount === 'string' 
-      ? parseFloat(order.value.total_amount) 
-      : (order.value.total_amount || 0)
-      
-    // If there's an explicit delivery charge or total already implicitly includes a fee
-    if (order.value.delivery_charge != null || (parsedTotal - subtotal > 0)) {
-      return parsedTotal
-    }
-    return subtotal + 100
+    const deliveryCharge = order.value.delivery_charge
+    const deliveryFee = deliveryCharge != null
+      ? (typeof deliveryCharge === 'string' ? parseFloat(deliveryCharge) : deliveryCharge)
+      : 100
+    return subtotal + deliveryFee
   })
 
   return {

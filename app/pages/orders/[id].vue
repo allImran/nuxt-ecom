@@ -142,7 +142,6 @@ const navigateBack = () => {
         <!-- Totals Section -->
         <OrderDetailTotals
           :items="orderItems"
-          :total="order.total_amount"
           :delivery-charge="order.delivery_charge"
           :format-price="formatPrice"
           :calculate-item-total="calculateItemTotal"

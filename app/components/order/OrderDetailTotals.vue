@@ -3,7 +3,6 @@ import type { OrderItem } from '~/types/order'
 
 interface Props {
   items: OrderItem[]
-  total: number
   deliveryCharge?: number | null
   formatPrice: (price: number) => string
   calculateItemTotal: (item: OrderItem) => number
@@ -12,30 +11,17 @@ interface Props {
 
 const props = defineProps<Props>()
 
-// Parse total as number (API might return string)
-const parsedTotal = computed(() => {
-  return typeof props.total === 'string' ? parseFloat(props.total) : props.total
-})
-
 const subtotalValue = computed(() => props.calculateSubtotal())
 
-// Calculate delivery fee
+// Calculate delivery fee, falling back to 100 only when no charge is configured
 const deliveryFee = computed(() => {
   if (props.deliveryCharge != null) {
     return typeof props.deliveryCharge === 'string' ? parseFloat(props.deliveryCharge) : props.deliveryCharge
   }
-  const total = parsedTotal.value || 0
-  const calculatedFee = total - subtotalValue.value
-  return calculatedFee > 0 ? calculatedFee : 100
+  return 100
 })
 
-const displayTotal = computed(() => {
-  // If there's an explicit delivery charge or the parsed total implicitly includes a fee
-  if (props.deliveryCharge != null || (parsedTotal.value - subtotalValue.value > 0)) {
-    return parsedTotal.value
-  }
-  return subtotalValue.value + 100
-})
+const displayTotal = computed(() => subtotalValue.value + deliveryFee.value)
 </script>
 
 <template>
