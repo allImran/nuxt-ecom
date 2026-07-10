@@ -9,6 +9,7 @@ export const useAdminOrderStore = defineStore('adminOrder', () => {
   const orderDetail = ref<AdminOrderDetail | null>(null)
   const loading = ref(false)
   const updating = ref(false)
+  const requestingPickup = ref(false)
   const error = ref<string | null>(null)
 
   // Filters state
@@ -174,6 +175,39 @@ export const useAdminOrderStore = defineStore('adminOrder', () => {
     }
   }
 
+  // Actions - Request courier pickup
+  async function requestPickup(orderId: string, data?: {
+    recipient_name?: string
+    recipient_phone?: string
+    recipient_address?: string
+    cod_amount?: number
+  }) {
+    requestingPickup.value = true
+    error.value = null
+
+    try {
+      const { adminNetwork } = await import('~/network/admin')
+      const result = await adminNetwork.requestOrderPickup(orderId, data)
+
+      // Update order detail with the returned order (contains cod_reference)
+      if (orderDetail.value?.id === orderId) {
+        if (result?.order) {
+          orderDetail.value = { ...orderDetail.value, ...result.order }
+        } else if (result?.consignment?.consignment_id) {
+          orderDetail.value = { ...orderDetail.value, cod_reference: String(result.consignment.consignment_id) }
+        }
+      }
+
+      return result
+    } catch (err) {
+      console.error('Failed to request courier pickup:', err)
+      error.value = 'generic'
+      throw err
+    } finally {
+      requestingPickup.value = false
+    }
+  }
+
   // Actions - Update filters
   function updateFilters(newFilters: Partial<typeof filters>) {
     Object.assign(filters, newFilters)
@@ -199,6 +233,7 @@ export const useAdminOrderStore = defineStore('adminOrder', () => {
     orderDetail.value = null
     loading.value = false
     updating.value = false
+    requestingPickup.value = false
     error.value = null
     resetFilters()
   }
@@ -209,6 +244,7 @@ export const useAdminOrderStore = defineStore('adminOrder', () => {
     orderDetail,
     loading,
     updating,
+    requestingPickup,
     error,
     filters,
     pagination,
@@ -225,6 +261,7 @@ export const useAdminOrderStore = defineStore('adminOrder', () => {
     fetchOrderById,
     updateOrderStatus,
     updateOrder,
+    requestPickup,
     updateFilters,
     resetFilters,
     updatePagination,

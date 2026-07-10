@@ -189,9 +189,18 @@ export const adminNetwork = {
   },
   fetchOrderDetail: (id: string) => useAdminFetch<any>(`/orders/${id}`),
   updateOrderStatus: (id: string, data: { status: string; comment?: string }) =>
-    useAdminFetch(`/orders/${id}/status`, { method: 'PATCH', body: data }),
+    useAdminFetch<any>(`/orders/${id}/status`, { method: 'PATCH', body: data }),
   updateOrder: (id: string, data: { items: Array<{ id: string; quantity: number }> }) =>
-    useAdminFetch(`/orders/${id}`, { method: 'PATCH', body: data }),
+    useAdminFetch<any>(`/orders/${id}`, { method: 'PATCH', body: data }),
+  requestOrderPickup: (id: string, data?: {
+    recipient_name?: string
+    recipient_phone?: string
+    recipient_address?: string
+    cod_amount?: number
+    note?: string
+    item_description?: string
+    delivery_type?: number
+  }) => useAdminFetch<any>(`/orders/${id}/pickup-request`, { method: 'POST', body: data ?? {} }),
 
   // Instant Orders
   fetchInstantOrders: (businessId: string, params?: { status?: string; search?: string; limit?: number; offset?: number }) => {

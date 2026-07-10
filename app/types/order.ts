@@ -92,6 +92,7 @@ export interface OrderDetail {
   shipping_address: ShippingAddress
   history?: OrderHistory[]
   payment_intent_id?: string | null
+  cod_reference?: string | null
   created_at: string
   updated_at?: string
 }

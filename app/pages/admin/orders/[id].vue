@@ -18,6 +18,7 @@ const {
   orderDetail,
   loading,
   updating,
+  requestingPickup,
   error,
   hasOrderDetail,
   orderItems,
@@ -34,6 +35,7 @@ const {
   fetchOrderById,
   updateOrderStatus,
   updateOrder,
+  requestPickup,
   reset
 } = useAdminOrderViewModel()
 
@@ -44,6 +46,12 @@ const pendingStatusChange = ref<{ status: string; comment?: string } | null>(nul
 // Quantity editor state
 const showQuantityEditor = ref(false)
 const editingItem = ref<any>(null)
+
+// Courier pickup state
+const hasPickupRequest = computed(() => Boolean(orderDetail.value?.cod_reference))
+const courierStatusModalOpen = ref(false)
+const courierStatusLoading = ref(false)
+const courierStatusData = ref<any>(null)
 
 // Fetch order on mount
 onMounted(() => {
@@ -158,6 +166,111 @@ const cancelQuantityEdit = () => {
   editingItem.value = null
 }
 
+// Handle courier pickup request
+async function handleRequestPickup() {
+  if (!orderId.value || !orderDetail.value || requestingPickup.value) return
+
+  const address = orderDetail.value.shipping_address
+  const recipientAddress = [
+    address?.address,
+    address?.upazila_name,
+    address?.district_name,
+    address?.division_name
+  ].filter(Boolean).join(', ')
+
+  if (!recipientAddress) {
+    toast.error({
+      title: 'Missing shipping address',
+      description: 'This order has no shipping address to send to the courier.'
+    })
+    return
+  }
+
+  try {
+    const response = await requestPickup(orderId.value, {
+      recipient_name: address?.full_name || undefined,
+      recipient_phone: address?.mobile || undefined,
+      recipient_address: recipientAddress,
+      cod_amount: displayTotalAmount.value
+    })
+    toast.success({
+      title: 'Pickup requested',
+      description: response?.consignment?.tracking_code
+        ? `Courier consignment created. Tracking: ${response.consignment.tracking_code}`
+        : 'Courier consignment created successfully'
+    })
+  } catch (err: any) {
+    console.error('Failed to request pickup:', err)
+
+    const statusCode = err?.statusCode || err?.status || err?.response?.status
+    const serverMessage = err?.response?._data?.message || err?.data?.message
+    toast.error({
+      title: 'Failed to request pickup',
+      description: statusCode === 409
+        ? 'This order already has a courier pickup request.'
+        : serverMessage || 'Please try again'
+    })
+  }
+}
+
+// Extract tracking/consignment reference from cod_reference (could be JSON or raw consignment ID)
+function extractCourierReference(): { code: string; type: 'tracking' | 'cid' } | null {
+  const codReference = orderDetail.value?.cod_reference
+  if (!codReference) return null
+
+  // Try to parse as JSON (consignment object)
+  try {
+    const consignment = typeof codReference === 'string'
+      ? JSON.parse(codReference)
+      : codReference
+    if (consignment?.tracking_code) {
+      return { code: consignment.tracking_code, type: 'tracking' }
+    }
+    if (consignment?.consignment_id) {
+      return { code: String(consignment.consignment_id), type: 'cid' }
+    }
+  } catch {
+    // Not JSON, treat as raw consignment ID
+  }
+
+  return { code: String(codReference).trim(), type: 'cid' }
+}
+
+// Fetch courier delivery status
+async function fetchCourierStatus() {
+  const reference = extractCourierReference()
+  if (!reference) return
+
+  courierStatusLoading.value = true
+  try {
+    const { adminNetwork } = await import('~/network/admin')
+    const response = reference.type === 'tracking'
+      ? await adminNetwork.fetchCourierStatusByTracking(reference.code)
+      : await adminNetwork.fetchCourierStatusByCid(reference.code)
+    courierStatusData.value = response
+  } catch (err) {
+    console.error('Failed to fetch courier status:', err)
+    courierStatusData.value = {
+      success: false,
+      delivery_status: 'unknown'
+    }
+    toast.error({ title: 'Failed to fetch courier status', description: 'Please try again' })
+  } finally {
+    courierStatusLoading.value = false
+  }
+}
+
+// Handle check courier status
+function handleCheckCourierStatus() {
+  courierStatusModalOpen.value = true
+  fetchCourierStatus()
+}
+
+// Handle modal close
+function handleCloseCourierModal() {
+  courierStatusModalOpen.value = false
+}
+
 </script>
 
 <template>
@@ -174,7 +287,36 @@ const cancelQuantityEdit = () => {
         <UiIcon name="arrow-left" :size="20" />
         <span>Back to Orders</span>
       </button>
-      <button
+      <div class="flex items-center gap-3">
+        <button
+          v-if="hasOrderDetail && !hasPickupRequest"
+          @click="handleRequestPickup"
+          :disabled="requestingPickup || updating"
+          class="flex items-center gap-2 px-4 py-2 bg-luxury-accent dark:bg-luxury-dark-accent text-luxury-text dark:text-luxury-dark-text rounded-lg hover:bg-opacity-80 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+          title="Request courier pickup"
+        >
+          <UiIcon
+            :name="requestingPickup ? 'loader' : 'truck'"
+            :size="18"
+            :class="{ 'animate-spin': requestingPickup }"
+          />
+          <span class="text-sm font-medium">Request Pickup</span>
+        </button>
+        <button
+          v-else-if="hasOrderDetail && hasPickupRequest"
+          @click="handleCheckCourierStatus"
+          :disabled="courierStatusLoading"
+          class="flex items-center gap-2 px-4 py-2 bg-luxury-accent dark:bg-luxury-dark-accent text-luxury-text dark:text-luxury-dark-text rounded-lg hover:bg-opacity-80 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+          title="Check courier status"
+        >
+          <UiIcon
+            name="truck"
+            :size="18"
+            :class="{ 'animate-pulse': courierStatusLoading }"
+          />
+          <span class="text-sm font-medium">Courier Status</span>
+        </button>
+        <button
           @click="handleDownloadPdf"
           :disabled="isGenerating"
           class="flex items-center gap-2 px-4 py-2 bg-luxury-accent dark:bg-luxury-dark-accent text-luxury-text dark:text-luxury-dark-text rounded-lg hover:bg-opacity-80 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
@@ -187,6 +329,7 @@ const cancelQuantityEdit = () => {
           />
           <span class="text-sm font-medium">PDF</span>
         </button>
+      </div>
      </div>
    
 
@@ -317,6 +460,16 @@ const cancelQuantityEdit = () => {
       :loading="updating"
       @save="handleQuantitySave"
       @cancel="cancelQuantityEdit"
+    />
+
+    <!-- Courier Status Modal -->
+    <CourierStatusModal
+      :is-open="courierStatusModalOpen"
+      :tracking-code="extractCourierReference()?.code || ''"
+      :loading="courierStatusLoading"
+      :status-data="courierStatusData"
+      @close="handleCloseCourierModal"
+      @refresh="fetchCourierStatus"
     />
   </div>
 </template>
