@@ -23,15 +23,11 @@ export function useOrderViewModel() {
     orderId,
     productsForSubmission,
     subtotal,
+    deliveryFee,
     total,
     validationErrors,
     submitAttempted
   } = storeToRefs(orderStore)
-
-  // Price helpers
-  function getDeliveryFee(): number {
-    return orderStore.DELIVERY_FEE
-  }
 
   function getProductPrice(product: Product, variantId?: string | null): number {
     if (variantId) {
@@ -127,6 +123,7 @@ export function useOrderViewModel() {
     orderId,
     productsForSubmission,
     subtotal,
+    deliveryFee,
     total,
     errorMessage,
     successMessage,
@@ -134,7 +131,6 @@ export function useOrderViewModel() {
     submitAttempted,
 
     // Helpers
-    getDeliveryFee,
     getProductPrice,
 
     // Actions

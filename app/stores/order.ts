@@ -31,7 +31,8 @@ export const useOrderStore = defineStore('order', () => {
   const submitAttempted = ref(false)
 
   // Constants
-  const DELIVERY_FEE = 100
+  // Fallback used only when an ordered product has no delivery_charge configured
+  const DEFAULT_DELIVERY_FEE = 100
 
   // Computed - Available locations for cascading dropdowns
   const availableDistricts = computed(() => {
@@ -60,7 +61,44 @@ export const useOrderStore = defineStore('order', () => {
     }, 0)
   })
 
-  const total = computed(() => subtotal.value + DELIVERY_FEE)
+  // Delivery fee derived from each ordered product's delivery_type / delivery_charge (from API).
+  // Multiple products share a single delivery fee (the max), so accessories don't stack extra charges.
+  const deliveryFee = computed(() => {
+    const ordered = productsForSubmission.value
+    if (ordered.length === 0) return 0
+
+    let fee = 0
+    for (const op of ordered) {
+      const product = products.value.find(p => p.id === op.id)
+      if (!product) continue
+
+      const charge = Number(product.delivery_charge)
+      // Fall back to default only when the product has no configured charge
+      const baseCharge = Number.isFinite(charge) && charge >= 0 ? charge : DEFAULT_DELIVERY_FEE
+
+      let productFee = baseCharge
+      switch (product.delivery_type) {
+        case 'per_quantity':
+          productFee = baseCharge * op.quantity
+          break
+        case 'free_over_amount':
+          // delivery_charge is the free-shipping threshold; free once subtotal reaches it
+          productFee = subtotal.value >= baseCharge ? 0 : DEFAULT_DELIVERY_FEE
+          break
+        // 'flat' and 'weight_based' (no weight data) use the charge as-is
+        case 'flat':
+        case 'weight_based':
+        default:
+          productFee = baseCharge
+      }
+
+      fee = Math.max(fee, productFee)
+    }
+
+    return fee
+  })
+
+  const total = computed(() => subtotal.value + deliveryFee.value)
 
   // Actions - Product management
   function initializeOrderProducts(productList: Product[], selectedVariants: Record<string, string> = {}) {
@@ -268,14 +306,12 @@ export const useOrderStore = defineStore('order', () => {
     validationErrors,
     submitAttempted,
 
-    // Constants
-    DELIVERY_FEE,
-
     // Computed
     availableDistricts,
     availableUpazilas,
     productsForSubmission,
     subtotal,
+    deliveryFee,
     total,
 
     // Actions

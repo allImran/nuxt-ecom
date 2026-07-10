@@ -58,7 +58,7 @@
         <div class="mt-8 pt-8 border-t border-luxury-border dark:border-gray-600">
           <OrderSummary
             :subtotal="subtotal"
-            :delivery-fee="DELIVERY_FEE"
+            :delivery-fee="deliveryFee"
             :total="total"
             :loading="loading"
             :success="success"
@@ -110,7 +110,7 @@ const {
   error,
   success,
   orderId,
-  getDeliveryFee,
+  deliveryFee,
   productsForSubmission,
   subtotal,
   total,
@@ -125,8 +125,6 @@ const {
   setMobile,
   setFullName
 } = vm
-
-const DELIVERY_FEE = getDeliveryFee()
 
 // Success section ref for scrolling
 const successSection = ref<HTMLElement | null>(null)
