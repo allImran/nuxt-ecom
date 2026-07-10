@@ -5,6 +5,15 @@ import { publicNetwork } from '~/network/public'
 const route = useRoute()
 const { t } = useI18n()
 const cartStore = useCartStore()
+const toast = useToast()
+
+// Ref to the order section for the "scroll to order" button
+const orderSection = ref<HTMLElement | null>(null)
+
+// Scroll smoothly to the order section
+const scrollToOrder = () => {
+  orderSection.value?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+}
 // Define layout for this page
 definePageMeta({
   layout: 'default'
@@ -151,7 +160,15 @@ const handleAddToCart = () => {
     price,
     slug: slug.value,
     image: firstImage?.url,
-    variant: selectedVariant.value?.attributes?.map(attr => `${attr.name}: ${attr.value}`).join(', ')
+    variant: selectedVariant.value?.attributes
+      ? Object.entries(selectedVariant.value.attributes).map(([name, value]) => `${name}: ${value}`).join(', ')
+      : undefined
+  })
+
+  // Show feedback so the user knows the item was added
+  toast.success({
+    title: t('product.addToCart'),
+    description: product.value.name
   })
 
   // Track AddToCart event with Meta Pixel
@@ -272,7 +289,7 @@ const handleAddToCart = () => {
           >
             <div class="flex items-center justify-center space-x-2">
               <UiIcon name="shopping-cart" :size="20" />
-              <span>{{ t('cart.addToCart') || 'Add to Cart' }}</span>
+              <span>{{ t('product.addToCart') }}</span>
             </div>
           </UiLuxuryButton>
 
@@ -287,7 +304,7 @@ const handleAddToCart = () => {
 
     </main>
 
-    <section class="bg-luxury-gold/4 py-20 border-t border-luxury-border dark:border-luxury-dark-border" aria-labelledby="order-title">
+    <section ref="orderSection" class="bg-luxury-gold/4 py-20 border-t border-luxury-border dark:border-luxury-dark-border" aria-labelledby="order-title">
       <h2 id="order-title" class="text-xl lg:text-2xl font-semibold text-center">{{ t('order.title') }}</h2>
 
       <Order v-if="productsForOrder.length > 0" :products="productsForOrder" :selected-variants="selectedVariantsMap" />

@@ -13,6 +13,9 @@
 
     <!-- Footer -->
     <LayoutAppFooter />
+
+    <!-- Toast notifications (e.g. add to cart feedback) -->
+    <AdminToastContainer />
   </div>
 </template>
 
