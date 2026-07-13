@@ -57,7 +57,7 @@ onMounted(async () => {
       trackViewContent(
         product.value.id,
         product.value.name,
-        product.value.variants?.[0]?.price || 0,
+        selectedVariant.value?.price || product.value.variants?.[0]?.price || 0,
         'BDT',
         product.value.category?.name
       )
@@ -116,17 +116,22 @@ const selectedVariantsMap = computed(() => {
 })
 
 // Update page metadata with functional getters for reactive SEO
+const productImage = computed(() => {
+  const path = product.value?.file_paths?.[0]
+  return path ? getImageUrl(path) : '/cover.webp'
+})
+
 useSeoMeta({
   title: () => product.value ? `${product.value.name} - INDOORSHOPPING` : 'Product - INDOORSHOPPING',
-  description: () => product.value?.description || product.value?.name || 'Discover premium luxury products at INDOORSHOPPING.',
+  description: () => product.value?.name || 'Discover premium luxury products at INDOORSHOPPING.',
   ogTitle: () => product.value ? `${product.value.name} - INDOORSHOPPING` : 'Product - INDOORSHOPPING',
-  ogDescription: () => product.value?.description || product.value?.name || 'Discover premium luxury products at INDOORSHOPPING.',
+  ogDescription: () => product.value?.name || 'Discover premium luxury products at INDOORSHOPPING.',
   ogType: 'website',
-  ogImage: () => product.value?.media?.[0]?.url || '/og-image.jpg',
+  ogImage: () => productImage.value,
   twitterCard: 'summary_large_image',
   twitterTitle: () => product.value ? `${product.value.name} - INDOORSHOPPING` : 'Product - INDOORSHOPPING',
-  twitterDescription: () => product.value?.description || product.value?.name || 'Discover premium luxury products at INDOORSHOPPING.',
-  twitterImage: () => product.value?.media?.[0]?.url || '/og-image.jpg',
+  twitterDescription: () => product.value?.name || 'Discover premium luxury products at INDOORSHOPPING.',
+  twitterImage: () => productImage.value,
 })
 
 // Handle variant selection
@@ -151,7 +156,7 @@ const handleSelectMedia = (index: number) => {
 const handleAddToCart = () => {
   if (!product.value) return
 
-  const firstImage = product.value.media?.[0]
+  const firstImagePath = product.value.file_paths?.[0]
   const price = selectedVariant.value?.price || product.value.variants?.[0]?.price || 0
 
   cartStore.addItem({
@@ -159,10 +164,11 @@ const handleAddToCart = () => {
     name: product.value.name,
     price,
     slug: slug.value,
-    image: firstImage?.url,
+    image: firstImagePath ? getImageUrl(firstImagePath) : undefined,
     variant: selectedVariant.value?.attributes
       ? Object.entries(selectedVariant.value.attributes).map(([name, value]) => `${name}: ${value}`).join(', ')
-      : undefined
+      : undefined,
+    variantId: selectedVariant.value?.id ?? null
   })
 
   // Show feedback so the user knows the item was added
@@ -270,7 +276,6 @@ const handleAddToCart = () => {
             :name="product?.name"
             :category="product?.category?.name"
             :price="priceDisplay"
-            :description="product?.name"
           />
 
           <!-- Variant Selector -->

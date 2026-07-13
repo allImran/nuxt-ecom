@@ -91,10 +91,12 @@ import type { Product } from '~/network/public'
 interface Props {
   products: Product[]
   selectedVariants?: Record<string, string> // product_id -> variant_id
+  initialQuantities?: Record<string, number> // product_id -> quantity
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  selectedVariants: () => ({})
+  selectedVariants: () => ({}),
+  initialQuantities: () => ({})
 })
 
 const vm = useOrderViewModel()
@@ -131,12 +133,12 @@ const successSection = ref<HTMLElement | null>(null)
 
 // Initialize products on mount
 onMounted(() => {
-  vm.initializeOrderProducts(props.products, props.selectedVariants)
+  vm.initializeOrderProducts(props.products, props.selectedVariants, props.initialQuantities)
 })
 
 // Watch for products prop changes
 watch(() => props.products, (newProducts) => {
-  vm.initializeOrderProducts(newProducts, props.selectedVariants)
+  vm.initializeOrderProducts(newProducts, props.selectedVariants, props.initialQuantities)
 }, { deep: true })
 
 // Watch for selectedVariants prop changes

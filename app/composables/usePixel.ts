@@ -81,7 +81,8 @@ function standardizeParams(params?: Record<string, any>): PixelEventParams {
 export function trackEvent(
   eventName: string,
   params?: Record<string, any>,
-  userData?: Record<string, any>
+  userData?: Record<string, any>,
+  eventId?: string
 ): void {
   if (!isFbqAvailable()) {
     if (import.meta.client) {
@@ -93,7 +94,10 @@ export function trackEvent(
   const standardizedParams = standardizeParams(params)
 
   try {
-    if (userData && Object.keys(userData).length > 0) {
+    if (eventId) {
+      // eventID enables dedup once a matching server-side (CAPI) event is added
+      ;(window as any).fbq('track', eventName, standardizedParams, { eventID: eventId })
+    } else if (userData && Object.keys(userData).length > 0) {
       // With advanced matching data
       ;(window as any).fbq('track', eventName, standardizedParams, userData)
     } else {
@@ -215,7 +219,7 @@ export function trackPurchase(
     value,
     currency,
     num_items: numItems
-  }, userData)
+  }, userData, orderId)
 }
 
 /**

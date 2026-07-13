@@ -2,11 +2,12 @@
 const businessBrandingStore = useBusinessBrandingStore()
 const { business } = storeToRefs(businessBrandingStore)
 
-// Get social links from business data with fallback to runtime config
-const config = useRuntimeConfig()
+// Social links come solely from this deployment's business record —
+// no env fallback, so a business without links configured just hides the card
+// instead of silently showing another business's Facebook/WhatsApp.
 const socialLinks = computed(() => ({
-  facebook: business.value?.social?.facebook || config.public.facebookUrl as string,
-  whatsapp: business.value?.social?.whatsapp || config.public.whatsappUrl as string
+  facebook: business.value?.social?.facebook,
+  whatsapp: business.value?.social?.whatsapp
 }))
 
 const openLink = (url: string) => {

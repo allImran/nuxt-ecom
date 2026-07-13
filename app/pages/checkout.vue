@@ -3,7 +3,6 @@ import { publicNetwork } from '~/network/public'
 
 const { t } = useI18n()
 const cartStore = useCartStore()
-const orderStore = useOrderStore()
 const { items, totalItems } = storeToRefs(cartStore)
 
 definePageMeta({
@@ -24,6 +23,25 @@ if (import.meta.server) {
 
 const products = ref<import('~/network/public').Product[]>([])
 const loading = ref(false)
+
+// Restore the exact variant the customer picked in the cart (product_id -> variant_id)
+const selectedVariantsMap = computed(() => {
+  const map: Record<string, string> = {}
+  for (const item of items.value) {
+    if (item.variantId) map[item.productId] = item.variantId
+  }
+  return map
+})
+
+// Restore the exact quantities from the cart (product_id -> quantity), summed
+// across cart lines in case the same product was added with multiple variants
+const initialQuantitiesMap = computed(() => {
+  const map: Record<string, number> = {}
+  for (const item of items.value) {
+    map[item.productId] = (map[item.productId] || 0) + item.quantity
+  }
+  return map
+})
 
 onMounted(async () => {
   cartStore.loadCart()
@@ -54,18 +72,8 @@ async function fetchCartProducts() {
       publicNetwork.fetchProductBySlug(slug)
     )
     products.value = await Promise.all(productPromises)
-
-    // Initialize order store with products and set quantities from cart
-    orderStore.initializeOrderProducts(products.value)
-
-    // Update quantities based on cart items
-    for (const cartItem of items.value) {
-      const product = products.value.find(p => p.id === cartItem.productId)
-      if (product) {
-        const variantId = product.variants?.[0]?.id || null
-        orderStore.updateQuantity(cartItem.productId, variantId, cartItem.quantity)
-      }
-    }
+    // Quantities/variants are restored by the Order component itself, from
+    // selectedVariantsMap/initialQuantitiesMap props (single init, no race).
   } catch (err) {
     console.error('Failed to fetch cart products:', err)
   } finally {
@@ -108,7 +116,12 @@ watch(items, async () => {
       </div>
 
       <!-- Order Form -->
-      <Order v-else-if="products.length > 0" :products="products" />
+      <Order
+        v-else-if="products.length > 0"
+        :products="products"
+        :selected-variants="selectedVariantsMap"
+        :initial-quantities="initialQuantitiesMap"
+      />
 
       <!-- Loading State -->
       <div v-else class="text-center py-20">

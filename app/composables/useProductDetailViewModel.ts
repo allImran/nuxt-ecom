@@ -21,7 +21,7 @@ export const useProductDetailViewModel = () => {
 
   // Format price for display
   const formatPrice = (price: number): string => {
-    return `$${price}`
+    return `${price} TK`
   }
 
   // Get attribute value from variant

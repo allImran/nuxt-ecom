@@ -8,6 +8,7 @@ export interface CartItem {
   price: number
   quantity: number
   variant?: string
+  variantId?: string | null
   image?: string
   slug: string
 }
@@ -48,21 +49,23 @@ export const useCartStore = defineStore('cart', () => {
     slug: string
     image?: string
     variant?: string
+    variantId?: string | null
   }, quantity: number = 1) => {
     const existingItemIndex = items.value.findIndex(
-      item => item.productId === product.id && item.variant === product.variant
+      item => item.productId === product.id && item.variantId === product.variantId
     )
 
     if (existingItemIndex > -1) {
       items.value[existingItemIndex].quantity += quantity
     } else {
       items.value.push({
-        id: `${product.id}-${product.variant || 'default'}-${Date.now()}`,
+        id: `${product.id}-${product.variantId || 'default'}-${Date.now()}`,
         productId: product.id,
         name: product.name,
         price: product.price,
         quantity,
         variant: product.variant,
+        variantId: product.variantId ?? null,
         image: product.image,
         slug: product.slug
       })

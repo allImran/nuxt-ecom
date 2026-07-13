@@ -1,6 +1,13 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 import tailwindcss from "@tailwindcss/vite";
 
+const pixelId = process.env.NUXT_PUBLIC_PIXEL_ID
+if (!pixelId) {
+  // Loud, build-time warning: without this, the pixel silently stays disabled
+  // rather than falling back to another business's ad account.
+  console.error('[nuxt-meta-pixel] NUXT_PUBLIC_PIXEL_ID is not set for this deployment — Facebook Pixel will NOT be initialized.')
+}
+
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
 
@@ -15,23 +22,12 @@ export default defineNuxtConfig({
         { charset: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
         { name: 'description', content: 'Experience the finest selection of curated products. Quality meets elegance in every piece we offer.' },
-        { name: 'og:type', content: 'website' },
-        { name: 'og:site_name', content: 'INDOORSHOPPING' },
+        { property: 'og:type', content: 'website' },
+        { property: 'og:site_name', content: 'INDOORSHOPPING' },
+        { property: 'og:image', content: '/cover.webp' },
         { name: 'twitter:card', content: 'summary_large_image' },
         { name: 'twitter:site', content: '@theINDOORSHOPPING' },
-      ],
-      script: [
-        {
-          innerHTML: '!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version=\'2.0\';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window, document,\'script\',\'https://connect.facebook.net/en_US/fbevents.js\');fbq(\'init\', \'1469591844791219\');fbq(\'track\', \'PageView\');',
-          type: 'text/javascript',
-          tagPosition: 'head',
-        }
-      ],
-      noscript: [
-        {
-          innerHTML: '<img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=1469591844791219&ev=PageView&noscript=1" />',
-          tagPosition: 'head',
-        }
+        { name: 'twitter:image', content: '/cover.webp' },
       ],
       link: [
         { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
@@ -49,10 +45,11 @@ export default defineNuxtConfig({
       supabaseUrl: process.env.SUPABASE_URL,
       supabasePublishableKey: process.env.SUPABASE_PUBLISHABLE_KEY,
       apiBaseURL: process.env.API_BASE_URL,
-      facebookUrl: process.env.FACEBOOK_URL || 'https://www.facebook.com/theINDOORSHOPPING',
-      whatsappUrl: process.env.WHATSAPP_URL || 'https://wa.me/8801521203588',
       businessId: process.env.BUSINESS_ID || '6cadb262-2726-4a19-8a3e-90ef1b98aba3',
-      pixelId: process.env.NUXT_PUBLIC_PIXEL_ID,
+      siteUrl: process.env.NUXT_PUBLIC_SITE_URL || 'https://yourdomain.com',
+      // Only registers a pixel when the deployment actually configured one —
+      // an unset var must never fall back to another business's pixel ID.
+      metapixel: pixelId ? { default: { id: pixelId } } : {},
     },
   },
   devtools: { enabled: true },
@@ -65,7 +62,7 @@ export default defineNuxtConfig({
     }
   },
   css: ['./app/assets/css/main.css'],
-  modules: ['@nuxt/image', '@nuxt/content', 'motion-v/nuxt', '@pinia/nuxt', '@nuxtjs/i18n'],
+  modules: ['@nuxt/image', '@nuxt/content', 'motion-v/nuxt', '@pinia/nuxt', '@nuxtjs/i18n', 'nuxt-meta-pixel'],
 
   i18n: {
     locales: [

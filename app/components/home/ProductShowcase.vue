@@ -26,7 +26,7 @@ const getProductPrice = (product: Product) => {
     if (prices.length > 0) {
       const minPrice = Math.min(...prices)
       const maxPrice = Math.max(...prices)
-      return minPrice === maxPrice ? `$${minPrice}` : `$${minPrice} - $${maxPrice}`
+      return minPrice === maxPrice ? `${minPrice} TK` : `${minPrice} TK - ${maxPrice} TK`
     }
   }
   return null

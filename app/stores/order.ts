@@ -101,15 +101,23 @@ export const useOrderStore = defineStore('order', () => {
   const total = computed(() => subtotal.value + deliveryFee.value)
 
   // Actions - Product management
-  function initializeOrderProducts(productList: Product[], selectedVariants: Record<string, string> = {}) {
+  function initializeOrderProducts(
+    productList: Product[],
+    selectedVariants: Record<string, string> = {},
+    initialQuantities: Record<string, number> = {}
+  ) {
     products.value = productList
     orderProducts.value = productList.map((product, index) => {
       // Use selected variant if available, otherwise use first variant
       const variantId = selectedVariants[product.id] || product.variants?.[0]?.id || null
+      // Use the caller-provided quantity (e.g. restored from the cart) when given,
+      // otherwise fall back to the "first product qty 1, rest 0" default
+      const providedQuantity = initialQuantities[product.id]
+      const quantity = providedQuantity !== undefined ? providedQuantity : (index === 0 ? 1 : 0)
       return {
         id: product.id,
         variant_id: variantId,
-        quantity: index === 0 ? 1 : 0
+        quantity
       }
     })
   }
