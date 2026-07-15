@@ -1,9 +1,16 @@
 import { storeToRefs } from 'pinia'
-import { getPublicImage } from '~/utils/image'
 import type { Product, ProductVariant } from '~/network/public'
 
 export const useProductDetailViewModel = () => {
   const productDetailStore = useProductDetailStore()
+
+  // Resolve the Supabase base once, here in setup where the Nuxt instance is
+  // available. getImageUrl below closes over it and must NOT call useRuntimeConfig
+  // itself: it is invoked lazily from useSeoMeta / JSON-LD head getters that unhead
+  // resolves after setup, outside the instance context — calling a Nuxt composable
+  // there throws "instance unavailable" and 500s the prerender of every product page.
+  const runtimeConfig = useRuntimeConfig()
+  const supabaseUrl = (runtimeConfig.public.supabaseUrl as string | undefined) ?? ''
 
   const {
     product,
@@ -42,9 +49,15 @@ export const useProductDetailViewModel = () => {
     return match ? match[1]! : null
   }
 
-  // Get image URL using the getPublicImage utility
+  // Build a Supabase public image URL from the setup-captured base (no composable
+  // call at invocation time — see the supabaseUrl note above). Mirrors getPublicImage.
   const getImageUrl = (path: string): string => {
-    return getPublicImage('product-images', path)
+    if (!supabaseUrl) {
+      console.error('Supabase URL missing in runtime config')
+      return ''
+    }
+    const cleanPath = path.startsWith('/') ? path.slice(1) : path
+    return `${supabaseUrl}/storage/v1/object/public/product-images/${cleanPath}`
   }
 
   // Get YouTube embed URL
@@ -60,6 +73,12 @@ export const useProductDetailViewModel = () => {
       console.error('Failed to load product:', e)
       throw e
     }
+  }
+
+  // Mirror server-fetched, payload-serialized product data into the store (client
+  // hydration / cached slug-change nav) so the derived getters and selection state work.
+  const setProduct = (data: Product | null) => {
+    productDetailStore.setProduct(data)
   }
 
   // Select a variant
@@ -92,6 +111,7 @@ export const useProductDetailViewModel = () => {
     hasMedia,
     // Actions
     loadProduct,
+    setProduct,
     selectVariant,
     setSelectedMediaIndex,
     reset,

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
+import { publicNetwork, type Product } from '~/network/public'
 
 definePageMeta({
   layout: 'default'
@@ -10,7 +11,17 @@ const businessId = config.public.businessId as string | undefined
 const route = useRoute()
 const router = useRouter()
 
-const { products, loading, fetchProducts } = useBusinessProductsViewModel()
+// Fetch at setup time so the listing renders during SSR / `nuxt generate`
+// prerendering (C2). The list rides in useAsyncData's data (serialized into the
+// payload, rehydrated on the client with no refetch on hard load) — the Pinia
+// store is NOT serialized, so we read `data` directly. The crawler follows the
+// product and pagination <NuxtLink>s from the prerendered HTML.
+const { data: productsData, pending: loading } = await useAsyncData<Product[]>(
+  'listing-products',
+  () => (businessId ? publicNetwork.fetchProductsByBusiness(businessId, 100) : Promise.resolve([])),
+  { default: () => [] as Product[] }
+)
+const products = computed<Product[]>(() => productsData.value ?? [])
 
 const businessBrandingStore = useBusinessBrandingStore()
 const { business } = storeToRefs(businessBrandingStore)
@@ -129,12 +140,6 @@ useSeoMeta({
 const viewProduct = (slug: string) => {
   navigateTo(`/products/${slug}`)
 }
-
-onMounted(() => {
-  if (businessId) {
-    fetchProducts(businessId, 100)
-  }
-})
 </script>
 
 <template>

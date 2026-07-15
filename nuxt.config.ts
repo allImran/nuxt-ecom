@@ -123,11 +123,23 @@ export default defineNuxtConfig({
     firebase: {
       gen: 2
     },
-    // This deployment serves only .output/public (no runtime server), so these
-    // routes are prerendered at build time into static files. sitemap.xml fetches
-    // product slugs from the API at build time (fails soft) — redeploy to refresh.
+    // This deployment serves only .output/public with no runtime server, so the
+    // whole storefront is prerendered to static HTML at build time (C2). Deploy
+    // with `npm run generate` (nuxt generate): it prerenders `/` and `/products`,
+    // then `crawlLinks` follows the product <NuxtLink>s (and pagination links) to
+    // discover and prerender every /products/<slug> page. The data-bearing routes
+    // (sitemap/robots/catalog) fetch from the API at build time and fail soft.
+    //   - failOnError: false keeps a cold/slow backend from aborting the whole
+    //     deploy over a single route (same fail-soft stance as the sitemap route);
+    //     a partial static site is better than a failed deploy. Redeploy to refresh.
+    //   - Admin/business/order routes are never linked from public pages, but are
+    //     ignored explicitly so a stray link can't pull the heavy admin bundle into
+    //     the prerender crawl. They render client-side via the SPA fallback.
     prerender: {
-      routes: ['/sitemap.xml', '/robots.txt', '/catalog.csv'],
+      crawlLinks: true,
+      failOnError: false,
+      routes: ['/', '/products', '/sitemap.xml', '/robots.txt', '/catalog.csv'],
+      ignore: ['/admin', '/business', '/orders'],
     },
   }
 })

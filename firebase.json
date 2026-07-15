@@ -2,10 +2,18 @@
   "hosting": {
     "site": "indoorshopping",
     "public": ".output/public",
+    "trailingSlash": false,
     "ignore": [
       "firebase.json",
       "**/.*",
       "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "comment": "SPA fallback. Prerendered pages (`/`, `/products`, every /products/<slug>, the trust pages) are static files and are served directly ahead of this rewrite, so crawlers still get real SSR HTML. Only routes with no prerendered file — dynamic ones like /orders/<id>, /checkout deep-links, admin/business, and products added after the last build — fall through to the client-rendered app shell here. trailingSlash:false serves clean URLs (matching the emitted canonical) without a redirect hop.",
+        "source": "**",
+        "destination": "/200.html"
+      }
     ]
   }
 }

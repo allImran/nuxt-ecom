@@ -35,59 +35,77 @@ const {
   orderedMedia,
   hasMedia,
   loadProduct,
+  setProduct,
   selectVariant,
   setSelectedMediaIndex,
   getImageUrl,
   getAttributeEntries
 } = useProductDetailViewModel()
 
-// Accessories state
-const accessories = ref<import('~/network/public').Product[]>([])
-const loadingAccessories = ref(false)
-
-// Fetch product on mount
-onMounted(async () => {
-  if (slug.value) {
-    await loadProduct(slug.value)
-    await loadAccessories(slug.value)
-
-    // Track ViewContent event with Meta Pixel
-    if (product.value) {
-      const { trackViewContent } = usePixel()
-      trackViewContent(
-        product.value.id,
-        product.value.name,
-        selectedVariant.value?.price || product.value.variants?.[0]?.price || 0,
-        'BDT',
-        product.value.category?.name
-      )
+// Fetch the product + its accessories at setup time so the page is prerendered
+// with real content (C2): the SSR HTML carries the h1/title/og:image/JSON-LD and
+// crawlers/social scrapers see a populated page instead of an empty shell. The
+// product lives in the Pinia store (serialized into the payload and rehydrated
+// with no client refetch on hard load); accessories are a local list returned
+// from the handler so they survive to the client the same way. Re-runs on slug
+// change so product→product client navigation loads fresh data.
+const { data: pageData } = await useAsyncData(
+  () => `product-${slug.value}`,
+  async () => {
+    // Start both fetches before the first await: each network call resolves its
+    // baseURL via useRuntimeConfig() synchronously, and the Nuxt instance context
+    // is lost after an await inside the handler. Awaiting the product first and
+    // only then calling loadAccessories 500s the accessory fetch during prerender.
+    const accessoriesPromise = loadAccessories(slug.value)
+    try {
+      await loadProduct(slug.value)
+    } catch {
+      // The store already records the error; the template shows the not-found
+      // state. Swallow here so a single bad slug doesn't abort prerendering.
     }
+    // Return the product itself (not just rely on the store): the Pinia store is
+    // NOT serialized into the payload, so the product must ride in useAsyncData's
+    // data to survive to the client. It's mirrored back into the store below.
+    return { product: product.value, accessories: await accessoriesPromise }
+  },
+  { watch: [slug] }
+)
+
+const accessories = computed<import('~/network/public').Product[]>(() => pageData.value?.accessories ?? [])
+
+// Mirror the serialized product into the store on client hydration and on cached
+// slug-change navigation (when the handler returns payload data without re-running),
+// so all the store's derived getters — price, media, variants, selection — work.
+watchEffect(() => {
+  const p = pageData.value?.product
+  if (p && product.value?.id !== p.id) setProduct(p)
+})
+
+// Fire the ViewContent pixel client-side only (fbq is browser-only). Product data
+// is already resolved by the time this runs.
+onMounted(() => {
+  if (product.value) {
+    const { trackViewContent } = usePixel()
+    trackViewContent(
+      product.value.id,
+      product.value.name,
+      selectedVariant.value?.price || product.value.variants?.[0]?.price || 0,
+      'BDT',
+      product.value.category?.name
+    )
   }
 })
 
-// Load accessories for the current product
-async function loadAccessories(productSlug: string) {
+// Resolve the accessory products mapped to this slug (empty list if none / on error,
+// so the main product page never fails because of an accessory fetch).
+async function loadAccessories(productSlug: string): Promise<import('~/network/public').Product[]> {
   const accessorySlugs = getAccessorySlugs(productSlug)
-
-  if (accessorySlugs.length === 0) {
-    return
-  }
-
-  loadingAccessories.value = true
-
+  if (accessorySlugs.length === 0) return []
   try {
-    // Fetch all accessory products in parallel
-    const accessoryPromises = accessorySlugs.map(slug =>
-      publicNetwork.fetchProductBySlug(slug)
-    )
-
-    const fetchedAccessories = await Promise.all(accessoryPromises)
-    accessories.value = fetchedAccessories
+    return await Promise.all(accessorySlugs.map(s => publicNetwork.fetchProductBySlug(s)))
   } catch (err) {
     console.error('Failed to load accessories:', err)
-    // Don't fail the page if accessories fail to load
-  } finally {
-    loadingAccessories.value = false
+    return []
   }
 }
 

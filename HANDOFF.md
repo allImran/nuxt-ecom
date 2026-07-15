@@ -280,16 +280,100 @@ live onrender backend (typecheck 73/baseline, build exit 0, SSR curl-checked).
 - Submit the sitemap + run structured data through Google Search Console / Rich Results Test
   now that `NUXT_PUBLIC_SITE_URL` is live.
 
+## What's done (C2 — rendering foundation: useAsyncData + nuxt generate, this session — UNCOMMITTED)
+
+Agreed scope with the user up front: **C2 only** (Phase 2 item 7 — the keystone). This is
+the deployment-model change the earlier handoff kept flagging as a prerequisite. Changes
+are in the working tree, **NOT committed** — review the diff before committing. Verified
+against the live onrender backend; `nuxt generate` exit 0, typecheck 73/baseline.
+
+- **Home / listing / product-detail now fetch at setup via `useAsyncData`** (was
+  `onMounted`, which never runs on the server → empty SSR shell). The three pages are
+  now prerendered with **real content** — verified in the generated HTML:
+  - `products/<slug>/index.html` carries the real `<title>`, `og:title`, `og:image`
+    (real Supabase URL), canonical + `og:url`, the `<h1>`, and **fully-populated
+    Product + AggregateOffer JSON-LD** (price 1100 etc.) — no skeletons. This is the
+    fix for the "Product - INDOORSHOPPING + broken image" social-share bug: FB/WhatsApp
+    scrapers (which don't run JS) now see real previews.
+  - Home + listing render crawlable product `<NuxtLink>`s in the served HTML, so the
+    `nuxt generate` crawler discovers every product page (all 3 live products
+    prerendered as `/products/<slug>/`).
+- **⚠️ Pinia is NOT serialized into the payload** on this setup (confirmed: the extracted
+  `_payload.json` contained only the useAsyncData keys, no store state). So relying on
+  the store to survive SSR→client hydration silently blanks the grid on hydration. The
+  fix carries the data through **useAsyncData's return value** (the canonical Nuxt
+  mechanism, always serialized):
+  - Home (`pages/index.vue`) and listing (`pages/products/index.vue`) read `data`
+    directly (`publicNetwork.fetchProductsByBusiness`), not the store. Listing's
+    filter/sort/paginate computeds now hang off a `products` computed over `data`.
+  - Product detail (`pages/products/[slug].vue`) keeps the productDetail store (for its
+    rich getters: price/media/variant selection) but the handler **returns the product**
+    and a `watchEffect` mirrors it back into the store via a new
+    `productDetail.setProduct()` action — runs synchronously at setup so client
+    hydration matches SSR (no mismatch). Accessories ride in the same `data`.
+- **SSR-context gotchas fixed** (both would 500 the product-page prerender):
+  - `getPublicImage` calls `useRuntimeConfig()` at call-time; it was invoked lazily from
+    the `og:image` / JSON-LD head getters that unhead resolves *after* setup (outside the
+    Nuxt instance). `useProductDetailViewModel` now captures `supabaseUrl` once at setup
+    and `getImageUrl` builds the URL from that closure — no composable call at head-resolve
+    time.
+  - The accessory fetch ran *after* `await loadProduct`, and Nuxt loses the instance
+    context after the first await inside a `useAsyncData` handler → `useRuntimeConfig()`
+    in the network layer threw "instance unavailable". Fixed by starting the accessory
+    fetch **before** awaiting the product (both network calls resolve their baseURL
+    synchronously while context is still alive). NB: the network layer calling
+    `useRuntimeConfig()` per-request is the underlying fragility — worth resolving baseURL
+    once if this bites again.
+- **Deploy model → `nuxt generate`** (`nuxt.config.ts` nitro.prerender): `crawlLinks: true`
+  (follow product/pagination links), `failOnError: false` (a cold/slow backend can't abort
+  the whole deploy over one route — same fail-soft stance as the sitemap), page routes
+  `/` + `/products` added to the seed list, and `ignore: ['/admin','/business','/orders']`
+  so the heavy admin bundle can't get pulled into the crawl. **Deploy with `npm run
+  generate`, not `npm run build`.**
+- **Firebase SPA fallback** (`firebase.json`): added `trailingSlash: false` + a `**` →
+  `/200.html` rewrite. Prerendered pages are static files and are served directly ahead of
+  the rewrite (crawlers still get real HTML); only routes with no prerendered file —
+  `/orders/<id>`, checkout deep-links, admin/business, and products added after the last
+  build — fall through to the client-rendered shell. This also fixes the pre-existing
+  latent bug where a deep-link refresh would hit Firebase's own 404 (nothing was
+  prerendered before, and the firebase function isn't deployed).
+
+### Verification of this session
+
+`npm run generate` → exit 0, 33 routes prerendered. `npx nuxi typecheck` → 73 errors,
+IDENTICAL to baseline (the 2 now shown in `productDetail.ts` are pre-existing —
+`autoSelectFirstVariant` / `extractYouTubeId` — line-shifted by the new `setProduct`).
+Served `.output/public` statically and curl-verified: clean product URLs resolve to the
+prerendered files with real `<title>`; `_payload.json` now contains the product data
+(home 10KB w/ all slugs, detail w/ name+price) so hydration is consistent. **NOT
+browser-verified** (no headless browser on this machine): live client hydration, the
+`watchEffect` store-mirror on hard load, and client-side product→product navigation are
+build-clean and logically sound but not exercised in a real browser. Also **not
+Firebase-runtime-verified** — the `trailingSlash:false` + rewrite routing is a reasoned
+standard config, confirmed only against a local static server (directory-index serving
+matches), not a real Firebase deploy. Deploy to a preview channel and confirm: (a) a clean
+product URL returns prerendered HTML (not the 200.html shell), (b) `/orders/<id>` refresh
+loads the app.
+
+### C2 unblocks (now newly viable, still TODO)
+
+- **Product/Breadcrumb JSON-LD + product social previews** — the code was already there
+  (Phase 3 session) emitting empty placeholders client-side; **it now renders server-side
+  with real data**. Run the live URLs through the Rich Results Test / FB Sharing Debugger
+  once deployed to confirm.
+- **Image optimization** — `nuxt generate` is now in place, so `@nuxt/image` + `ipxStatic`
+  (build-time image transforms baked into `.output/public`) is finally viable on this
+  static deploy. Still TODO.
+- **True per-category SEO landing pages** — still need their own crawlable routes; C2
+  (the SSR half) is no longer the blocker, only the routing/pages remain.
+
 ## What's left (Phases 2-4, unstarted)
 
 Straight from FINDINGS.md, adapted for the static-hosting constraint above:
 
 **Phase 2** — rendering & measurement foundation:
-- Convert home/listing/product-detail to `useAsyncData`, but the deploy story must be
-  `nuxt generate` (prerender at build time) rather than relying on request-time SSR.
-  (The "product cards aren't links" prerequisite — `ProductShowcase.vue` now uses a real
-  `<NuxtLink>` — was **DONE in the Phase 3 session**, so the `nuxt generate` crawler can
-  now discover product pages via `<a href>`.)
+- ~~Convert home/listing/product-detail to `useAsyncData` + `nuxt generate`~~ **DONE this
+  session (C2)** — see "What's done (C2 …)" above. Deploy with `npm run generate`.
 - CAPI (Conversions API): **not achievable purely in this repo** on static hosting — flag
   to the user that it needs a separate serverless function (Cloudflare Worker, small
   Vercel/Netlify function, etc.) if they want it; don't build a Nitro server route

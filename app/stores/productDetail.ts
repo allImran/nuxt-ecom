@@ -82,6 +82,15 @@ export const useProductDetailStore = defineStore('productDetail', () => {
     }
   }
 
+  // Set the product directly (used to mirror server-fetched, payload-serialized
+  // data into the store on client hydration — the store itself is not serialized).
+  const setProduct = (data: Product | null) => {
+    product.value = data
+    selectedVariant.value = null
+    selectedMediaIndex.value = 0
+    autoSelectFirstVariant()
+  }
+
   const selectVariant = (variant: ProductVariant) => {
     selectedVariant.value = variant
   }
@@ -122,6 +131,7 @@ export const useProductDetailStore = defineStore('productDetail', () => {
     hasMedia,
     // Actions
     fetchProductBySlug,
+    setProduct,
     selectVariant,
     setSelectedMediaIndex,
     reset,
