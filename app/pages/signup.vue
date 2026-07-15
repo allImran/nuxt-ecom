@@ -7,7 +7,7 @@ definePageMeta({
 if (import.meta.server) {
   useSeoMeta({
     title: 'Create Account',
-    description: 'Create a new INDOORSHOPPING account to enjoy a personalized shopping experience.',
+    description: 'Create a new account to enjoy a personalized shopping experience.',
     robots: 'noindex, nofollow',
   })
 }

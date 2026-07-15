@@ -8,13 +8,23 @@ if (!pixelId) {
   console.error('[nuxt-meta-pixel] NUXT_PUBLIC_PIXEL_ID is not set for this deployment — Facebook Pixel will NOT be initialized.')
 }
 
+// Per-business identity for the static head tags. Kept generic when unset (never
+// a hardcoded brand) — the branding plugin overrides these at runtime once the
+// business record loads. Set NUXT_PUBLIC_SITE_NAME per deployment for correct
+// first-paint / no-JS / crawler branding.
+const siteName = process.env.NUXT_PUBLIC_SITE_NAME
+const twitterSite = process.env.NUXT_PUBLIC_TWITTER_SITE
+if (!siteName) {
+  console.error('[branding] NUXT_PUBLIC_SITE_NAME is not set for this deployment — page titles and og:site_name will be generic until branding loads client-side.')
+}
+
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
 
   app: {
     head: {
-      titleTemplate: '%s | INDOORSHOPPING',
-      title: 'INDOORSHOPPING',
+      titleTemplate: siteName ? `%s | ${siteName}` : '%s',
+      title: siteName || '',
       htmlAttrs: {
         lang: 'bn'
       },
@@ -23,10 +33,10 @@ export default defineNuxtConfig({
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
         { name: 'description', content: 'Experience the finest selection of curated products. Quality meets elegance in every piece we offer.' },
         { property: 'og:type', content: 'website' },
-        { property: 'og:site_name', content: 'INDOORSHOPPING' },
+        ...(siteName ? [{ property: 'og:site_name', content: siteName }] : []),
         { property: 'og:image', content: '/cover.webp' },
         { name: 'twitter:card', content: 'summary_large_image' },
-        { name: 'twitter:site', content: '@theINDOORSHOPPING' },
+        ...(twitterSite ? [{ name: 'twitter:site', content: twitterSite }] : []),
         { name: 'twitter:image', content: '/cover.webp' },
       ],
       // Inline + synchronous, matching the original snippet's proven timing (runs before
@@ -46,6 +56,9 @@ export default defineNuxtConfig({
         }
       ] : [],
       link: [
+        // Preload the primary body font (Hind Siliguri Regular) — it is used for
+        // essentially all on-screen text, so preloading it shortens the swap window.
+        { rel: 'preload', as: 'font', type: 'font/ttf', href: '/fonts/HindSiliguri-Regular.ttf', crossorigin: '' },
         { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
         { rel: 'icon', type: 'image/png', sizes: '16x16', href: '/favicon-16x16.png' },
         { rel: 'icon', type: 'image/png', sizes: '32x32', href: '/favicon-32x32.png' },
@@ -63,6 +76,7 @@ export default defineNuxtConfig({
       apiBaseURL: process.env.API_BASE_URL,
       businessId: process.env.BUSINESS_ID || '6cadb262-2726-4a19-8a3e-90ef1b98aba3',
       siteUrl: process.env.NUXT_PUBLIC_SITE_URL || 'https://yourdomain.com',
+      siteName: siteName || undefined,
       // Only exposed when actually configured — an unset var must never let the
       // client fall back to firing events under another business's pixel ID.
       pixelId: pixelId || undefined,
@@ -73,12 +87,9 @@ export default defineNuxtConfig({
     plugins: [
       tailwindcss(),
     ],
-    optimizeDeps: {
-      include: ['jspdf', 'jspdf-autotable']
-    }
   },
   css: ['./app/assets/css/main.css'],
-  modules: ['@nuxt/image', '@nuxt/content', 'motion-v/nuxt', '@pinia/nuxt', '@nuxtjs/i18n'],
+  modules: ['@nuxt/image', '@pinia/nuxt', '@nuxtjs/i18n'],
 
   i18n: {
     locales: [

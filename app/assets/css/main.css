@@ -1,7 +1,41 @@
-@import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=Noto+Sans+Bengali:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
 @custom-variant dark (&:where(.dark, .dark *));
 @tailwind utilities;
+
+/* Self-hosted fonts — served from the same origin instead of a render-blocking
+ * cross-origin Google Fonts @import (which had no preconnect). Reuses the .ttf
+ * files already shipped in public/fonts/ for the print pipeline. font-display:
+ * swap avoids FOIT. Weights 500/600 are synthesized from 400 by the browser.
+ * Follow-up: subset these to woff2 (needs pyftsubset/woff2_compress) to cut
+ * ~950KB of Bengali glyph data down to the subset actually rendered. */
+@font-face {
+  font-family: 'Hind Siliguri';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/HindSiliguri-Regular.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Hind Siliguri';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/fonts/HindSiliguri-Bold.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Noto Sans Bengali';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/NotoSansBengali-Regular.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Noto Sans Bengali';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/fonts/NotoSansBengali-Bold.ttf') format('truetype');
+}
 
 
 

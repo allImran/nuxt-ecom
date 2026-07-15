@@ -1,7 +1,17 @@
 <script setup lang="ts">
+import { defineAsyncComponent } from 'vue'
 import type { ProductSection } from '~/network/admin'
 import { useProductViewModel } from '~/composables/useProductViewModel'
 import { getPublicImage } from '~/utils/image'
+
+// Quill is only used in this admin editor and touches `document` at import time.
+// Load it lazily here (rendered inside <ClientOnly>) instead of registering it as
+// a global plugin, so it no longer ships in every storefront page's bundle.
+const QuillEditor = defineAsyncComponent(async () => {
+  await import('@vueup/vue-quill/dist/vue-quill.snow.css')
+  const mod = await import('@vueup/vue-quill')
+  return mod.QuillEditor
+})
 
 interface Props {
   bucket?: string
@@ -109,21 +119,23 @@ const getImageUrl = (path: string) => {
 
         <!-- Text Section Content -->
         <div v-if="section.type === 'text'">
-          <QuillEditor
-            :content="section.content || ''"
-            content-type="html"
-            :toolbar="[
-              ['bold', 'italic', 'underline'],
-              [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-              [{ 'header': [1, 2, 3, false] }],
-              ['link'],
-              ['clean']
-            ]"
-            placeholder="Enter text content..."
-            theme="snow"
-            class="luxury-quill-editor"
-            @update:content="updateSectionContent(index, $event)"
-          />
+          <ClientOnly>
+            <QuillEditor
+              :content="section.content || ''"
+              content-type="html"
+              :toolbar="[
+                ['bold', 'italic', 'underline'],
+                [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                [{ 'header': [1, 2, 3, false] }],
+                ['link'],
+                ['clean']
+              ]"
+              placeholder="Enter text content..."
+              theme="snow"
+              class="luxury-quill-editor"
+              @update:content="updateSectionContent(index, $event)"
+            />
+          </ClientOnly>
         </div>
 
         <!-- Media Section Content -->

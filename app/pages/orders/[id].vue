@@ -38,7 +38,7 @@ onMounted(() => {
 
 // Update page metadata with functional getters for reactive SEO
 useSeoMeta({
-  title: () => order.value ? `Order ${order.value.id} - INDOORSHOPPING` : 'Order Details - INDOORSHOPPING',
+  title: () => order.value ? `Order ${order.value.id}` : 'Order Details',
   description: () => order.value ? `Order details for order ${order.value.id}. Status: ${order.value.status}.` : 'View your order details.',
   robots: 'noindex, nofollow',
 })

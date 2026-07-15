@@ -5,8 +5,10 @@ import { storeToRefs } from 'pinia'
 const businessBrandingStore = useBusinessBrandingStore()
 const { business } = storeToRefs(businessBrandingStore)
 
-// Page metadata - dynamic based on business
-const businessName = computed(() => business.value?.name || 'INDOORSHOPPING')
+// Page metadata - dynamic based on business (falls back to the deployment's
+// configured site name, never a hardcoded brand)
+const runtimeConfig = useRuntimeConfig()
+const businessName = computed(() => business.value?.name || (runtimeConfig.public.siteName as string) || 'our store')
 const businessSlogan = computed(() =>
   business.value?.slogan || 'Experience the finest selection of curated products. Quality meets elegance in every piece we offer.'
 )

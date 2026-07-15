@@ -7,14 +7,14 @@ if (import.meta.server) {
   const { business } = storeToRefs(businessBrandingStore)
 
   useSeoMeta({
-    title: business.value ? `Products | ${business.value.name}` : 'Products',
-    description: `Browse our complete collection of premium luxury products${business.value ? ` at ${business.value.name}` : ' at INDOORSHOPPING'}.`,
-    ogTitle: business.value ? `Products | ${business.value.name}` : 'Products | INDOORSHOPPING',
-    ogDescription: `Browse our complete collection of premium luxury products${business.value ? ` at ${business.value.name}` : ' at INDOORSHOPPING'}.`,
+    title: 'Products',
+    description: `Browse our complete collection of premium luxury products${business.value ? ` at ${business.value.name}` : ''}.`,
+    ogTitle: 'Products',
+    ogDescription: `Browse our complete collection of premium luxury products${business.value ? ` at ${business.value.name}` : ''}.`,
     ogType: 'website',
     twitterCard: 'summary_large_image',
-    twitterTitle: business.value ? `Products | ${business.value.name}` : 'Products | INDOORSHOPPING',
-    twitterDescription: `Browse our complete collection of premium luxury products${business.value ? ` at ${business.value.name}` : ' at INDOORSHOPPING'}.`,
+    twitterTitle: 'Products',
+    twitterDescription: `Browse our complete collection of premium luxury products${business.value ? ` at ${business.value.name}` : ''}.`,
   })
 }
 

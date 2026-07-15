@@ -89,13 +89,13 @@ const toggleQuestion = (id: string) => {
 if (import.meta.server) {
   useSeoMeta({
     title: 'FAQ',
-    description: 'Find answers to frequently asked questions about INDOORSHOPPING products, services, and policies.',
-    ogTitle: 'FAQ | INDOORSHOPPING',
-    ogDescription: 'Find answers to frequently asked questions about INDOORSHOPPING products, services, and policies.',
+    description: 'Find answers to frequently asked questions about our products, services, and policies.',
+    ogTitle: 'FAQ',
+    ogDescription: 'Find answers to frequently asked questions about our products, services, and policies.',
     ogType: 'website',
     twitterCard: 'summary_large_image',
-    twitterTitle: 'FAQ | INDOORSHOPPING',
-    twitterDescription: 'Find answers to frequently asked questions about INDOORSHOPPING products, services, and policies.',
+    twitterTitle: 'FAQ',
+    twitterDescription: 'Find answers to frequently asked questions about our products, services, and policies.',
   })
 }
 

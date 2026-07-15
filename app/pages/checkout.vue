@@ -14,7 +14,7 @@ if (import.meta.server) {
   useSeoMeta({
     title: 'Checkout',
     description: 'Complete your purchase securely. Review your cart and proceed to payment.',
-    ogTitle: 'Checkout | INDOORSHOPPING',
+    ogTitle: 'Checkout',
     ogDescription: 'Complete your purchase securely. Review your cart and proceed to payment.',
     ogType: 'website',
     robots: 'noindex, nofollow',

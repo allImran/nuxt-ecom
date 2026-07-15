@@ -122,15 +122,15 @@ const productImage = computed(() => {
 })
 
 useSeoMeta({
-  title: () => product.value ? `${product.value.name} - INDOORSHOPPING` : 'Product - INDOORSHOPPING',
-  description: () => product.value?.name || 'Discover premium luxury products at INDOORSHOPPING.',
-  ogTitle: () => product.value ? `${product.value.name} - INDOORSHOPPING` : 'Product - INDOORSHOPPING',
-  ogDescription: () => product.value?.name || 'Discover premium luxury products at INDOORSHOPPING.',
+  title: () => product.value?.name || 'Product',
+  description: () => product.value?.name || 'Discover our premium luxury products.',
+  ogTitle: () => product.value?.name || 'Product',
+  ogDescription: () => product.value?.name || 'Discover our premium luxury products.',
   ogType: 'website',
   ogImage: () => productImage.value,
   twitterCard: 'summary_large_image',
-  twitterTitle: () => product.value ? `${product.value.name} - INDOORSHOPPING` : 'Product - INDOORSHOPPING',
-  twitterDescription: () => product.value?.name || 'Discover premium luxury products at INDOORSHOPPING.',
+  twitterTitle: () => product.value?.name || 'Product',
+  twitterDescription: () => product.value?.name || 'Discover our premium luxury products.',
   twitterImage: () => productImage.value,
 })
 

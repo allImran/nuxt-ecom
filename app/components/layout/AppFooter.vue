@@ -2,6 +2,11 @@
 const { t } = useI18n()
 const businessBrandingStore = useBusinessBrandingStore()
 const { business } = storeToRefs(businessBrandingStore)
+const config = useRuntimeConfig()
+
+// Brand name shown in the footer: the loaded business, else the deployment's
+// configured site name, else a neutral generic — never another brand's name.
+const brandName = computed(() => business.value?.name || config.public.siteName || 'Store')
 
 const currentYear = computed(() => new Date().getFullYear())
 </script>
@@ -13,7 +18,7 @@ const currentYear = computed(() => new Date().getFullYear())
         <!-- Brand -->
         <div class="space-y-4">
           <h3 class="text-lg font-bold tracking-luxury text-luxury-text dark:text-luxury-dark-text">
-            {{ business?.name || 'URBAN<span class="text-luxury-gold">EASE</span>' }}
+            {{ brandName }}
           </h3>
           <p class="text-sm text-luxury-text-muted dark:text-luxury-dark-text-muted">
             {{ business?.slogan || 'Premium products for discerning customers. Experience luxury shopping.' }}
@@ -83,7 +88,7 @@ const currentYear = computed(() => new Date().getFullYear())
       <div class="mt-8 pt-8 border-t border-luxury-border dark:border-luxury-dark-border">
         <div class="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
           <p class="text-sm text-luxury-text-muted dark:text-luxury-dark-text-muted">
-            &copy; {{ currentYear }} {{ business?.name || 'INDOORSHOPPING' }}. All rights reserved.
+            &copy; {{ currentYear }} {{ brandName }}. All rights reserved.
           </p>
           <div class="flex space-x-6">
             <!-- {{  business?.social?.facebook }} -->

@@ -95,13 +95,13 @@ const currentPrivacy = computed(() => privacyTranslations[locale.value] || priva
 if (import.meta.server) {
   useSeoMeta({
     title: 'Privacy Policy',
-    description: 'Learn about how INDOORSHOPPING collects, uses, and protects your personal information.',
-    ogTitle: 'Privacy Policy | INDOORSHOPPING',
-    ogDescription: 'Learn about how INDOORSHOPPING collects, uses, and protects your personal information.',
+    description: 'Learn about how we collect, use, and protect your personal information.',
+    ogTitle: 'Privacy Policy',
+    ogDescription: 'Learn about how we collect, use, and protect your personal information.',
     ogType: 'website',
     twitterCard: 'summary_large_image',
-    twitterTitle: 'Privacy Policy | INDOORSHOPPING',
-    twitterDescription: 'Learn about how INDOORSHOPPING collects, uses, and protects your personal information.',
+    twitterTitle: 'Privacy Policy',
+    twitterDescription: 'Learn about how we collect, use, and protect your personal information.',
   })
 }
 

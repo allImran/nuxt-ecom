@@ -107,13 +107,13 @@ const currentShipping = computed(() => shippingTranslations[locale.value] || shi
 if (import.meta.server) {
   useSeoMeta({
     title: 'Shipping Information',
-    description: 'Learn about INDOORSHOPPING shipping policies, delivery times, and tracking information.',
-    ogTitle: 'Shipping Information | INDOORSHOPPING',
-    ogDescription: 'Learn about INDOORSHOPPING shipping policies, delivery times, and tracking information.',
+    description: 'Learn about our shipping policies, delivery times, and tracking information.',
+    ogTitle: 'Shipping Information',
+    ogDescription: 'Learn about our shipping policies, delivery times, and tracking information.',
     ogType: 'website',
     twitterCard: 'summary_large_image',
-    twitterTitle: 'Shipping Information | INDOORSHOPPING',
-    twitterDescription: 'Learn about INDOORSHOPPING shipping policies, delivery times, and tracking information.',
+    twitterTitle: 'Shipping Information',
+    twitterDescription: 'Learn about our shipping policies, delivery times, and tracking information.',
   })
 }
 

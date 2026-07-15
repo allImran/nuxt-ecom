@@ -5,13 +5,13 @@ const { t } = useI18n()
 // Server-side optimized SEO
 if (import.meta.server) {
   useSeoMeta({
-    title: `INDOORSHOPPING - ${t('about.title')}`,
+    title: t('about.title'),
     description: t('about.hero.subtitle'),
-    ogTitle: `INDOORSHOPPING - ${t('about.title')}`,
+    ogTitle: t('about.title'),
     ogDescription: t('about.hero.subtitle'),
     ogType: 'website',
     twitterCard: 'summary_large_image',
-    twitterTitle: `INDOORSHOPPING - ${t('about.title')}`,
+    twitterTitle: t('about.title'),
     twitterDescription: t('about.hero.subtitle'),
   })
 }

@@ -14,7 +14,12 @@ const scrollToProducts = () => {
     <div class="absolute inset-0 z-0">
       <img
         src="/cover.webp"
-        alt="Hero background"
+        alt=""
+        aria-hidden="true"
+        width="1920"
+        height="1080"
+        fetchpriority="high"
+        decoding="async"
         class="w-full h-full object-cover blur-xs"
       />
     </div>
@@ -24,7 +29,7 @@ const scrollToProducts = () => {
         <!-- Welcome Badge -->
         <!-- <div class="inline-flex items-center px-32 py-2 rounded-full bg-luxury-gold/10 border border-luxury-gold/30 mb-6">
           <span class="text-sm shadow-lg font-medium text-luxury-gold tracking-wide">
-            Welcome to {{ business?.name || 'INDOORSHOPPING' }}
+            Welcome to {{ business?.name }}
           </span>
         </div> -->
 

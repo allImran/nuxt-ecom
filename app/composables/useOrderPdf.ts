@@ -6,7 +6,7 @@
 // shapes the text correctly AND keeps it selectable/copyable in the PDF.
 
 import { type OrderDetail } from '~/types/order'
-import { PDF_CONFIG, formatCurrency, LOGO_CONFIG } from '~/config/pdfConfig'
+import { PDF_CONFIG, formatCurrency } from '~/config/pdfConfig'
 import {
   escapeHtml,
   fetchImageAsDataUrl,
@@ -22,6 +22,16 @@ interface UseOrderPdfReturn {
 
 /** Divider inserted between invoice sections. */
 const DIVIDER = '<hr class="inv-divider" />'
+
+/** Human-readable labels for known social platforms. */
+const SOCIAL_LABELS: Record<string, string> = {
+  facebook: 'Facebook',
+  instagram: 'Instagram',
+  youtube: 'YouTube',
+  twitter: 'Twitter',
+  linkedin: 'LinkedIn',
+  whatsapp: 'WhatsApp'
+}
 
 /** Convert an [r, g, b] tuple to a hex color string. */
 function rgbToHex([r, g, b]: [number, number, number]): string {
@@ -41,25 +51,46 @@ export function useOrderPdf(): UseOrderPdfReturn {
     error.value = null
 
     try {
-      const { company } = PDF_CONFIG
-      const primaryColor = rgbToHex(PDF_CONFIG.colors.primary)
+      // Brand the invoice from this deployment's business record rather than a
+      // hardcoded company. Falls back to the neutral PDF_CONFIG defaults only if
+      // branding hasn't loaded (never another business's identity).
+      const brandingStore = useBusinessBrandingStore()
+      const business = brandingStore.business
 
-      // Load logo as a data URL so it renders reliably in the print frame.
-      const logoDataUrl = await fetchImageAsDataUrl(LOGO_CONFIG.path)
+      const companyName = business?.name || PDF_CONFIG.company.name
+      const primaryColor = business?.primary_color || rgbToHex(PDF_CONFIG.colors.primary)
 
-      // --- Header ---
+      // Load the business logo as a data URL so it renders reliably in the print frame.
+      const logoUrl = brandingStore.logoUrl
+      const logoDataUrl = logoUrl ? await fetchImageAsDataUrl(logoUrl) : null
+
+      // --- Header: brand meta lines (address, socials, email) ---
+      const brandMeta: string[] = []
+      if (business?.address) brandMeta.push(business.address)
+      if (business?.social) {
+        for (const [platform, url] of Object.entries(business.social)) {
+          if (url) {
+            const label = SOCIAL_LABELS[platform] || platform.charAt(0).toUpperCase() + platform.slice(1)
+            brandMeta.push(`${label}: ${url}`)
+          }
+        }
+      }
+      if (business?.email) brandMeta.push(`Email: ${business.email}`)
+
       const logoHtml = logoDataUrl
         ? `<img class="inv-logo" src="${logoDataUrl}" alt="" />`
         : ''
+      const brandMetaHtml = brandMeta
+        .map((line) => `<p class="inv-brand-meta">${escapeHtml(line)}</p>`)
+        .join('')
+
       const headerHtml = `
         <div class="inv-header">
           <div class="inv-brand">
             ${logoHtml}
             <div>
-              <p class="inv-brand-name">${escapeHtml(company.name)}</p>
-              <p class="inv-brand-meta">${escapeHtml(company.address)}</p>
-              <p class="inv-brand-meta">Phone: ${escapeHtml(company.phone)}</p>
-              <p class="inv-brand-meta">Email: ${escapeHtml(company.email)}</p>
+              <p class="inv-brand-name">${escapeHtml(companyName)}</p>
+              ${brandMetaHtml}
             </div>
           </div>
           <div class="inv-meta-right">
@@ -130,10 +161,11 @@ export function useOrderPdf(): UseOrderPdfReturn {
         </div>`
 
       // --- Footer ---
+      const footerContact = business?.email || business?.social?.whatsapp || ''
       const footerHtml = `
         <div class="inv-footer">
           <p>Thank you for your order!</p>
-          <p>${escapeHtml(company.phone)} | ${escapeHtml(company.email)}</p>
+          ${footerContact ? `<p>${escapeHtml(footerContact)}</p>` : ''}
         </div>`
 
       const orderDate = new Date(order.created_at).toISOString().split('T')[0]

@@ -37,13 +37,14 @@ export interface PdfConfig {
   deliveryCharge: number
 }
 
-// Company details for the invoice
+// Neutral fallback company details. These are only used if the business branding
+// record hasn't loaded — real invoices are branded from the business record
+// (see useOrderPdf / useInstantOrderPdf). Never hardcode a specific brand here.
 export const COMPANY_DETAILS: CompanyDetails = {
-  name: 'INDOORSHOPPING',
-  address: 'Dhaka, Bangladesh',
-  phone: '+880 1XXX-XXXXXX',
-  email: 'support@INDOORSHOPPING.com',
-  website: 'www.INDOORSHOPPING.com'
+  name: 'Invoice',
+  address: '',
+  phone: '',
+  email: ''
 }
 
 // PDF configuration
@@ -87,11 +88,4 @@ export function formatCurrency(amount: number): string {
     maximumFractionDigits: 2
   }).format(amount)
   return `Tk. ${formatted}`
-}
-
-// Logo configuration
-export const LOGO_CONFIG = {
-  path: '/urban-ease-logo.png',
-  maxWidth: 22, // mm (approx 80px)
-  maxHeight: 22 // mm (approx 80px)
 }

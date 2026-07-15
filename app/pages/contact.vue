@@ -14,8 +14,10 @@ const openLink = (url: string) => {
   window.open(url, '_blank')
 }
 
-// Page metadata - dynamic based on business name
-const businessName = computed(() => business.value?.name || 'INDOORSHOPPING')
+// Page metadata - dynamic based on business name (falls back to the
+// deployment's configured site name, never a hardcoded brand)
+const runtimeConfig = useRuntimeConfig()
+const businessName = computed(() => business.value?.name || (runtimeConfig.public.siteName as string) || 'our store')
 
 // Server-side optimized SEO
 if (import.meta.server) {
