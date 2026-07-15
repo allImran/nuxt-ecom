@@ -29,6 +29,22 @@ export default defineNuxtConfig({
         { name: 'twitter:site', content: '@theINDOORSHOPPING' },
         { name: 'twitter:image', content: '/cover.webp' },
       ],
+      // Inline + synchronous, matching the original snippet's proven timing (runs before
+      // the Vue/Nuxt bundle even downloads) — a client plugin fires too late for Pixel
+      // Helper to reliably detect. Only emitted when a pixel ID is actually configured.
+      script: pixelId ? [
+        {
+          innerHTML: `!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window, document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init', '${pixelId}');fbq('track', 'PageView');`,
+          type: 'text/javascript',
+          tagPosition: 'head',
+        }
+      ] : [],
+      noscript: pixelId ? [
+        {
+          innerHTML: `<img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=${pixelId}&ev=PageView&noscript=1" />`,
+          tagPosition: 'head',
+        }
+      ] : [],
       link: [
         { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
         { rel: 'icon', type: 'image/png', sizes: '16x16', href: '/favicon-16x16.png' },
@@ -47,9 +63,9 @@ export default defineNuxtConfig({
       apiBaseURL: process.env.API_BASE_URL,
       businessId: process.env.BUSINESS_ID || '6cadb262-2726-4a19-8a3e-90ef1b98aba3',
       siteUrl: process.env.NUXT_PUBLIC_SITE_URL || 'https://yourdomain.com',
-      // Only registers a pixel when the deployment actually configured one —
-      // an unset var must never fall back to another business's pixel ID.
-      metapixel: pixelId ? { default: { id: pixelId } } : {},
+      // Only exposed when actually configured — an unset var must never let the
+      // client fall back to firing events under another business's pixel ID.
+      pixelId: pixelId || undefined,
     },
   },
   devtools: { enabled: true },
@@ -62,7 +78,7 @@ export default defineNuxtConfig({
     }
   },
   css: ['./app/assets/css/main.css'],
-  modules: ['@nuxt/image', '@nuxt/content', 'motion-v/nuxt', '@pinia/nuxt', '@nuxtjs/i18n', 'nuxt-meta-pixel'],
+  modules: ['@nuxt/image', '@nuxt/content', 'motion-v/nuxt', '@pinia/nuxt', '@nuxtjs/i18n'],
 
   i18n: {
     locales: [
