@@ -75,7 +75,9 @@ export default defineNuxtConfig({
       supabasePublishableKey: process.env.SUPABASE_PUBLISHABLE_KEY,
       apiBaseURL: process.env.API_BASE_URL,
       businessId: process.env.BUSINESS_ID || '6cadb262-2726-4a19-8a3e-90ef1b98aba3',
-      siteUrl: process.env.NUXT_PUBLIC_SITE_URL || 'https://yourdomain.com',
+      // Empty until set per deployment. Canonical/og:url/hreflang/sitemap URLs
+      // are omitted while empty rather than pointing at a placeholder domain.
+      siteUrl: process.env.NUXT_PUBLIC_SITE_URL || '',
       siteName: siteName || undefined,
       // Only exposed when actually configured — an unset var must never let the
       // client fall back to firing events under another business's pixel ID.
@@ -120,6 +122,12 @@ export default defineNuxtConfig({
   nitro: {
     firebase: {
       gen: 2
-    }
+    },
+    // This deployment serves only .output/public (no runtime server), so these
+    // routes are prerendered at build time into static files. sitemap.xml fetches
+    // product slugs from the API at build time (fails soft) — redeploy to refresh.
+    prerender: {
+      routes: ['/sitemap.xml', '/robots.txt'],
+    },
   }
 })

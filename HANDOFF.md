@@ -60,6 +60,74 @@ FINDINGS.md's action plan (agreed with the user up front) — Phases 2-4 are unt
   Removed the env fallback entirely — business API is now the sole source, and the
   contact card just hides itself if the business hasn't configured a link.
 
+## What's done (Phase 2 static-safe subset, this session — UNCOMMITTED)
+
+Agreed scope with the user up front: the static-hosting-safe parts of Phase 2 only
+(dead deps, Quill scoping, fonts, hero LCP, C4 brand templatization). CAPI was
+explicitly excluded (needs infra outside this repo). **These changes are in the
+working tree but NOT yet committed** — review the diff before committing.
+
+- **Dead dependency removal**: removed `@nuxt/content`, `better-sqlite3`, `jspdf`,
+  `jspdf-autotable`, `lodash` (+ `@types/lodash`, `@types/jspdf`), `motion-v` from
+  `package.json` after grep-confirming zero usage. Dropped `@nuxt/content` and
+  `motion-v/nuxt` from `nuxt.config.ts` `modules`, and removed the stale
+  `optimizeDeps: { include: ['jspdf', ...] }`. `better-sqlite3`/`lodash` still exist
+  in `node_modules` but only as legit transitive deps now (i18n→unstorage→db0, and
+  nitro→archiver) — not direct declarations, so not our concern.
+- **Quill scoped to admin**: deleted the global `app/plugins/vue-quill.client.ts`.
+  `ProductSectionManager.vue` now lazy-loads `QuillEditor` via `defineAsyncComponent`
+  inside `<ClientOnly>` (Quill touches `document` at import, hence client-only). It
+  no longer ships in every storefront page's bundle.
+- **Fonts self-hosted**: dropped the render-blocking cross-origin Google Fonts
+  `@import` from `app/assets/css/main.css`; added `@font-face` rules reusing the
+  `.ttf` files ALREADY in `public/fonts/` (for the print pipeline) with
+  `font-display: swap`, plus a preload of HindSiliguri-Regular in nuxt.config head.
+  **NOT woff2-subset** — no `pyftsubset`/`woff2_compress` tooling on this machine.
+  True subsetting of the ~950KB Bengali families is still a follow-up.
+- **Hero LCP**: `HeroSection.vue` hero `<img>` got `fetchpriority="high"`, explicit
+  `width/height`, `decoding="async"`, and `alt=""`/`aria-hidden` (decorative).
+- **@nuxt/image / `<NuxtImg>` was deliberately NOT adopted** — on this static
+  deployment there is no IPX server, so `/_ipx/...` transform URLs would 404 in prod.
+  Real optimization needs either `nuxt generate` + `ipxStatic` (build-time prerender)
+  or client-side Supabase Storage transforms (`/render/image/...?width=&format=webp`,
+  only if enabled on the Supabase project — UNVERIFIED, backend on :3003 was down).
+  Left as a decision point for a future session.
+- **C4 brand templatization + URBANEASE purge**:
+  - `nuxt.config.ts` head is now env-driven: new `NUXT_PUBLIC_SITE_NAME` (→
+    `titleTemplate`, `og:site_name`, `runtimeConfig.public.siteName`) and
+    `NUXT_PUBLIC_TWITTER_SITE` (→ `twitter:site`, omitted if unset). Generic when
+    unset, never a hardcoded brand. Loud build-time `console.error` if SITE_NAME unset.
+  - `app/plugins/business-branding.ts` now drives ALL brand-identity head tags at
+    runtime from the business record (title, titleTemplate, og:site_name, description
+    from slogan, og:image + twitter:image from logo, and a best-effort favicon
+    override), not just `title`.
+  - Invoice PDF: `useOrderPdf.ts` now brands from the branding store (name, logo,
+    address, socials, email) exactly like `useInstantOrderPdf.ts` already did. Removed
+    the hardcoded `COMPANY_DETAILS` (INDOORSHOPPING) and `LOGO_CONFIG`
+    (`/urban-ease-logo.png`) from `pdfConfig.ts`; `COMPANY_DETAILS` is now a neutral
+    fallback only. Deleted the 992KB `public/urban-ease-logo.png`.
+  - Purged every literal `INDOORSHOPPING` string: `AppFooter.vue` (also fixed the
+    `URBAN<span>EASE` fallback that rendered a literal `<span>` as text), the static
+    page SEO blocks (shipping/faq/privacy/checkout/login/signup/about), the reactive
+    ones (index/contact/products/index/products/[slug]/orders/[id]), and the about
+    philosophy copy in `i18n/locales/en.json`. Titles now drop the ` | INDOORSHOPPING`
+    suffix and let the global `titleTemplate` + `og:site_name` brand them (this also
+    fixes the double-branding the audit flagged). URBANEASE is fully gone.
+
+### Verification of this session
+
+`npm run build` → exit 0. `npx nuxi typecheck` → 73 errors, IDENTICAL to the
+pre-session baseline (all pre-existing, in admin/stores/business pages); zero new
+errors in any touched file. NOT runtime-verified against live data — backend on
+:3003 was down, so PDF branding / favicon override / plugin head tags are
+build-clean and code-correct but not exercised against a real business record.
+
+### Favicon caveat
+
+The per-business favicon is a runtime override to the business logo URL — best-effort.
+Ideally real `.ico`/`.png` favicon sizes are generated per business at build time; the
+runtime override at least stops shipping the wrong brand's static favicons.
+
 ### Pixel lesson (read before touching tracking code again)
 
 First attempt registered the `nuxt-meta-pixel` npm module (already an unused dependency
@@ -75,6 +143,91 @@ was uninstalled again. If you reach for a tag-management module in the future, v
 with the actual browser extension before considering it done — a clean build and no
 console errors are not sufficient evidence.
 
+## What's done (Phase 3 SEO subset, this session — UNCOMMITTED)
+
+Agreed scope with the user: the static-safe Phase 3 SEO items. Backend base URL
+changed to `https://urbanease-backend-x60m.onrender.com/api` (now reachable — earlier
+sessions had :3003 down), so this session IS runtime-verified against live data.
+**Changes are in the working tree, NOT committed** — review the diff before committing.
+
+- **Product cards are now real `<NuxtLink>`s** (`ProductShowcase.vue`): the grid item
+  is a `<NuxtLink :to="/products/{slug}">` wrapping the card instead of a `@click`
+  handler → `emit('viewProduct')` → parent `navigateTo`. Crawlable `<a href>`, and the
+  prerequisite the audit flagged for `nuxt generate` crawler discovery (C2). The
+  `viewProduct` emit is left declared (harmless) but no longer fired; parents' click
+  nav path is gone, so no double-navigation.
+- **Structured data (JSON-LD)** via a new reactive helper `app/composables/useJsonLd.ts`
+  (injects an `application/ld+json` script through `useHead`, escapes `<`, emits an inert
+  empty tag until data loads):
+  - **Organization** — in `layouts/default.vue`, driven by the branding store (name, url,
+    logo, `sameAs` socials). Renders server-side on every public page (branding plugin
+    awaits its fetch on the server). Verified in SSR HTML.
+  - **Product + AggregateOffer/Offer** and **BreadcrumbList** — on `products/[slug].vue`.
+    Populate client-side only (product data is still `onMounted`-fetched — the C2
+    limitation), so SSR shows well-formed *empty* `ld+json` placeholders that fill in
+    after hydration. Once C2 lands (useAsyncData + `nuxt generate`) the SAME code emits
+    them at build time with no changes.
+  - **FAQPage** — on `faq.vue` from the (static) localized Q&A. Fully server-rendered
+    (verified, Bengali text intact).
+- **Canonical + `og:url` + fixed hreflang** (`components/seo/I18nMetaTags.vue`, global via
+  default layout). New `app/composables/useSiteUrl.ts` resolves the origin and, crucially,
+  treats an unset var OR the old `https://yourdomain.com` placeholder as "no origin" and
+  then **emits none of these URL-bearing tags** rather than pointing crawlers at a bogus
+  domain (the audit's hreflang bug). `nuxt.config.ts` `siteUrl` fallback changed from the
+  placeholder to `''`.
+- **Double-branded / stale titles fixed** on the primary pages (`index.vue`,
+  `products/index.vue`, `faq.vue`): removed the `if (import.meta.server)` guards (titles
+  were going stale on client-side nav) and dropped the business name from the page-level
+  `title` (the global `titleTemplate` + branding plugin already append ` | <business>`).
+  Verified: `Premium Luxury Products | Indoor Shopping`, `Products | Indoor Shopping`,
+  `FAQ | Indoor Shopping` — single brand. **NOTE:** the low-traffic trust pages
+  (`shipping/privacy/contact/about/login/signup/checkout`) still have the
+  `import.meta.server` guard — left as a mechanical follow-up (their titles are plain, so
+  no double-brand, only the minor stale-on-client-nav issue).
+- **Sitemap + robots as build-time prerendered Nitro routes** (`server/routes/sitemap.xml.ts`,
+  `server/routes/robots.txt.ts`, added to `nitro.prerender.routes` in nuxt.config; deleted
+  the static `public/robots.txt`). Rationale: this deploy is `nuxt build` + serve
+  `.output/public` with NO runtime server, so a *dynamic* `/sitemap.xml` route would 404
+  in prod — forcing prerender writes real static files into `.output/public`. The sitemap
+  fetches product slugs from the API **at build time** (15s timeout, fails soft to
+  static-routes-only if the backend is cold/down — never breaks the build); redeploy to
+  refresh. robots.txt carries the `Sitemap:` directive + disallows admin/business/checkout/
+  orders/login/signup. Chose hand-rolled routes over `@nuxtjs/sitemap` to avoid a new dep
+  and the module's prerender-forcing quirks on this non-standard build+static-serve setup.
+
+### ⚠️ Deployment prerequisite (blocks canonical/sitemap value)
+
+`NUXT_PUBLIC_SITE_URL` is NOT set in `.env` (only documented in `.env.example`). Until it
+is set per deployment: canonical/og:url/hreflang tags are **omitted**, the sitemap emits
+an **empty** urlset, and robots omits the `Sitemap:` directive — all by design (better
+than wrong URLs), but it means **this SEO work produces nothing until the real production
+origin is set**. Set `NUXT_PUBLIC_SITE_URL=https://<real-domain>` (no trailing slash)
+before deploying.
+
+### Verification of this session
+
+`npx nuxi typecheck` → 73 errors, IDENTICAL to baseline, zero in any touched file.
+`npm run build` (with a temp `NUXT_PUBLIC_SITE_URL`) → exit 0; `.output/public/sitemap.xml`
+generated with 7 static + **3 real live products** (filter-cartridge, faucet-filter,
+underarm-sweatpad, with `lastmod`), `.output/public/robots.txt` with the Sitemap directive.
+Ran the built server and curl-verified SSR head: canonical/og:url/hreflang absolute URLs,
+Organization + FAQPage JSON-LD server-rendered, single-brand titles. **Not browser-verified**
+(no headless browser on this machine): the `<NuxtLink>` anchor rendering and the client-side
+population of Product/Breadcrumb JSON-LD — both build-clean and logically sound, SSR emits
+well-formed empty placeholders, but not exercised in a real browser/Rich Results Test.
+
+### Phase 3 SEO items still remaining
+
+- **Product/Breadcrumb JSON-LD, and shareable product social previews, only truly work
+  once C2 is done** (useAsyncData + `nuxt generate`) — currently client-rendered, so
+  Google's rendering crawler sees them but non-rendering social scrapers (FB/WhatsApp) do
+  not. Verify with the Rich Results Test after C2.
+- Storefront **search, category pages, pagination** (FINDINGS item 16) — not started.
+- **Meta catalog feed** per business (item 17) — not started; can be another build-time
+  prerendered route like the sitemap.
+- Run submitted sitemap + structured data through Google Search Console / Rich Results Test
+  once a real `NUXT_PUBLIC_SITE_URL` domain is live.
+
 ## What's left (Phases 2-4, unstarted)
 
 Straight from FINDINGS.md, adapted for the static-hosting constraint above:
@@ -82,22 +235,28 @@ Straight from FINDINGS.md, adapted for the static-hosting constraint above:
 **Phase 2** — rendering & measurement foundation:
 - Convert home/listing/product-detail to `useAsyncData`, but the deploy story must be
   `nuxt generate` (prerender at build time) rather than relying on request-time SSR.
-  Fixing "product cards aren't links" (`ProductShowcase.vue` uses a click handler, not
-  `<NuxtLink>`) is a prerequisite — the Nitro crawler during `nuxt generate` only
-  discovers pages via real `<a href>`, so that SEO fix and this rendering fix are coupled.
+  (The "product cards aren't links" prerequisite — `ProductShowcase.vue` now uses a real
+  `<NuxtLink>` — was **DONE in the Phase 3 session**, so the `nuxt generate` crawler can
+  now discover product pages via `<a href>`.)
 - CAPI (Conversions API): **not achievable purely in this repo** on static hosting — flag
   to the user that it needs a separate serverless function (Cloudflare Worker, small
   Vercel/Netlify function, etc.) if they want it; don't build a Nitro server route
   expecting it to run per-request.
-- Image/font optimization, dead dependency removal (`@nuxt/content` + `better-sqlite3`,
-  `motion-v`, `jspdf*`, `lodash` — confirm still unused before deleting), brand
-  templating (C4 — this INDOORSHOPPING hardcoding is still present in ~20 files per the
-  original audit; Phase 1 did NOT touch this).
+- Dead dependency removal, Quill scoping, font self-hosting, hero LCP, and C4 brand
+  templating are **DONE this session** (see "What's done (Phase 2 static-safe subset)"
+  above). Still remaining under Phase 2:
+  - **Full image optimization** — `<NuxtImg>`/IPX doesn't work on static hosting (see
+    that section); needs `nuxt generate` + `ipxStatic` or Supabase transforms. Only the
+    hero LCP got attributes so far; product/gallery images still serve raw
+    full-resolution Supabase originals with no resizing/WebP/dimensions.
+  - **woff2 font subsetting** — fonts are self-hosted but still full `.ttf`; subset to
+    woff2 once `pyftsubset`/`woff2_compress` tooling is available.
+  - **Real per-business favicons** at build time (current fix is a runtime override).
 
-**Phase 3** — SEO & discovery: structured data, sitemap (can be a static file generated
-at `nuxt generate` time — compatible with static hosting), canonical/`og:url`, storefront
-search/category/pagination, Meta catalog feed (also fine as a static-generated file, not
-a live endpoint).
+**Phase 3** — SEO & discovery: structured data, sitemap, canonical/`og:url`, and crawlable
+product links are **DONE this session** (see "What's done (Phase 3 SEO subset)" above).
+Still remaining under Phase 3: storefront **search/category/pagination**, and the **Meta
+catalog feed** (fine as another build-time prerendered route, not a live endpoint).
 
 **Phase 4** — conversion optimization: district/upazila capture at checkout (the
 cascading selectors exist in the codebase already per the audit — just never rendered),

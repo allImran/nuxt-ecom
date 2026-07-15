@@ -85,19 +85,32 @@ const toggleQuestion = (id: string) => {
   expandedQuestion.value = expandedQuestion.value === id ? null : id
 }
 
-// Page metadata - server-side optimized SEO
-if (import.meta.server) {
-  useSeoMeta({
-    title: 'FAQ',
-    description: 'Find answers to frequently asked questions about our products, services, and policies.',
-    ogTitle: 'FAQ',
-    ogDescription: 'Find answers to frequently asked questions about our products, services, and policies.',
-    ogType: 'website',
-    twitterCard: 'summary_large_image',
-    twitterTitle: 'FAQ',
-    twitterDescription: 'Find answers to frequently asked questions about our products, services, and policies.',
-  })
-}
+// Page metadata (kept reactive on both server and client so client-side
+// navigation doesn't leave a stale title).
+useSeoMeta({
+  title: 'FAQ',
+  description: 'Find answers to frequently asked questions about our products, services, and policies.',
+  ogTitle: 'FAQ',
+  ogDescription: 'Find answers to frequently asked questions about our products, services, and policies.',
+  ogType: 'website',
+  twitterCard: 'summary_large_image',
+  twitterTitle: 'FAQ',
+  twitterDescription: 'Find answers to frequently asked questions about our products, services, and policies.',
+})
+
+// FAQPage structured data — eligible for FAQ rich results in search.
+useJsonLd(computed(() => ({
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: currentFaq.value.questions.map((q: { question: string, answer: string }) => ({
+    '@type': 'Question',
+    name: q.question,
+    acceptedAnswer: {
+      '@type': 'Answer',
+      text: q.answer,
+    },
+  })),
+})))
 
 definePageMeta({
   layout: 'default'

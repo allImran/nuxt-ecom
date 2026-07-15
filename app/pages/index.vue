@@ -13,19 +13,20 @@ const businessSlogan = computed(() =>
   business.value?.slogan || 'Experience the finest selection of curated products. Quality meets elegance in every piece we offer.'
 )
 
-// Server-side optimized SEO with functional getters
-if (import.meta.server) {
-  useSeoMeta({
-    title: () => `${businessName.value} - Premium Luxury Products`,
-    description: () => `Discover premium luxury products at ${businessName.value}. ${businessSlogan.value}`,
-    ogTitle: () => `${businessName.value} - Premium Luxury Products`,
-    ogDescription: () => `Discover premium luxury products at ${businessName.value}. ${businessSlogan.value}`,
-    ogType: 'website',
-    twitterCard: 'summary_large_image',
-    twitterTitle: () => `${businessName.value} - Premium Luxury Products`,
-    twitterDescription: () => `Discover premium luxury products at ${businessName.value}. ${businessSlogan.value}`,
-  })
-}
+// SEO with functional getters. Reactive on both server and client so client-side
+// navigation keeps the title fresh. Title is just the tagline — the global
+// titleTemplate (and the branding plugin) append " | <business name>", so we must
+// NOT repeat the business name here or titles double-brand.
+useSeoMeta({
+  title: 'Premium Luxury Products',
+  description: () => `Discover premium luxury products at ${businessName.value}. ${businessSlogan.value}`,
+  ogTitle: () => `${businessName.value} - Premium Luxury Products`,
+  ogDescription: () => `Discover premium luxury products at ${businessName.value}. ${businessSlogan.value}`,
+  ogType: 'website',
+  twitterCard: 'summary_large_image',
+  twitterTitle: () => `${businessName.value} - Premium Luxury Products`,
+  twitterDescription: () => `Discover premium luxury products at ${businessName.value}. ${businessSlogan.value}`,
+})
 
 // Define layout for this page
 definePageMeta({

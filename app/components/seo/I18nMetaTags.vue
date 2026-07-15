@@ -2,11 +2,11 @@
 const { locale } = useI18n()
 const route = useRoute()
 
-// Build current URL (use runtime config for base URL in production)
-const config = useRuntimeConfig()
-const baseUrl = config.public.siteUrl || 'https://yourdomain.com'
-const currentPath = route.path
-const fullUrl = computed(() => `${baseUrl}${currentPath}`)
+// Canonical / og:url / hreflang all need a real production origin. useSiteUrl
+// returns '' (hasSiteUrl=false) until NUXT_PUBLIC_SITE_URL is set, in which case
+// we emit no URL-bearing tags rather than pointing crawlers at the placeholder.
+const { hasSiteUrl, absoluteUrl } = useSiteUrl()
+const fullUrl = computed(() => absoluteUrl(route.path))
 
 // Update HTML lang attribute reactively
 watch(locale, (newLocale) => {
@@ -15,7 +15,7 @@ watch(locale, (newLocale) => {
   }
 }, { immediate: true })
 
-// SEO meta tags
+// Locale meta + canonical/og:url (always safe to emit)
 useHead({
   htmlAttrs: {
     lang: locale.value === 'bn' ? 'bn-BD' : 'en-US'
@@ -28,25 +28,21 @@ useHead({
     {
       property: 'og:locale:alternate',
       content: locale.value === 'bn' ? 'en_US' : 'bn_BD'
-    }
+    },
+    // og:url mirrors the canonical URL for social scrapers.
+    ...(hasSiteUrl.value ? [{ property: 'og:url', content: fullUrl.value }] : []),
   ],
   link: [
-    // Alternate links for both languages pointing to same URL (no_prefix strategy)
-    {
-      rel: 'alternate',
-      hreflang: 'bn',
-      href: fullUrl.value
-    },
-    {
-      rel: 'alternate',
-      hreflang: 'en',
-      href: fullUrl.value
-    },
-    {
-      rel: 'alternate',
-      hreflang: 'x-default',
-      href: fullUrl.value
-    }
+    // Canonical + hreflang only once we have a real origin (no_prefix strategy →
+    // one URL serves both locales).
+    ...(hasSiteUrl.value
+      ? [
+          { rel: 'canonical', href: fullUrl.value },
+          { rel: 'alternate', hreflang: 'bn', href: fullUrl.value },
+          { rel: 'alternate', hreflang: 'en', href: fullUrl.value },
+          { rel: 'alternate', hreflang: 'x-default', href: fullUrl.value },
+        ]
+      : []),
   ]
 })
 </script>

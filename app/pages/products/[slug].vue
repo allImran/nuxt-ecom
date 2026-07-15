@@ -134,6 +134,63 @@ useSeoMeta({
   twitterImage: () => productImage.value,
 })
 
+// Structured data (schema.org) for rich results — populated once the product loads.
+const { absoluteUrl, hasSiteUrl } = useSiteUrl()
+
+const productJsonLd = computed(() => {
+  const p = product.value
+  if (!p) return null
+
+  const images = (p.file_paths && p.file_paths.length > 0)
+    ? p.file_paths.map(path => getImageUrl(path)).filter(Boolean)
+    : [productImage.value]
+
+  const prices = (p.variants ?? [])
+    .map(v => v.price)
+    .filter((price): price is number => price != null)
+
+  let offers: Record<string, any> | undefined
+  if (prices.length > 0) {
+    const low = Math.min(...prices)
+    const high = Math.max(...prices)
+    const canonical = hasSiteUrl.value ? absoluteUrl(`/products/${slug.value}`) : undefined
+    const common = {
+      priceCurrency: 'BDT',
+      availability: 'https://schema.org/InStock',
+      ...(canonical ? { url: canonical } : {}),
+    }
+    offers = low === high
+      ? { '@type': 'Offer', price: low, ...common }
+      : { '@type': 'AggregateOffer', lowPrice: low, highPrice: high, offerCount: prices.length, ...common }
+  }
+
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    name: p.name,
+    image: images,
+    ...(p.category?.name ? { category: p.category.name } : {}),
+    ...(offers ? { offers } : {}),
+  }
+})
+
+const breadcrumbJsonLd = computed(() => {
+  const p = product.value
+  if (!p) return null
+
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', ...(hasSiteUrl.value ? { item: absoluteUrl('/') } : {}) },
+      { '@type': 'ListItem', position: 2, name: p.name, ...(hasSiteUrl.value ? { item: absoluteUrl(`/products/${slug.value}`) } : {}) },
+    ],
+  }
+})
+
+useJsonLd(productJsonLd)
+useJsonLd(breadcrumbJsonLd)
+
 // Handle variant selection
 const handleSelectVariant = (variant: import('~/network/public').ProductVariant) => {
   selectVariant(variant)

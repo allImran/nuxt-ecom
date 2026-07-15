@@ -1,22 +1,25 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
 
-// Page metadata - server-side optimized SEO
-if (import.meta.server) {
-  const businessBrandingStore = useBusinessBrandingStore()
-  const { business } = storeToRefs(businessBrandingStore)
+// Page metadata. Reactive on both server and client (client-side navigation must
+// not leave the title stale). Title is just "Products" — the global titleTemplate
+// appends " | <business name>", so we don't repeat the brand here.
+const businessBrandingStore = useBusinessBrandingStore()
+const { business } = storeToRefs(businessBrandingStore)
+const productsDescription = computed(() =>
+  `Browse our complete collection of premium luxury products${business.value ? ` at ${business.value.name}` : ''}.`
+)
 
-  useSeoMeta({
-    title: 'Products',
-    description: `Browse our complete collection of premium luxury products${business.value ? ` at ${business.value.name}` : ''}.`,
-    ogTitle: 'Products',
-    ogDescription: `Browse our complete collection of premium luxury products${business.value ? ` at ${business.value.name}` : ''}.`,
-    ogType: 'website',
-    twitterCard: 'summary_large_image',
-    twitterTitle: 'Products',
-    twitterDescription: `Browse our complete collection of premium luxury products${business.value ? ` at ${business.value.name}` : ''}.`,
-  })
-}
+useSeoMeta({
+  title: 'Products',
+  description: () => productsDescription.value,
+  ogTitle: 'Products',
+  ogDescription: () => productsDescription.value,
+  ogType: 'website',
+  twitterCard: 'summary_large_image',
+  twitterTitle: 'Products',
+  twitterDescription: () => productsDescription.value,
+})
 
 // Define layout for this page
 definePageMeta({

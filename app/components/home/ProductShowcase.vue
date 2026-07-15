@@ -16,7 +16,10 @@ interface Props {
 
 const props = defineProps<Props>()
 
-const emit = defineEmits<{
+// Kept for backward-compat with parents that still bind @view-product. Navigation
+// itself is now handled by the <NuxtLink> wrapping each card (crawlable <a href>),
+// so this is no longer emitted.
+defineEmits<{
   viewProduct: [slug: string]
 }>()
 
@@ -32,12 +35,8 @@ const getProductPrice = (product: Product) => {
   return null
 }
 
-const getProductImage = (product: Product) => { 
+const getProductImage = (product: Product) => {
   return product.file_paths && product.file_paths.length > 0 ? getPublicImage('product-images', product.file_paths[0]!) : null
-}
-
-const handleProductClick = (product: Product) => {
-  emit('viewProduct', product.slug)
 }
 
 const shimmerClass = 'animate-pulse bg-luxury-border dark:bg-luxury-dark-border'
@@ -85,13 +84,16 @@ const shimmerClass = 'animate-pulse bg-luxury-border dark:bg-luxury-dark-border'
 
       <!-- Products Grid -->
       <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <UiBaseCard
+        <NuxtLink
           v-for="product in products"
           :key="product.id"
-          hover
-          class="cursor-pointer overflow-hidden group"
-          @click="handleProductClick(product)"
+          :to="`/products/${product.slug}`"
+          class="block h-full"
         >
+          <UiBaseCard
+            hover
+            class="cursor-pointer overflow-hidden group h-full"
+          >
           <!-- Product Image -->
           <div class="aspect-square bg-luxury-surface dark:bg-luxury-dark-surface rounded-lg mb-4 overflow-hidden">
             <img
@@ -127,7 +129,8 @@ const shimmerClass = 'animate-pulse bg-luxury-border dark:bg-luxury-dark-border'
               View Details
             </UiLuxuryButton>
           </div>
-        </UiBaseCard>
+          </UiBaseCard>
+        </NuxtLink>
       </div>
 
       <!-- View All Button -->
