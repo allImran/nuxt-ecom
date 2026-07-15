@@ -53,7 +53,14 @@ const shimmerClass = 'animate-pulse bg-luxury-border dark:bg-luxury-dark-border'
   <section id="products-section" class="py-16 lg:py-24 bg-luxury-bg dark:bg-luxury-dark-bg transition-colors duration-200">
     <div class="container mx-auto px-4 sm:px-6 lg:px-8">
       <!-- Section Header -->
-      <div v-if="showHeader" class="text-center mb-12">
+      <div v-if="showHeader" class="text-center mb-12 lg:mb-16">
+        <div class="inline-flex items-center gap-3 mb-4">
+          <span class="h-px w-8 bg-luxury-gold/40" />
+          <span class="text-xs font-medium uppercase tracking-luxury text-luxury-gold">
+            Featured Collection
+          </span>
+          <span class="h-px w-8 bg-luxury-gold/40" />
+        </div>
         <h2 class="text-3xl sm:text-4xl font-bold tracking-luxury text-luxury-text dark:text-luxury-dark-text mb-4">
           Featured Products
         </h2>
@@ -70,7 +77,7 @@ const shimmerClass = 'animate-pulse bg-luxury-border dark:bg-luxury-dark-border'
           class="rounded-luxury p-6 border border-luxury-border dark:border-luxury-dark-border"
           :class="shimmerClass"
         >
-          <div class="aspect-square mb-4 rounded-lg" :class="shimmerClass" />
+          <div class="aspect-4/5 mb-4 rounded-xl" :class="shimmerClass" />
           <div class="h-6 mb-2 rounded" :class="shimmerClass" />
           <div class="h-4 w-1/2 rounded" :class="shimmerClass" />
         </div>
@@ -99,15 +106,16 @@ const shimmerClass = 'animate-pulse bg-luxury-border dark:bg-luxury-dark-border'
         >
           <UiBaseCard
             hover
-            class="cursor-pointer overflow-hidden group h-full"
+            class="cursor-pointer overflow-hidden group h-full hover:-translate-y-1"
           >
           <!-- Product Image -->
-          <div class="aspect-square bg-luxury-surface dark:bg-luxury-dark-surface rounded-lg mb-4 overflow-hidden">
+          <div class="relative aspect-4/5 bg-luxury-surface dark:bg-luxury-dark-surface rounded-xl mb-4 overflow-hidden">
             <img
               v-if="getProductImage(product)"
               :src="getProductImage(product) || ''"
               :alt="product.name"
-              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+              loading="lazy"
+              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
             />
             <div
               v-else
@@ -115,10 +123,12 @@ const shimmerClass = 'animate-pulse bg-luxury-border dark:bg-luxury-dark-border'
             >
               <UiIcon name="image" :size="64" />
             </div>
+            <!-- Subtle gradient wash to lift text/badges on hover -->
+            <div class="absolute inset-0 bg-linear-to-t from-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
           </div>
 
           <!-- Product Info -->
-          <div class="space-y-2">
+          <div class="space-y-1.5">
             <h3 class="font-semibold text-luxury-text dark:text-luxury-dark-text line-clamp-1 group-hover:text-luxury-gold transition-colors">
               {{ product.name }}
             </h3>
@@ -130,11 +140,10 @@ const shimmerClass = 'animate-pulse bg-luxury-border dark:bg-luxury-dark-border'
             </p>
           </div>
 
-          <!-- View Button -->
-          <div class="mt-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-            <UiLuxuryButton variant="outline" block class="text-sm">
-              View Details
-            </UiLuxuryButton>
+          <!-- View affordance: appears on hover (desktop), always readable on touch -->
+          <div class="mt-4 flex items-center gap-1.5 text-sm font-medium text-luxury-gold opacity-100 md:opacity-0 md:group-hover:opacity-100 md:-translate-y-1 md:group-hover:translate-y-0 transition-all duration-300">
+            <span>View Details</span>
+            <UiIcon name="arrow-right" :size="16" class="transition-transform duration-300 group-hover:translate-x-1" />
           </div>
           </UiBaseCard>
         </NuxtLink>

@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+
+<html class="scroll-smooth" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Indoor Shopping | Premium Luxury Home Goods</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&amp;family=Manrope:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary": "#000000",
+                        "on-surface": "#1a1c1b",
+                        "on-secondary-container": "#785a1a",
+                        "surface-bright": "#faf9f7",
+                        "outline": "#747878",
+                        "inverse-surface": "#2f3130",
+                        "on-secondary": "#ffffff",
+                        "inverse-on-surface": "#f1f1ef",
+                        "on-tertiary-container": "#8b8278",
+                        "surface-dim": "#dadad8",
+                        "primary-fixed": "#e5e2e1",
+                        "surface-container-lowest": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "on-secondary-fixed-variant": "#5d4201",
+                        "error": "#ba1a1a",
+                        "on-primary-fixed-variant": "#474646",
+                        "primary": "#000000",
+                        "on-primary": "#ffffff",
+                        "secondary-container": "#fed488",
+                        "background": "#faf9f7",
+                        "on-primary-fixed": "#1c1b1b",
+                        "surface-container": "#efeeec",
+                        "outline-variant": "#c4c7c7",
+                        "on-primary-container": "#858383",
+                        "surface-tint": "#5f5e5e",
+                        "primary-fixed-dim": "#c8c6c5",
+                        "secondary-fixed": "#ffdea5",
+                        "primary-container": "#1c1b1b",
+                        "surface-container-high": "#e9e8e6",
+                        "on-tertiary": "#ffffff",
+                        "on-error": "#ffffff",
+                        "on-secondary-fixed": "#261900",
+                        "on-tertiary-fixed-variant": "#4c463d",
+                        "surface": "#faf9f7",
+                        "secondary": "#775a19",
+                        "inverse-primary": "#c8c6c5",
+                        "secondary-fixed-dim": "#e9c176",
+                        "tertiary-container": "#201b13",
+                        "tertiary-fixed": "#ece1d5",
+                        "surface-variant": "#e3e2e0",
+                        "surface-container-low": "#f4f3f1",
+                        "on-background": "#1a1c1b",
+                        "surface-container-highest": "#e3e2e0",
+                        "tertiary-fixed-dim": "#cfc5b9",
+                        "on-tertiary-fixed": "#201b13",
+                        "on-surface-variant": "#444748",
+                        "on-error-container": "#93000a"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "margin-mobile": "20px",
+                        "section-gap": "120px",
+                        "margin-desktop": "80px",
+                        "container-max": "1440px",
+                        "gutter": "32px",
+                        "unit": "8px"
+                    },
+                    "fontFamily": {
+                        "label-caps": ["Manrope"],
+                        "body-lg": ["Manrope"],
+                        "display-lg-mobile": ["Playfair Display"],
+                        "headline-md": ["Playfair Display"],
+                        "headline-sm": ["Playfair Display"],
+                        "display-lg": ["Playfair Display"],
+                        "body-md": ["Manrope"]
+                    },
+                    "fontSize": {
+                        "label-caps": ["12px", {"lineHeight": "1.2", "letterSpacing": "0.1em", "fontWeight": "600"}],
+                        "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "display-lg-mobile": ["40px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                        "headline-md": ["32px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                        "headline-sm": ["24px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                        "display-lg": ["64px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            vertical-align: middle;
+        }
+        .luxury-shadow {
+            box-shadow: 0 40px 40px -20px rgba(0, 0, 0, 0.04);
+        }
+        .nav-active-dot::after {
+            content: '';
+            position: absolute;
+            bottom: -6px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 4px;
+            background-color: #775a19;
+            border-radius: 50%;
+        }
+        .glass-effect {
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(229, 218, 206, 0.5);
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body-md overflow-x-hidden">
+<!-- TopNavBar -->
+<header class="fixed top-0 left-0 w-full z-50 bg-surface/80 dark:bg-tertiary/80 backdrop-blur-md border-b border-outline-variant/30 dark:border-outline/20">
+<div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-4 flex justify-between items-center">
+<!-- Brand Logo -->
+<a class="font-headline-sm text-headline-sm tracking-tighter text-on-surface dark:text-on-tertiary" href="#">
+                Indoor Shopping
+            </a>
+<!-- Navigation Links -->
+<nav class="hidden md:flex items-center gap-10">
+<a class="font-label-caps text-label-caps text-primary dark:text-inverse-primary relative nav-active-dot" href="#">Home</a>
+<a class="font-label-caps text-label-caps text-on-surface-variant dark:text-surface-variant hover:text-primary transition-colors duration-300" href="#">Products</a>
+<a class="font-label-caps text-label-caps text-on-surface-variant dark:text-surface-variant hover:text-primary transition-colors duration-300" href="#">About</a>
+<a class="font-label-caps text-label-caps text-on-surface-variant dark:text-surface-variant hover:text-primary transition-colors duration-300" href="#">Contact</a>
+</nav>
+<!-- Actions -->
+<div class="flex items-center gap-6">
+<button class="material-symbols-outlined text-on-surface hover:scale-105 transition-transform">shopping_cart</button>
+<button class="material-symbols-outlined text-on-surface hover:scale-105 transition-transform">person</button>
+<button class="material-symbols-outlined text-on-surface hover:scale-105 transition-transform">dark_mode</button>
+</div>
+</div>
+</header>
+<main>
+<!-- Hero Section -->
+<section class="relative h-screen flex items-center justify-center pt-20">
+<div class="absolute inset-0 z-0">
+<div class="w-full h-full bg-cover bg-center opacity-60 grayscale-[20%]" data-alt="A sprawling, high-end luxury living room interior with floor-to-ceiling windows overlooking a sunset horizon. The space features minimalist architectural lines, soft beige linen sofas, and a marble coffee table. The atmosphere is serene and expensive, captured with a soft focus that creates a dreamy, editorial aesthetic. Warm, golden hour light spills across the room, highlighting fine textures and metallic bronze accents." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAfV9nijSYpN-y7tlyF5bAvu4YIx7-DbuiMXPC9izpZtegr8nILWVqJDyCY0YpngQJBB_4GSCNnNc2VEcb2Gi6wRf3eF3o3iePPINlQld1FHVu_esJ6tCs4Z5YjRvkMeWpEGpbVLJXDD6msD9jJMkW_P3pq7cGeNLETIHPWIMkCRB2B9vMjxObHrnvLco6EiJAhhVWcgjyYSzw_-oC8ALZVC0-mTHlOPSpBF7f5vjWHpiytwuReeNX39A')">
+</div>
+<div class="absolute inset-0 bg-gradient-to-b from-transparent via-surface/40 to-surface"></div>
+</div>
+<div class="relative z-10 text-center max-w-4xl px-margin-mobile animate-in fade-in duration-1000 slide-in-from-bottom-8">
+<h1 class="font-display-lg-mobile md:font-display-lg text-display-lg-mobile md:text-display-lg text-tertiary mb-6">
+                    Discover Premium<br/>
+<span class="italic text-secondary">Luxury Products</span>
+</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant mb-12 max-w-lg mx-auto">
+                    Simplify your space with curated elegance and timeless craftsmanship designed for the modern home.
+                </p>
+<div class="flex flex-col sm:flex-row items-center justify-center gap-8">
+<button class="bg-primary text-on-primary px-10 py-4 font-label-caps text-label-caps rounded-[4px] hover:scale-[1.02] transition-transform luxury-shadow">
+                        Shop Collection
+                    </button>
+<a class="font-label-caps text-label-caps text-on-surface border-b border-on-surface/20 pb-1 hover:border-on-surface transition-colors" href="#">
+                        Our Story
+                    </a>
+</div>
+</div>
+</section>
+<!-- Featured Products Section -->
+<section class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-section-gap">
+<div class="text-center mb-24">
+<div class="flex justify-center mb-4">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">diamond</span>
+</div>
+<h2 class="font-headline-md text-headline-md text-tertiary mb-4">Featured Collection</h2>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-xl mx-auto">
+                    Explore our carefully curated collection of premium products, where functionality meets sophisticated architectural design.
+                </p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-gutter">
+<!-- Product Card 1 -->
+<div class="group bg-surface-container-lowest p-6 rounded-lg luxury-shadow hover:scale-[1.01] transition-all duration-500">
+<div class="aspect-[4/5] overflow-hidden bg-surface-container mb-8 relative">
+<div class="absolute top-4 right-4 z-10">
+<span class="bg-secondary-fixed text-on-secondary-fixed font-label-caps text-[10px] px-3 py-1 rounded-full uppercase tracking-widest">New</span>
+</div>
+<img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="A macro studio photograph of a sleek, minimalist ceramic water filter cartridge. The surface is pristine matte white with subtle ribbed textures, standing elegantly against a soft sand-colored background. Lighting is soft and diffused, creating delicate highlights that emphasize the premium quality of the material. The composition is clean and architectural, reflecting high-end interior product photography." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAh6yR4WqnxCPNUAjhQpZgkBIIrmWD6IUwcYahFyz1i-xiWhKrr3sHfRKEAkJAVMSQb1yZLRRYH2Xf-YHTkNlXBO5TgAsJhH0gMUr8Uz__OAoFajS4dYY_WU8zUcRzeymhB3eAgvx2Tiae5uylQXyGbnHFg44PYLnazd7kHSBF_84xJX89ybCBtUcGoelILOaXUY5Ckkrkyc66uHCXZXHW8T223ndJ6cciXfbroeWh-tDk-DVdLs_VpsQ"/>
+</div>
+<div class="space-y-2">
+<h3 class="font-headline-sm text-headline-sm text-tertiary">Aura Filter Cartridge</h3>
+<p class="font-body-md text-body-md text-on-secondary-container">Contact for pricing</p>
+</div>
+</div>
+<!-- Product Card 2 -->
+<div class="group bg-surface-container-lowest p-6 rounded-lg luxury-shadow hover:scale-[1.01] transition-all duration-500">
+<div class="aspect-[4/5] overflow-hidden bg-surface-container mb-8 relative">
+<img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="A professional studio arrangement showing a high-end stainless steel faucet filter next to its replacement components. The metallic finish of the product gleams under professional studio lighting, casting soft shadows on a minimalist grey marble slab. The aesthetic is clean and high-tech, focusing on precision engineering and premium materials for a luxury modern kitchen environment." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCb1uSaG5Z7WToI-OzOSanWZTKAclrvPDVFRzq9Vvt97IsHDtYZCWmTeoFF63HNB836G_E9c1_TPBwdvT8aWfg7HHYVEZLsw4FNALLdmG6xZy0gTirQL4LXY_iOKhx_TqdyceTJZfWNPx2RK0x11YXmCp7LTcJuTlwsWXmGY7knHDvlc1lCDWZNXsavJjB9zLe8dTP1gRj_xcWBd9XbsK8tSk_WFe6g5Hob6ldROo40gP01WKb0OgpiZw"/>
+</div>
+<div class="space-y-2">
+<h3 class="font-headline-sm text-headline-sm text-tertiary">Signature Faucet System</h3>
+<p class="font-body-md text-body-md text-on-secondary-container">Price upon request</p>
+</div>
+</div>
+<!-- Product Card 3 -->
+<div class="group bg-surface-container-lowest p-6 rounded-lg luxury-shadow hover:scale-[1.01] transition-all duration-500">
+<div class="aspect-[4/5] overflow-hidden bg-surface-container mb-8 relative">
+<div class="absolute top-4 right-4 z-10">
+<span class="bg-secondary/10 text-secondary font-label-caps text-[10px] px-3 py-1 rounded-full uppercase tracking-widest">Limited</span>
+</div>
+<img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="An editorial close-up of premium, ultra-soft textile pads with a delicate honeycomb texture. The product is arranged in a fan-like composition on a background of natural linen and warm wood. The lighting is bright and airy, suggesting cleanliness and comfort. The color palette consists of soft ivories and warm neutrals, creating a sense of luxury and personal care sophistication." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCkRVt-a9T_yfkgnVCeNM8P0qbMEfmFjmepd24jLf-x1ZdxbTdg6j_Muf3Xa6Z3MHh7s_Ao5nvKjxep5HaaI77y_gZQGQXqbqD4AZzzaMzO1j4TrlazL9HuugXxZJLYHoapdZD_1OUkZ3LsE9R3wjRYhrerywUjdNEWyBoZsysWaJxrm8THxqBJJHTfkUakbXUfOFUFHMzJd4GLRR00OE1vvmaVqY74YF-J-0lt07cbTS466uIjyMLfQA"/>
+</div>
+<div class="space-y-2">
+<h3 class="font-headline-sm text-headline-sm text-tertiary">Signature Underarm Pad</h3>
+<p class="font-body-md text-body-md text-on-secondary-container">Contact for pricing</p>
+</div>
+</div>
+</div>
+<div class="mt-24 flex justify-center">
+<button class="flex items-center gap-3 border border-outline-variant px-12 py-4 font-label-caps text-label-caps hover:bg-tertiary hover:text-white transition-all duration-300">
+                    View All Products
+                    <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</button>
+</div>
+</section>
+<!-- Aesthetic Divider Section -->
+<section class="bg-surface-container-low py-section-gap overflow-hidden">
+<div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop grid grid-cols-1 lg:grid-cols-2 gap-gutter items-center">
+<div class="relative">
+<div class="w-full h-[500px] bg-cover bg-center rounded-sm" data-alt="A minimalist architectural shot of a modern home interior. A single designer chair sits in a pool of natural sunlight against a textured plaster wall. The shadows are long and sharp, creating a dramatic contrast. The color scheme is monochrome beige and deep charcoal, embodying the quiet confidence and curated elegance of a high-end luxury lifestyle." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuA8EPZJie9Pw4bYPOBM28oQWa-OKA5mHtAhfvFbO7FepD8dowSaYMT6jdt4IiS-Av-M6w89yqL-eD1LeZiHB2O2lpDYdSlAy2_8UBgGHdPebPYqnJQ0VBzYKkp7TFq8kawWgNAWSkE1BV9zOxJDwYAT9bWE5eGKdYgocSyfOIXj1eMvRJlLCAExVvoTgxo-zgVcutQd6-nDwflha_YViqmG9geuxxT8UEprsyKrdmAeX6ZXaBOFZ1fVqw')">
+</div>
+<div class="absolute -bottom-8 -right-8 w-64 h-64 border border-secondary/20 hidden md:block"></div>
+</div>
+<div class="lg:pl-20 py-12">
+<h4 class="font-label-caps text-label-caps text-secondary mb-6 uppercase">Our Philosophy</h4>
+<h2 class="font-headline-md text-headline-md text-tertiary mb-8 leading-tight">Craftsmanship in every single detail.</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mb-10 leading-relaxed">
+                        We believe that the objects you surround yourself with should reflect a commitment to quality and a passion for refined living. Every piece in our collection is vetted for its aesthetic merit and functional longevity.
+                    </p>
+<button class="bg-transparent border border-secondary text-secondary px-8 py-3 font-label-caps text-label-caps rounded-[4px] hover:bg-secondary hover:text-on-secondary transition-all">
+                        Learn More
+                    </button>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-container-low dark:bg-tertiary-container border-t border-outline-variant/10">
+<div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-section-gap grid grid-cols-1 md:grid-cols-4 gap-gutter">
+<!-- Brand Info -->
+<div class="col-span-1 md:col-span-1">
+<div class="font-headline-sm text-headline-sm text-on-surface dark:text-on-tertiary mb-6">Indoor Shopping</div>
+<p class="font-body-md text-body-md text-on-surface-variant mb-8 opacity-80">
+                    Simplify your space with curated luxury home goods.
+                </p>
+<div class="flex gap-4">
+<a class="opacity-80 hover:opacity-100 transition-opacity" href="#"><img alt="Facebook" class="w-6 h-6" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAgPjQNzPzCIb5AI59tprY7MIbzIkyyi-kOuJnobV72v6TJWTzC9caj6EhParLceKOD3JUpBhDKKDgP8uM27G6yGhpjUAZDSFmpgdZFYnUlT0a_gd2EGkxTjQetnWFg7d6e8iE7C0IFnyMreSk9ypCjSvunRQs4H8dfXdmsr-hlCmqfGU_E3JuOPElHOSiGN4PRsIXmOvq8aK3tE8COmmjUz2jWfKtuVhKDWcB0Wb_D-ullvAlZM3LFxQ"/></a>
+<a class="opacity-80 hover:opacity-100 transition-opacity" href="#"><img alt="Instagram" class="w-6 h-6" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAxtRI1eJasceON4iqiSpQ5SenLqaHJnvdcJQ7Cvy1SKeTSwnM1QPJKkWZig2gdf3glb9LBOl7e98Vr9Fnf5MXPWi_LXxeD-omupzP_95QYwCEsrkx9LcHLCU3_sOf25iPytQxBlIG4WWKpl26MdMjntSDhgPqDZjestSEq07B6XSbq6RDASgLCK6gqj8PzmvL0CNEB-cWeL0Ch297lQS2qbPpJAClq1OQRYGi0Cy2bdL65aXXSS3MSLw"/></a>
+<a class="opacity-80 hover:opacity-100 transition-opacity" href="#"><img alt="YouTube" class="w-6 h-6" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCdxttteC-ts1mxogGj2gvrT3Lg3kA_9qs4WdUwZTaHuAOiSJDNRpuxfx5a2nUDQzTYYrtDunVry51CdZAZTZVY51lDNXeUvD_CBcbDQUUMGoZMqr5kgMhNUT0_IMFqBVhqLxzYvb774Jms06-9Hrap2KmeCnN_IfY4jskJW3wAZMWk-nUqdd7sHYn0BimpBT0CexmQ60MkevU5Lo90qOITdeXd3o3BLFAM4wvQ2EBn0R7DNu50ZjZQKw"/></a>
+</div>
+</div>
+<!-- Quick Links -->
+<div class="md:pl-12">
+<h5 class="font-label-caps text-label-caps text-tertiary mb-6">Quick Links</h5>
+<ul class="space-y-4">
+<li><a class="font-body-md text-body-md text-on-surface-variant hover:text-secondary transition-colors" href="#">Home</a></li>
+<li><a class="font-body-md text-body-md text-on-surface-variant hover:text-secondary transition-colors" href="#">Products</a></li>
+<li><a class="font-body-md text-body-md text-on-surface-variant hover:text-secondary transition-colors" href="#">About Us</a></li>
+<li><a class="font-body-md text-body-md text-on-surface-variant hover:text-secondary transition-colors" href="#">Contact</a></li>
+</ul>
+</div>
+<!-- Support -->
+<div>
+<h5 class="font-label-caps text-label-caps text-tertiary mb-6">Support</h5>
+<ul class="space-y-4">
+<li><a class="font-body-md text-body-md text-on-surface-variant hover:text-secondary transition-colors" href="#">FAQ</a></li>
+<li><a class="font-body-md text-body-md text-on-surface-variant hover:text-secondary transition-colors" href="#">Shipping Info</a></li>
+<li><a class="font-body-md text-body-md text-on-surface-variant hover:text-secondary transition-colors" href="#">Privacy Policy</a></li>
+<li><a class="font-body-md text-body-md text-on-surface-variant hover:text-secondary transition-colors" href="#">Terms of Service</a></li>
+</ul>
+</div>
+<!-- Newsletter -->
+<div>
+<h5 class="font-label-caps text-label-caps text-tertiary mb-6">Stay Inspired</h5>
+<p class="font-body-md text-body-md text-on-surface-variant mb-6 opacity-80">Join our newsletter for exclusive previews and design stories.</p>
+<form class="flex gap-2">
+<input class="bg-surface border-b border-outline-variant focus:border-secondary focus:ring-0 text-sm py-2 px-0 w-full outline-none transition-all placeholder:text-outline/50" placeholder="Email Address" type="email"/>
+<button class="material-symbols-outlined text-secondary" type="submit">arrow_forward</button>
+</form>
+</div>
+</div>
+<div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-8 border-t border-outline-variant/10 flex flex-col md:flex-row justify-between items-center gap-4">
+<span class="font-body-md text-body-md text-on-surface-variant opacity-60">© 2026 Indoor Shopping. All rights reserved.</span>
+<div class="flex gap-8">
+<span class="font-label-caps text-[10px] text-outline tracking-widest uppercase">English (US)</span>
+<span class="font-label-caps text-[10px] text-outline tracking-widest uppercase cursor-pointer hover:text-tertiary">Back to Top</span>
+</div>
+</div>
+</footer>
+<script>
+        // Micro-interactions for scrolling
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('header');
+            if (window.scrollY > 50) {
+                header.classList.add('py-2', 'shadow-sm');
+                header.classList.remove('py-4');
+            } else {
+                header.classList.remove('py-2', 'shadow-sm');
+                header.classList.add('py-4');
+            }
+        });
+
+        // Hover effects for cards
+        const cards = document.querySelectorAll('.group');
+        cards.forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                const img = card.querySelector('img');
+                if(img) img.style.transform = 'scale(1.05)';
+            });
+            card.addEventListener('mouseleave', () => {
+                const img = card.querySelector('img');
+                if(img) img.style.transform = 'scale(1)';
+            });
+        });
+    </script>
+</body></html>

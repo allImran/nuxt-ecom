@@ -66,5 +66,8 @@ const { data: products, pending: loading } = await useAsyncData<Product[]>(
         @view-product="viewProduct"
       />
     </main>
+
+    <!-- Brand Philosophy -->
+    <HomeBrandValues />
   </div>
 </template>

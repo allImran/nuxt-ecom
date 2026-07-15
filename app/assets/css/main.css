@@ -120,6 +120,11 @@
   --spacing-stack-md: 1rem;
   --spacing-stack-sm: 0.75rem;
 
+  /* ---------- Animation ---------- */
+  /* One-shot entrance used by the landing hero. Defined here (not in
+   * tailwind.config.js) because the v4 Vite plugin resolves theme from CSS. */
+  --animate-fade-up: fade-up 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+
   /* Dark mode MD3 tokens */
   --color-dark-surface-container-lowest: #1a1a1a;
   --color-dark-surface-container-low: #232323;
@@ -158,6 +163,19 @@
 .gap-stack-lg { gap: var(--spacing-stack-lg); }
 .gap-stack-md { gap: var(--spacing-stack-md); }
 .gap-stack-sm { gap: var(--spacing-stack-sm); }
+
+@keyframes fade-up {
+  0% { opacity: 0; transform: translateY(1.25rem); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+/* Respect users who prefer reduced motion: disable the landing entrance
+ * animations (decorative fade-ups) without touching functional spinners. */
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-up {
+    animation: none !important;
+  }
+}
 
 /* Bangla-specific optimizations */
 html[lang="bn"] body {

@@ -28,8 +28,9 @@ const currentPath = computed(() => useRoute().path)
       v-for="item in menuItems"
       :key="item.path"
       :to="item.path"
-      class="text-sm font-medium transition-colors relative whitespace-nowrap"
+      class="group text-sm font-medium transition-colors relative whitespace-nowrap"
       :class="[
+        variant === 'horizontal' ? 'py-1' : '',
         currentPath === item.path
           ? 'text-luxury-gold'
           : 'text-luxury-text dark:text-luxury-dark-text hover:text-luxury-gold'
@@ -37,8 +38,9 @@ const currentPath = computed(() => useRoute().path)
     >
       {{ item.name }}
       <span
-        v-if="currentPath === item.path && variant === 'horizontal'"
-        class="absolute -bottom-1 left-0 right-0 h-0.5 bg-luxury-gold"
+        v-if="variant === 'horizontal'"
+        class="absolute -bottom-0.5 left-0 h-0.5 rounded-full bg-luxury-gold transition-all duration-300"
+        :class="currentPath === item.path ? 'w-full' : 'w-0 group-hover:w-full'"
       />
     </NuxtLink>
   </nav>
