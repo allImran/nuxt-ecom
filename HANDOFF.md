@@ -197,12 +197,13 @@ sessions had :3003 down), so this session IS runtime-verified against live data.
 
 ### ⚠️ Deployment prerequisite (blocks canonical/sitemap value)
 
-`NUXT_PUBLIC_SITE_URL` is NOT set in `.env` (only documented in `.env.example`). Until it
-is set per deployment: canonical/og:url/hreflang tags are **omitted**, the sitemap emits
-an **empty** urlset, and robots omits the `Sitemap:` directive — all by design (better
-than wrong URLs), but it means **this SEO work produces nothing until the real production
-origin is set**. Set `NUXT_PUBLIC_SITE_URL=https://<real-domain>` (no trailing slash)
-before deploying.
+`NUXT_PUBLIC_SITE_URL` gates canonical/og:url/hreflang, the sitemap `<loc>`s, the
+robots `Sitemap:` directive, and the catalog feed `link`s — when unset all of those are
+**omitted/empty by design** (better than wrong URLs). It is **now set in `.env` to
+`https://indoorshopping.web.app`** (the user added it), so the current build produces
+fully-populated output. Each new business deployment must set its own real origin.
+`NUXT_PUBLIC_SITE_NAME` is still unset (build logs a warning) — set it per deployment for
+correct first-paint/no-JS/crawler branding before the business record loads client-side.
 
 ### Verification of this session
 
@@ -216,17 +217,68 @@ Organization + FAQPage JSON-LD server-rendered, single-brand titles. **Not brows
 population of Product/Breadcrumb JSON-LD — both build-clean and logically sound, SSR emits
 well-formed empty placeholders, but not exercised in a real browser/Rich Results Test.
 
-### Phase 3 SEO items still remaining
+## What's done (Phase 3 discovery + catalog, this session — check commit state)
 
-- **Product/Breadcrumb JSON-LD, and shareable product social previews, only truly work
-  once C2 is done** (useAsyncData + `nuxt generate`) — currently client-rendered, so
-  Google's rendering crawler sees them but non-rendering social scrapers (FB/WhatsApp) do
-  not. Verify with the Rich Results Test after C2.
-- Storefront **search, category pages, pagination** (FINDINGS item 16) — not started.
-- **Meta catalog feed** per business (item 17) — not started; can be another build-time
-  prerendered route like the sitemap.
-- Run submitted sitemap + structured data through Google Search Console / Rich Results Test
-  once a real `NUXT_PUBLIC_SITE_URL` domain is live.
+Second batch of Phase 3, on top of the SEO subset above. Runtime-verified against the
+live onrender backend (typecheck 73/baseline, build exit 0, SSR curl-checked).
+
+- **Storefront search / category filter / sort / pagination** (FINDINGS item 16) — the
+  `/products` listing was a flat dump of up to 100 products; now:
+  - New [ProductFilterBar.vue](app/components/product/ProductFilterBar.vue): search box,
+    category dropdown (categories **derived client-side** from the loaded products — there
+    is no public categories endpoint, but the list payload DOES include each product's
+    `category` object), sort dropdown, result count, clear-filters.
+  - New [ProductPagination.vue](app/components/product/ProductPagination.vue): compact
+    windowed pager rendered as real `<NuxtLink>`s (crawlable, preserves active filters in
+    the query), 12/page.
+  - [products/index.vue](app/pages/products/index.vue) rewired: filter/sort/page state is
+    **URL-query-backed** (`?q=&category=&sort=&page=`) so views are shareable/bookmarkable;
+    search is debounced (300ms, `router.replace` to avoid history spam); page resets to 1
+    on filter change; canonical stays `/products` (I18nMetaTags strips the query) so
+    filtered views don't create duplicate-content URLs; page title/H1 reflect the active
+    category ("Home & Kitchen | Indoor Shopping").
+  - [ProductShowcase.vue](app/components/home/ProductShowcase.vue) got `showHeader` /
+    `showViewAll` props (default true → home unchanged) so the listing hides the "Featured
+    Products" header + "View All" button and owns its own chrome.
+- **⚠️ Data-layer gotcha (important):** the public **list** endpoint
+  `/products/business/{id}` returns products **WITHOUT `variants`** (so NO prices);
+  `?include=variants` doesn't help. Only the **detail** endpoint `/products/slug/{slug}`
+  returns variants. Consequences:
+  - The storefront grid (home AND listing) **cannot show prices** from the list call —
+    cards fall back to "Contact for pricing". This is **pre-existing**, not introduced
+    here, but it's a real conversion gap. Fixing it needs either a backend change (include
+    variants/min-price in the list payload) or per-product detail hydration.
+  - Sort therefore offers **Featured / Newest / Name A–Z / Name Z–A** (fields the list
+    payload has) — **no price sort** (would silently no-op).
+- **Meta catalog feed** (FINDINGS item 17) — new build-time prerendered route
+  [catalog.csv.ts](server/routes/catalog.csv.ts) (added to `nitro.prerender.routes`),
+  same static-safe pattern as the sitemap. CSV with Meta's required columns; `id` = the
+  product UUID (same value the pixel sends as `content_ids`, so catalog/Advantage+ ads can
+  match pixel events). Because the list endpoint lacks prices, the route **fetches each
+  product's detail** (batched, concurrency 6, per-item soft-fail) to get the lowest variant
+  price. `description` reuses the title (no description field in the schema). Verified:
+  `.output/public/catalog.csv` generated with all 3 live products, correct prices
+  (240/1100/99 BDT), absolute links + Supabase image links, brand "Indoor Shopping".
+  Point a Meta catalog scheduled feed at `<site>/catalog.csv`; redeploy to refresh.
+- **Bonus:** removed the production `console.log('Fetched products', …)` full-payload dump
+  in `stores/businessProducts.ts` (audit medium issue).
+
+### Phase 3 items still remaining
+
+- **True SEO category *landing pages*** (own crawlable URL + SSR content per category)
+  need C2 (useAsyncData + `nuxt generate`) + real routing; what shipped is client-side
+  category *filtering* on `/products` with shareable query URLs.
+- **Product/Breadcrumb JSON-LD + shareable product social previews only truly work once
+  C2 is done** — currently client-rendered (Google's rendering crawler sees them; FB/WhatsApp
+  scrapers don't). Verify with the Rich Results Test after C2.
+- Storefront grid **price display** — blocked on the list-endpoint-has-no-variants issue
+  above (backend change or detail hydration).
+- **Not browser-verified** this session (no headless browser): actual client-side
+  filtering/pagination behavior and client-population of product JSON-LD. Components render
+  correctly in SSR and logic is typecheck-clean, but drive it in a real browser before
+  calling it done.
+- Submit the sitemap + run structured data through Google Search Console / Rich Results Test
+  now that `NUXT_PUBLIC_SITE_URL` is live.
 
 ## What's left (Phases 2-4, unstarted)
 
@@ -253,10 +305,12 @@ Straight from FINDINGS.md, adapted for the static-hosting constraint above:
     woff2 once `pyftsubset`/`woff2_compress` tooling is available.
   - **Real per-business favicons** at build time (current fix is a runtime override).
 
-**Phase 3** — SEO & discovery: structured data, sitemap, canonical/`og:url`, and crawlable
-product links are **DONE this session** (see "What's done (Phase 3 SEO subset)" above).
-Still remaining under Phase 3: storefront **search/category/pagination**, and the **Meta
-catalog feed** (fine as another build-time prerendered route, not a live endpoint).
+**Phase 3** — SEO & discovery: structured data, sitemap, canonical/`og:url`, crawlable
+product links, storefront **search/category-filter/sort/pagination**, and the **Meta
+catalog feed** are all **DONE** (see the two "What's done (Phase 3 …)" sections above).
+Remaining: true per-category SEO *landing pages* and shareable product social previews are
+gated on C2 (`useAsyncData` + `nuxt generate`); storefront price display is gated on the
+list-endpoint-lacks-variants backend issue.
 
 **Phase 4** — conversion optimization: district/upazila capture at checkout (the
 cascading selectors exist in the codebase already per the audit — just never rendered),

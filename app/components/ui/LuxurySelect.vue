@@ -54,8 +54,7 @@ const updateValue = (event: Event) => {
     <label
       v-if="label"
       :for="id"
-      class="absolute left-1 top-3 text-luxury-text-muted dark:text-luxury-dark-text-muted text-base transition-all duration-300 
-             -top-4 text-xs group-focus-within:text-luxury-gold"
+      class="absolute left-1 -top-4 text-xs text-luxury-text-muted dark:text-luxury-dark-text-muted transition-all duration-300 group-focus-within:text-luxury-gold"
     >
       {{ label }}
     </label>

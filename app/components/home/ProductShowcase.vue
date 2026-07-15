@@ -12,9 +12,16 @@ interface Product {
 interface Props {
   products: Product[]
   loading: boolean
+  // On the home page we show the "Featured Products" header and a "View All"
+  // button; the /products listing hides both (it has its own header + pagination).
+  showHeader?: boolean
+  showViewAll?: boolean
 }
 
-const props = defineProps<Props>()
+const props = withDefaults(defineProps<Props>(), {
+  showHeader: true,
+  showViewAll: true,
+})
 
 // Kept for backward-compat with parents that still bind @view-product. Navigation
 // itself is now handled by the <NuxtLink> wrapping each card (crawlable <a href>),
@@ -46,7 +53,7 @@ const shimmerClass = 'animate-pulse bg-luxury-border dark:bg-luxury-dark-border'
   <section id="products-section" class="py-16 lg:py-24 bg-luxury-bg dark:bg-luxury-dark-bg transition-colors duration-200">
     <div class="container mx-auto px-4 sm:px-6 lg:px-8">
       <!-- Section Header -->
-      <div class="text-center mb-12">
+      <div v-if="showHeader" class="text-center mb-12">
         <h2 class="text-3xl sm:text-4xl font-bold tracking-luxury text-luxury-text dark:text-luxury-dark-text mb-4">
           Featured Products
         </h2>
@@ -134,7 +141,7 @@ const shimmerClass = 'animate-pulse bg-luxury-border dark:bg-luxury-dark-border'
       </div>
 
       <!-- View All Button -->
-      <div v-if="products.length > 0" class="text-center mt-12">
+      <div v-if="showViewAll && products.length > 0" class="text-center mt-12">
         <NuxtLink
           to="/products"
           class="inline-flex items-center justify-center px-8 py-3 text-base font-medium text-luxury-text dark:text-luxury-dark-text border-2 border-luxury-border dark:border-luxury-dark-border rounded-luxury hover:border-luxury-gold hover:text-luxury-gold transition-all duration-300"

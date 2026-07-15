@@ -127,7 +127,7 @@ export default defineNuxtConfig({
     // routes are prerendered at build time into static files. sitemap.xml fetches
     // product slugs from the API at build time (fails soft) — redeploy to refresh.
     prerender: {
-      routes: ['/sitemap.xml', '/robots.txt'],
+      routes: ['/sitemap.xml', '/robots.txt', '/catalog.csv'],
     },
   }
 })
