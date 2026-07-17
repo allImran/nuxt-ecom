@@ -36,7 +36,9 @@ const getProductPrice = (product: Product) => {
     if (prices.length > 0) {
       const minPrice = Math.min(...prices)
       const maxPrice = Math.max(...prices)
-      return minPrice === maxPrice ? `${minPrice} TK` : `${minPrice} TK - ${maxPrice} TK`
+      // Lead with the minimum price; "From" signals it's a starting price when
+      // variants differ.
+      return minPrice === maxPrice ? `${minPrice} TK` : `From ${minPrice} TK`
     }
   }
   return null

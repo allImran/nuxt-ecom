@@ -27,12 +27,13 @@ const categoryOptions = computed(() => [
   ...props.categories.map(c => ({ value: c.id, label: c.name })),
 ])
 
-// Note: no price sort — the public list endpoint doesn't return variant prices,
-// so the storefront grid has no price data to sort on. These all sort on fields
-// the list payload actually contains.
+// The listing enriches each product with its variants (see fetchProductsBy-
+// BusinessWithPrices), so we can sort on the minimum variant price too.
 const sortOptions = [
   { value: 'featured', label: 'Featured' },
   { value: 'newest', label: 'Newest' },
+  { value: 'price-asc', label: 'Price: Low to High' },
+  { value: 'price-desc', label: 'Price: High to Low' },
   { value: 'name-asc', label: 'Name: A to Z' },
   { value: 'name-desc', label: 'Name: Z to A' },
 ]

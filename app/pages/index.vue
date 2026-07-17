@@ -48,7 +48,7 @@ const { viewProduct } = useHomeViewModel()
 // on client-side navigation to this route the handler re-runs for fresh data.
 const { data: products, pending: loading } = await useAsyncData<Product[]>(
   'home-products',
-  () => (businessId ? publicNetwork.fetchProductsByBusiness(businessId, 8) : Promise.resolve([])),
+  () => (businessId ? publicNetwork.fetchProductsByBusinessWithPrices(businessId, 8) : Promise.resolve([])),
   { default: () => [] as Product[] }
 )
 </script>

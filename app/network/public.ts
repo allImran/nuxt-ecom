@@ -146,6 +146,43 @@ export const publicNetwork = {
     })
   },
 
+  // Fetch the business product list and enrich each product with its variants so
+  // cards can display the minimum price. Variant requests run pooled (the backend
+  // has no bulk/include-variants endpoint) and failures fall back to no price
+  // ("Contact for pricing") rather than failing the whole list / prerender.
+  //
+  // baseURL is resolved once here, while we're still in the Nuxt composable
+  // context. The pooled workers run after awaits (where useRuntimeConfig() would
+  // throw — Nuxt loses its async context past the first await), so they call
+  // $fetch directly with the captured baseURL.
+  //
+  // The /products/{id}/variants endpoint returns just a product's variants (no
+  // sections/HTML) — enough to compute the card's minimum price.
+  async fetchProductsByBusinessWithPrices(businessId: string, limit?: number): Promise<Product[]> {
+    const baseURL = useRuntimeConfig().public.apiBaseURL as string
+    const products = await publicNetwork.fetchProductsByBusiness(businessId, limit)
+
+    const CONCURRENCY = 10
+    let cursor = 0
+    const worker = async () => {
+      while (cursor < products.length) {
+        const product = products[cursor++]
+        if (!product || product.variants) continue
+        try {
+          product.variants = await $fetch<ProductVariant[]>(`/products/${product.id}/variants`, {
+            baseURL,
+            headers: { 'Content-Type': 'application/json' },
+          })
+        } catch {
+          // Leave variants undefined; the card renders "Contact for pricing".
+        }
+      }
+    }
+    await Promise.all(Array.from({ length: Math.min(CONCURRENCY, products.length) }, worker))
+
+    return products
+  },
+
   // Orders - Public endpoints
   createOrder: (request: CreateOrderRequest) => {
     const config = useRuntimeConfig()

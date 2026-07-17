@@ -18,7 +18,7 @@ const router = useRouter()
 // product and pagination <NuxtLink>s from the prerendered HTML.
 const { data: productsData, pending: loading } = await useAsyncData<Product[]>(
   'listing-products',
-  () => (businessId ? publicNetwork.fetchProductsByBusiness(businessId, 100) : Promise.resolve([])),
+  () => (businessId ? publicNetwork.fetchProductsByBusinessWithPrices(businessId, 100) : Promise.resolve([])),
   { default: () => [] as Product[] }
 )
 const products = computed<Product[]>(() => productsData.value ?? [])
@@ -89,11 +89,18 @@ const filteredProducts = computed(() => {
     list = list.filter(p => p.name.toLowerCase().includes(q) || p.slug.toLowerCase().includes(q))
   }
 
-  // The public list endpoint doesn't return variant prices, so we sort only on
-  // fields it actually provides (recency, name).
+  // Products are enriched with variants (fetchProductsByBusinessWithPrices), so we
+  // can sort on the minimum variant price in addition to recency/name. Products
+  // with no priced variants sort last on price.
   switch (activeSort.value) {
     case 'newest':
       list.sort((a, b) => new Date(b.created_at ?? 0).getTime() - new Date(a.created_at ?? 0).getTime())
+      break
+    case 'price-asc':
+      list.sort((a, b) => minPrice(a) - minPrice(b))
+      break
+    case 'price-desc':
+      list.sort((a, b) => maxSortPrice(b) - maxSortPrice(a))
       break
     case 'name-asc':
       list.sort((a, b) => a.name.localeCompare(b.name))
@@ -105,6 +112,17 @@ const filteredProducts = computed(() => {
 
   return list
 })
+
+// Minimum variant price for sorting; products without a priced variant sort to
+// the end (treated as +Infinity for ascending, -Infinity for descending).
+const minPrice = (p: Product) => {
+  const prices = (p.variants ?? []).map(v => v.price).filter((n): n is number => n != null)
+  return prices.length ? Math.min(...prices) : Number.POSITIVE_INFINITY
+}
+const maxSortPrice = (p: Product) => {
+  const prices = (p.variants ?? []).map(v => v.price).filter((n): n is number => n != null)
+  return prices.length ? Math.min(...prices) : Number.NEGATIVE_INFINITY
+}
 
 const totalPages = computed(() => Math.max(1, Math.ceil(filteredProducts.value.length / PAGE_SIZE)))
 const clampedPage = computed(() => Math.min(currentPage.value, totalPages.value))
