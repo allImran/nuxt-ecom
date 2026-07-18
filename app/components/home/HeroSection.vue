@@ -12,10 +12,63 @@ const scrollToProducts = () => {
   const element = document.getElementById('products-section')
   element?.scrollIntoView({ behavior: 'smooth' })
 }
+
+// --- Pointer parallax --------------------------------------------------------
+// A single pointer source for the whole hero: eases normalised cursor position
+// (-1..1) toward its target each frame (buttery motion), then writes it to CSS
+// vars on the section (for the background + orbs) and passes it to the particle
+// layer. Only enabled on fine-pointer, non-reduced-motion devices; touch just
+// gets the ambient particle drift.
+const sectionRef = ref<HTMLElement | null>(null)
+const px = ref(0)
+const py = ref(0)
+
+let targetX = 0
+let targetY = 0
+let parallaxRaf = 0
+let parallaxActive = false
+
+const onPointerMove = (e: MouseEvent) => {
+  const el = sectionRef.value
+  if (!el) return
+  const rect = el.getBoundingClientRect()
+  targetX = ((e.clientX - rect.left) / rect.width) * 2 - 1
+  targetY = ((e.clientY - rect.top) / rect.height) * 2 - 1
+}
+
+const tick = () => {
+  // Lerp toward the target for smooth easing.
+  px.value += (targetX - px.value) * 0.06
+  py.value += (targetY - py.value) * 0.06
+  const el = sectionRef.value
+  if (el) {
+    el.style.setProperty('--hero-px', px.value.toFixed(4))
+    el.style.setProperty('--hero-py', py.value.toFixed(4))
+  }
+  parallaxRaf = requestAnimationFrame(tick)
+}
+
+onMounted(() => {
+  const finePointer = window.matchMedia('(pointer: fine)').matches
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  if (!finePointer || reduceMotion) return
+  parallaxActive = true
+  window.addEventListener('mousemove', onPointerMove, { passive: true })
+  parallaxRaf = requestAnimationFrame(tick)
+})
+
+onBeforeUnmount(() => {
+  if (!parallaxActive) return
+  window.removeEventListener('mousemove', onPointerMove)
+  if (parallaxRaf) cancelAnimationFrame(parallaxRaf)
+})
 </script>
 
 <template>
-  <section class="relative flex items-center overflow-hidden min-h-[88vh] lg:min-h-screen transition-colors duration-200">
+  <section
+    ref="sectionRef"
+    class="relative flex items-center overflow-hidden min-h-[88vh] lg:min-h-screen transition-colors duration-200"
+  >
     <!-- Background Image -->
     <div class="absolute inset-0 z-0">
       <img
@@ -26,7 +79,7 @@ const scrollToProducts = () => {
         height="1080"
         fetchpriority="high"
         decoding="async"
-        class="w-full h-full object-cover scale-105 blur-xs"
+        class="hero-parallax-bg w-full h-full object-cover scale-110 blur-xs"
       />
     </div>
 
@@ -35,8 +88,10 @@ const scrollToProducts = () => {
 
     <!-- Decorative Elements -->
     <div class="absolute inset-0 overflow-hidden pointer-events-none z-10">
-      <div class="absolute -top-40 -right-40 w-80 h-80 bg-luxury-gold/10 rounded-full blur-3xl" />
-      <div class="absolute -bottom-40 -left-40 w-96 h-96 bg-luxury-gold/10 rounded-full blur-3xl" />
+      <div class="hero-orb-1 absolute -top-40 -right-40 w-80 h-80 bg-luxury-gold/10 rounded-full blur-3xl" />
+      <div class="hero-orb-2 absolute -bottom-40 -left-40 w-96 h-96 bg-luxury-gold/10 rounded-full blur-3xl" />
+      <!-- Interactive gold "luxury dust" -->
+      <HomeHeroParticles :px="px" :py="py" />
     </div>
 
     <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative z-20 py-24 lg:py-32">
@@ -99,3 +154,34 @@ const scrollToProducts = () => {
     </button>
   </section>
 </template>
+
+<style scoped>
+/* Subtle pointer parallax driven by the --hero-px/--hero-py CSS vars set in
+ * script. Layers move at different depths (bg least, orbs most) for a soft 3D
+ * feel. The eased transition keeps it smooth even between rAF writes. */
+.hero-parallax-bg {
+  transform: translate3d(calc(var(--hero-px, 0) * 10px), calc(var(--hero-py, 0) * 10px), 0) scale(1.1);
+  transition: transform 0.25s ease-out;
+  will-change: transform;
+}
+.hero-orb-1 {
+  transform: translate3d(calc(var(--hero-px, 0) * 24px), calc(var(--hero-py, 0) * 24px), 0);
+  transition: transform 0.35s ease-out;
+  will-change: transform;
+}
+.hero-orb-2 {
+  transform: translate3d(calc(var(--hero-px, 0) * -18px), calc(var(--hero-py, 0) * -18px), 0);
+  transition: transform 0.35s ease-out;
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-parallax-bg {
+    transform: scale(1.1);
+  }
+  .hero-orb-1,
+  .hero-orb-2 {
+    transform: none;
+  }
+}
+</style>
