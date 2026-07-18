@@ -72,16 +72,15 @@ const shimmerClass = 'animate-pulse bg-luxury-border dark:bg-luxury-dark-border'
       </div>
 
       <!-- Loading State -->
-      <div v-if="loading" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div v-if="loading" class="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
         <div
           v-for="i in 8"
           :key="i"
-          class="rounded-luxury p-6 border border-luxury-border dark:border-luxury-dark-border"
-          :class="shimmerClass"
+          class="rounded-luxury p-3 border border-luxury-border dark:border-luxury-dark-border"
         >
-          <div class="aspect-4/5 mb-4 rounded-xl" :class="shimmerClass" />
-          <div class="h-6 mb-2 rounded" :class="shimmerClass" />
-          <div class="h-4 w-1/2 rounded" :class="shimmerClass" />
+          <div class="aspect-square mb-3 rounded-2xl" :class="shimmerClass" />
+          <div class="h-4 mx-1 mb-2 rounded" :class="shimmerClass" />
+          <div class="h-5 w-1/2 mx-1 mb-1 rounded" :class="shimmerClass" />
         </div>
       </div>
 
@@ -99,55 +98,60 @@ const shimmerClass = 'animate-pulse bg-luxury-border dark:bg-luxury-dark-border'
       </div>
 
       <!-- Products Grid -->
-      <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div v-else class="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
         <NuxtLink
           v-for="product in products"
           :key="product.id"
           :to="`/products/${product.slug}`"
-          class="block h-full"
+          class="group flex flex-col h-full p-3 rounded-lg bg-luxury-surface dark:bg-luxury-dark-surface border border-luxury-border dark:border-luxury-dark-border shadow-luxury dark:shadow-luxury-dark transition-all duration-300 hover:-translate-y-1 hover:border-luxury-gold dark:hover:border-luxury-gold"
         >
-          <UiBaseCard
-            hover
-            class="cursor-pointer overflow-hidden group h-full hover:-translate-y-1"
-          >
-          <!-- Product Image -->
-          <div class="relative aspect-4/5 bg-luxury-surface dark:bg-luxury-dark-surface rounded-xl mb-4 overflow-hidden">
+          <!-- Product Image — contained on a neutral panel so the full product is
+               always visible (never cropped), and the card stays square + compact -->
+          <div class="relative aspect-square rounded-2xl bg-luxury-bg dark:bg-luxury-dark-bg overflow-hidden">
             <img
               v-if="getProductImage(product)"
               :src="getProductImage(product) || ''"
               :alt="product.name"
               loading="lazy"
-              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
+              class="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500 ease-out"
             />
             <div
               v-else
               class="w-full h-full flex items-center justify-center text-luxury-text-muted dark:text-luxury-dark-text-muted"
             >
-              <UiIcon name="image" :size="64" />
+              <UiIcon name="image" :size="56" />
             </div>
-            <!-- Subtle gradient wash to lift text/badges on hover -->
-            <div class="absolute inset-0 bg-linear-to-t from-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
           </div>
 
           <!-- Product Info -->
-          <div class="space-y-1.5">
-            <h3 class="font-semibold text-luxury-text dark:text-luxury-dark-text line-clamp-1 group-hover:text-luxury-gold transition-colors">
+          <div class="flex flex-1 flex-col px-1 pt-3">
+            <h3 class="text-sm sm:text-base font-semibold leading-snug text-luxury-text dark:text-luxury-dark-text line-clamp-2 group-hover:text-luxury-gold transition-colors">
               {{ product.name }}
             </h3>
-            <p v-if="getProductPrice(product)" class="text-lg font-bold text-luxury-gold">
-              {{ getProductPrice(product) }}
-            </p>
-            <p v-else class="text-sm text-luxury-text-muted dark:text-luxury-dark-text-muted">
-              Contact for pricing
-            </p>
-          </div>
 
-          <!-- View affordance: appears on hover (desktop), always readable on touch -->
-          <div class="mt-4 flex items-center gap-1.5 text-sm font-medium text-luxury-gold opacity-100 md:opacity-0 md:group-hover:opacity-100 md:-translate-y-1 md:group-hover:translate-y-0 transition-all duration-300">
-            <span>View Details</span>
-            <UiIcon name="arrow-right" :size="16" class="transition-transform duration-300 group-hover:translate-x-1" />
+            <!-- Price + CTA pinned to the bottom so cards align regardless of title length -->
+            <div class="mt-auto pt-3 flex items-end justify-between gap-2">
+              <div class="min-w-0">
+                <span class="block text-[0.65rem] uppercase tracking-luxury text-luxury-text-muted dark:text-luxury-dark-text-muted">
+                  Price
+                </span>
+                <p v-if="getProductPrice(product)" class="text-base sm:text-lg font-bold text-luxury-gold truncate">
+                  {{ getProductPrice(product) }}
+                </p>
+                <p v-else class="text-xs text-luxury-text-muted dark:text-luxury-dark-text-muted">
+                  Contact us
+                </p>
+              </div>
+
+              <!-- Navigates via the wrapping link; styled as the "Buy Now"-style pill -->
+              <span
+                class="shrink-0 inline-flex items-center justify-center w-9 h-9 rounded-full bg-luxury-charcoal/90 text-white dark:bg-luxury-dark-border transition-all duration-300 group-hover:bg-luxury-gold group-hover:scale-105"
+                aria-hidden="true"
+              >
+                <UiIcon name="arrow-right" :size="18" class="transition-transform duration-300 group-hover:translate-x-0.5" />
+              </span>
+            </div>
           </div>
-          </UiBaseCard>
         </NuxtLink>
       </div>
 
