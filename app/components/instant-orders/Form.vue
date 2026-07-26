@@ -155,6 +155,7 @@ const getTrackingCode = computed(() => {
         :customer-info="customerInfo"
         :search-results="customerSearchResults"
         :search-loading="customerSearchLoading"
+        :validation-errors="validationErrors"
         @update:model-value="handleSelectUser"
         @update:customer-info="handleUpdateCustomerInfo"
         @search="searchUsers"
@@ -268,7 +269,7 @@ const getTrackingCode = computed(() => {
           type="button"
           variant="secondary"
           :loading="courierLoading"
-          :disabled="loading || courierLoading || hasErrors"
+          :disabled="loading || courierLoading"
           @click="handleCreateCourierRequest"
         >
           <UiIcon name="truck" :size="16" class="mr-2" />
@@ -277,7 +278,7 @@ const getTrackingCode = computed(() => {
         <UiLuxuryButton
           type="submit"
           :loading="loading"
-          :disabled="loading || courierLoading || hasErrors"
+          :disabled="loading || courierLoading"
         >
           {{ submitLabel }}
         </UiLuxuryButton>

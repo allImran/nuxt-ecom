@@ -14,7 +14,9 @@ definePageMeta({
 })
 
 // Store
-const { loading, updating, error, fetchOrderById, updateOrder } = useInstantOrdersStore()
+const instantOrdersStore = useInstantOrdersStore()
+const { loading, updating, error } = storeToRefs(instantOrdersStore)
+const { fetchOrderById, updateOrder } = instantOrdersStore
 
 // Toast notification
 const toast = useToast()
@@ -92,6 +94,7 @@ async function handleSubmit() {
   // Validate form
   const errors = validate()
   if (Object.keys(errors).length > 0) {
+    toast.error({ title: 'Please fix the highlighted fields before submitting.' })
     return
   }
 

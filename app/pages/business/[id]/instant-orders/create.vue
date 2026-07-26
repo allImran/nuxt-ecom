@@ -23,7 +23,9 @@ const {
 } = useInstantOrderForm()
 
 // Store
-const { updating, error, createOrder } = useInstantOrdersStore()
+const instantOrdersStore = useInstantOrdersStore()
+const { updating, error } = storeToRefs(instantOrdersStore)
+const { createOrder } = instantOrdersStore
 
 // Toast notification
 const toast = useToast()
@@ -59,6 +61,7 @@ async function handleSubmit() {
   // Validate form
   const errors = validate()
   if (Object.keys(errors).length > 0) {
+    toast.error({ title: 'Please fix the highlighted fields before submitting.' })
     return
   }
 
@@ -78,7 +81,7 @@ async function handleSubmit() {
     const result = await createOrder(requestData)
 
     // Show success message
-    toast.success('Instant order created successfully!')
+    toast.success({ title: 'Instant order created successfully!' })
 
     // Navigate to list or edit page
     router.push(`/business/${businessId.value}/instant-orders/edit/${result.id}`)
@@ -87,13 +90,13 @@ async function handleSubmit() {
 
     // Show error message
     if (error.value === 'validation') {
-      toast.error('Please fix the validation errors and try again.')
+      toast.error({ title: 'Please fix the validation errors and try again.' })
     } else if (error.value === 'unauthorized') {
-      toast.error('You are not authorized to create instant orders.')
+      toast.error({ title: 'You are not authorized to create instant orders.' })
     } else if (error.value === 'forbidden') {
-      toast.error('You don\'t have permission to create instant orders.')
+      toast.error({ title: 'You don\'t have permission to create instant orders.' })
     } else {
-      toast.error('Failed to create instant order. Please try again.')
+      toast.error({ title: 'Failed to create instant order. Please try again.' })
     }
   }
 }
