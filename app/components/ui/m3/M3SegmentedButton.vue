@@ -38,7 +38,7 @@ function selectSegment(value: string) {
       :disabled="segment.disabled"
       class="px-4 py-1.5 rounded-md text-body-md font-semibold transition-all flex-1"
       :class="isActive(segment.value)
-        ? 'bg-white text-primary shadow-sm'
+        ? 'bg-surface dark:bg-surface-container-high text-primary shadow-sm'
         : 'text-on-surface-variant hover:text-on-surface'"
       @click="selectSegment(segment.value)"
     >

@@ -77,6 +77,7 @@
 
   /* ---------- Material Design 3 Tokens (mapped to luxury theme) ---------- */
   /* Surface colors */
+  --color-surface: #ffffff;
   --color-surface-container-lowest: #f9f7f4;
   --color-surface-container-low: #f0ebe3;
   --color-surface-container: #e8e2d8;
@@ -125,20 +126,46 @@
    * tailwind.config.js) because the v4 Vite plugin resolves theme from CSS. */
   --animate-fade-up: fade-up 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
 
-  /* Dark mode MD3 tokens */
+  /* Dark mode MD3 tokens. Elevation reads darkest-to-lightest: page bg
+   * (#121212) < sunken inputs (lowest) < card surface < raised chips (low)
+   * < selected/active affordances (container..highest). */
+  --color-dark-surface: #1e1e1e;
   --color-dark-surface-container-lowest: #1a1a1a;
   --color-dark-surface-container-low: #232323;
+  --color-dark-surface-container: #2a2a2a;
+  --color-dark-surface-container-high: #333333;
+  --color-dark-surface-container-highest: #3d3d3d;
   --color-dark-on-surface: #f5f5f5;
   --color-dark-on-surface-variant: #b3b3b3;
+  --color-dark-on-surface-variant-low: rgba(245, 245, 245, 0.5);
   --color-dark-outline-variant: rgba(255, 255, 255, 0.1);
+  --color-dark-primary-container: #3a2e1f;
+  --color-dark-on-primary-container: #f0dfc8;
+  --color-dark-error: #ffb4ab;
+  --color-dark-error-container: #93000a;
+  --color-dark-on-error-container: #ffdad6;
 }
 
 .dark {
+  /* Tell the UA to render native controls (select popups, number spinners,
+   * autofill, scrollbars) dark — otherwise they stay light and clash. */
+  color-scheme: dark;
+
+  --color-surface: var(--color-dark-surface);
   --color-surface-container-lowest: var(--color-dark-surface-container-lowest);
   --color-surface-container-low: var(--color-dark-surface-container-low);
+  --color-surface-container: var(--color-dark-surface-container);
+  --color-surface-container-high: var(--color-dark-surface-container-high);
+  --color-surface-container-highest: var(--color-dark-surface-container-highest);
   --color-on-surface: var(--color-dark-on-surface);
   --color-on-surface-variant: var(--color-dark-on-surface-variant);
+  --color-on-surface-variant-low: var(--color-dark-on-surface-variant-low);
   --color-outline-variant: var(--color-dark-outline-variant);
+  --color-primary-container: var(--color-dark-primary-container);
+  --color-on-primary-container: var(--color-dark-on-primary-container);
+  --color-error: var(--color-dark-error);
+  --color-error-container: var(--color-dark-error-container);
+  --color-on-error-container: var(--color-dark-on-error-container);
 }
 
 /* Material Design 3 Typography utilities */

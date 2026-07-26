@@ -12,8 +12,8 @@ const props = withDefaults(defineProps<Props>(), {
 
 const cardClasses = computed(() => {
   const variants = {
-    elevated: 'bg-white rounded-xl shadow-lg border-0',
-    filled: 'bg-white rounded-xl shadow-sm border border-outline-variant/30',
+    elevated: 'bg-surface rounded-xl shadow-lg border-0',
+    filled: 'bg-surface rounded-xl shadow-sm border border-outline-variant/30',
     outlined: 'bg-transparent rounded-xl border border-outline-variant'
   }
   const paddings = {
