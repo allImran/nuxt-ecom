@@ -65,9 +65,11 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
+  <!-- Heights subtract the sticky 4rem header so the section ends at the fold
+       instead of 64px below it — otherwise the scroll cue is cropped off. -->
   <section
     ref="sectionRef"
-    class="relative flex items-center overflow-hidden min-h-[88vh] lg:min-h-screen transition-colors duration-200"
+    class="relative flex items-center overflow-hidden min-h-[calc(88vh-4rem)] lg:min-h-[calc(100vh-4rem)] transition-colors duration-200"
   >
     <!-- Background Image -->
     <div class="absolute inset-0 z-0">
@@ -148,7 +150,7 @@ onBeforeUnmount(() => {
       type="button"
       @click="scrollToProducts"
       aria-label="Scroll to products"
-      class="hidden md:flex absolute bottom-8 left-1/2 -translate-x-1/2 z-20 items-center justify-center w-10 h-10 rounded-full border border-luxury-border dark:border-luxury-dark-border text-luxury-text-muted dark:text-luxury-dark-text-muted hover:text-luxury-gold hover:border-luxury-gold transition-colors duration-300 animate-bounce"
+      class="hidden md:flex absolute bottom-12 left-1/2 -translate-x-1/2 z-20 items-center justify-center w-10 h-10 rounded-full border border-luxury-border dark:border-luxury-dark-border text-luxury-text-muted dark:text-luxury-dark-text-muted hover:text-luxury-gold hover:border-luxury-gold transition-colors duration-300 animate-bounce"
     >
       <UiIcon name="chevron-down" :size="20" />
     </button>
