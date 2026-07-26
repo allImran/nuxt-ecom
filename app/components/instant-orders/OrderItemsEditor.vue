@@ -19,6 +19,9 @@ const items = computed({
   set: (value) => emit('update:modelValue', value)
 })
 
+// Per-row raw text for the price fields, keyed by row index.
+const priceInput = useDecimalInput()
+
 const unitOptions = [
   { value: 'piece', label: 'Piece' },
   { value: 'kg', label: 'Kg' },
@@ -44,6 +47,9 @@ function addItem() {
 }
 
 function removeItem(index: number) {
+  // Drafts are keyed by index, which shifts under a removal.
+  priceInput.clear()
+
   if (items.value.length > 1) {
     items.value = items.value.filter((_, i) => i !== index)
   } else {
@@ -162,12 +168,13 @@ function decrementQuantity(index: number) {
           <div class="relative flex-1">
             <span class="absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">৳</span>
             <input
-              :value="item.price"
-              type="number"
-              min="0"
-              step="0.01"
+              :value="priceInput.display(String(index), item.price)"
+              type="text"
+              inputmode="decimal"
+              placeholder="0.00"
               class="w-full pl-7 bg-surface-container-lowest border-none focus:ring-1 focus:ring-primary rounded-lg py-2 px-3 text-body-md text-on-surface text-right transition-all placeholder:text-on-surface-variant/60"
-              @input="updateItem(index, 'price', parseFloat(($event.target as HTMLInputElement).value) || 0)"
+              @input="updateItem(index, 'price', priceInput.edit(String(index), $event))"
+              @blur="priceInput.commit(String(index))"
             />
           </div>
 

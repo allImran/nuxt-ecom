@@ -83,6 +83,10 @@ function handleUpdateCustomerInfo(value: CustomerInfo) {
   customerInfo.value = value
 }
 
+// Raw text for the delivery charge field while it is being edited.
+const deliveryInput = useDecimalInput()
+const formatMoney = (n: number) => n.toFixed(2)
+
 // Status options
 const statusOptions: Array<{ value: InstantOrderStatus; label: string }> = [
   { value: 'pending', label: 'Pending' },
@@ -189,12 +193,13 @@ const getTrackingCode = computed(() => {
           <div class="flex items-center gap-2">
             <!-- <span class="text-on-surface-variant">$</span> -->
             <input
-              :value="form.delivery_charge.toFixed(2)"
-              type="number"
-              min="0"
-              step="0.01"
-              class="w-20 bg-transparent border-none p-0 text-right focus:ring-0 font-bold text-on-surface"
-              @input="form = { ...form, delivery_charge: parseFloat(($event.target as HTMLInputElement).value) || 0 }"
+              :value="deliveryInput.display('delivery', form.delivery_charge, formatMoney)"
+              type="text"
+              inputmode="decimal"
+              placeholder="0.00"
+              class="w-20 bg-transparent border-none p-0 text-right focus:ring-0 font-bold text-on-surface placeholder:font-normal placeholder:text-on-surface-variant/50"
+              @input="form = { ...form, delivery_charge: deliveryInput.edit('delivery', $event) }"
+              @blur="deliveryInput.commit('delivery')"
             />
           </div>
         </div>

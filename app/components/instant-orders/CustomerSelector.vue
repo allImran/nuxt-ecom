@@ -153,7 +153,7 @@ const entryModeOptions = [
             :model-value="customerInfo.phone"
             type="tel"
             label="PHONE NUMBER"
-            placeholder="e.g. +1 234 567 8900"
+            placeholder="e.g. 01722364498"
             :error="validationErrors['customer_info.phone']"
             @update:model-value="updateCustomerInfo('phone', $event)"
           />
@@ -174,7 +174,7 @@ const entryModeOptions = [
           :model-value="customerInfo.phone"
           type="tel"
           label="PHONE NUMBER"
-          placeholder="e.g. +1 234 567 8900"
+          placeholder="e.g. 01722364498"
           :error="validationErrors['customer_info.phone']"
           @update:model-value="updateCustomerInfo('phone', $event)"
         />
