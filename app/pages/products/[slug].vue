@@ -267,15 +267,16 @@ const handleAddToCart = () => {
 <template>
   <div class="min-h-screen bg-luxury-bg dark:bg-luxury-dark-bg">
     <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <!-- Breadcrumbs -->
-      <nav aria-label="Breadcrumb">
-        <ProductBreadcrumbs>
-          <ProductBreadcrumbsItem href="/">Home</ProductBreadcrumbsItem>
-          <ProductBreadcrumbsItem :href="`/products/${slug}`" :last="true">
-            {{ product?.name || 'Product' }}
-          </ProductBreadcrumbsItem>
-        </ProductBreadcrumbs>
-      </nav>
+      <!-- Breadcrumbs (ProductBreadcrumbs renders its own <nav aria-label="Breadcrumb">) -->
+      <ProductBreadcrumbs>
+        <ProductBreadcrumbsItem href="/">
+          <UiIcon name="home" :size="14" class="shrink-0" />
+          <span>Home</span>
+        </ProductBreadcrumbsItem>
+        <ProductBreadcrumbsItem :href="`/products/${slug}`" :last="true">
+          {{ product?.name || 'Product' }}
+        </ProductBreadcrumbsItem>
+      </ProductBreadcrumbs>
 
       <!-- Error State -->
       <div v-if="error && !loading" class="text-center py-12">
@@ -341,12 +342,7 @@ const handleAddToCart = () => {
 
         <!-- Right Column - Product Info (40%) -->
         <div class="lg:col-span-3 space-y-8">
-          <!-- Product Name (h1 for SEO) -->
-          <h1 class="text-3xl sm:text-4xl font-bold text-luxury-text dark:text-luxury-dark-text">
-            {{ product?.name || 'Product' }}
-          </h1>
-
-          <!-- Basic Info -->
+          <!-- Basic Info (renders the h1 product name for SEO, category and price) -->
           <ProductInfoSection
             :name="product?.name"
             :category="product?.category?.name"
