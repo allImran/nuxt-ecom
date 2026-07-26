@@ -4,6 +4,7 @@
       <div class="flex-1">
         <input
           v-model="localName"
+          @click.stop
           @blur="handleUpdate"
           @keyup.enter="handleUpdate"
           class="text-xl font-bold text-luxury-text dark:text-luxury-dark-text bg-transparent border-b border-transparent hover:border-luxury-border dark:hover:border-luxury-dark-border focus:border-luxury-gold focus:outline-none w-full transition-colors mb-1"
@@ -11,7 +12,7 @@
         <p class="text-sm text-luxury-text-muted dark:text-luxury-dark-text-muted font-mono">{{ business.slug }}</p>
       </div>
       <button 
-        @click="$emit('delete', business.id)" 
+        @click.stop="$emit('delete', business.id)"
         class="text-red-400 hover:text-red-600 dark:text-red-400 dark:hover:text-red-300 opacity-0 group-hover:opacity-100 transition-opacity p-1"
         title="Delete Business"
       >

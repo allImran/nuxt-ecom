@@ -43,8 +43,15 @@
         class="cursor-pointer"
         @click="router.push(`/admin/products/${product.id}`)"
       >
-        <div class="aspect-square bg-luxury-border/10 dark:bg-luxury-dark-border/20 rounded-lg mb-4 flex items-center justify-center">
-          <UiIcon v-if="!product.file_paths?.length" name="image" :size="48" class="text-luxury-text-muted/30" />
+        <div class="aspect-square bg-luxury-border/10 dark:bg-luxury-dark-border/20 rounded-lg mb-4 overflow-hidden flex items-center justify-center">
+          <img
+            v-if="product.file_paths?.[0]"
+            :src="getImageUrl(product.file_paths[0])"
+            :alt="product.name"
+            loading="lazy"
+            class="w-full h-full object-cover"
+          />
+          <UiIcon v-else name="image" :size="48" class="text-luxury-text-muted/30" />
         </div>
         <h3 class="font-semibold text-luxury-text dark:text-luxury-dark-text truncate">
           {{ product.name }}
@@ -65,6 +72,8 @@
 </template>
 
 <script setup lang="ts">
+import { getPublicImage } from '~/utils/image'
+
 definePageMeta({
   layout: 'admin',
   middleware: 'admin'
@@ -74,6 +83,8 @@ const route = useRoute()
 const router = useRouter()
 
 const businessId = computed(() => route.params.id as string)
+
+const getImageUrl = (path: string) => getPublicImage('product-images', path)
 
 const {
   products,
