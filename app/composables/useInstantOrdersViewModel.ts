@@ -131,11 +131,65 @@ export function useInstantOrdersViewModel() {
     return result
   })
 
+  // Computed: Total pages based on backend total or filtered orders
+  const totalPages = computed(() => {
+    const total = pagination.value.total || filteredOrders.value.length
+    const limit = pagination.value.limit || 20
+    return Math.ceil(total / limit) || 1
+  })
+
+  // Computed: Current page (1-based)
+  const currentPage = computed(() => {
+    if (pagination.value.page) return pagination.value.page
+    const limit = pagination.value.limit || 20
+    return Math.floor(pagination.value.offset / limit) + 1
+  })
+
+  // Computed: Paginated orders
+  const paginatedOrders = computed(() => {
+    const limit = pagination.value.limit || 20
+    // If backend already returned server-paginated data
+    if (orders.value.length <= limit && (pagination.value.total > orders.value.length || (pagination.value.page && pagination.value.page > 1))) {
+      return filteredOrders.value
+    }
+    const offset = pagination.value.offset || 0
+    return filteredOrders.value.slice(offset, offset + limit)
+  })
+
+  // Set fallback total if store pagination total was not provided by API
+  watch(() => filteredOrders.value.length, (newLength) => {
+    if (!pagination.value.total) {
+      pagination.value.total = newLength
+    }
+  })
+
+  // Reset pagination offset on filter changes
+  watch([searchQuery, statusFilter, dateRange], () => {
+    pagination.value.offset = 0
+    pagination.value.page = 1
+  }, { deep: true })
+
+  // Helper: Update pagination
+  function updatePagination(params: { page?: number; limit?: number }) {
+    if (params.limit !== undefined) {
+      pagination.value.limit = params.limit
+      pagination.value.offset = 0
+      pagination.value.page = 1
+    }
+    if (params.page !== undefined) {
+      const limit = pagination.value.limit || 20
+      pagination.value.page = params.page
+      pagination.value.offset = (params.page - 1) * limit
+    }
+  }
+
   // Helper: Reset filters
   function resetFilters() {
     searchQuery.value = ''
     statusFilter.value = ''
     dateRange.value = { start: '', end: '' }
+    pagination.value.offset = 0
+    pagination.value.page = 1
   }
 
   return {
@@ -157,6 +211,9 @@ export function useInstantOrdersViewModel() {
 
     // Computed
     filteredOrders,
+    paginatedOrders,
+    totalPages,
+    currentPage,
 
     // Helpers
     formatPrice,
@@ -166,6 +223,7 @@ export function useInstantOrdersViewModel() {
     calculateItemTotal,
     calculateSubtotal,
     resetFilters,
+    updatePagination,
 
     // Actions
     fetchOrdersByBusiness: instantOrdersStore.fetchOrdersByBusiness,

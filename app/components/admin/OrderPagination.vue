@@ -17,7 +17,13 @@ const emit = defineEmits<{
 }>()
 
 // Available items per page options
-const itemsPerPageOptions = [10, 25, 50, 100]
+const itemsPerPageOptions = computed(() => {
+  const base = [10, 20, 25, 50, 100]
+  if (props.itemsPerPage && !base.includes(props.itemsPerPage)) {
+    return [...base, props.itemsPerPage].sort((a, b) => a - b)
+  }
+  return base
+})
 
 // Computed: Page numbers to show
 const pageNumbers = computed(() => {

@@ -203,13 +203,15 @@ export const adminNetwork = {
   }) => useAdminFetch<any>(`/orders/${id}/pickup-request`, { method: 'POST', body: data ?? {} }),
 
   // Instant Orders
-  fetchInstantOrders: (businessId: string, params?: { status?: string; search?: string; limit?: number; offset?: number }) => {
+  fetchInstantOrders: (businessId: string, params?: { status?: string; search?: string; limit?: number; offset?: number; page?: number }) => {
     const query = new URLSearchParams()
     query.append('business_id', businessId)
     if (params?.status) query.append('status', params.status)
     if (params?.search) query.append('queryString', params.search)
     if (params?.limit) query.append('limit', params.limit.toString())
-    if (params?.offset) query.append('offset', params.offset.toString())
+    const page = params?.page ?? (params?.offset !== undefined && params?.limit ? Math.floor(params.offset / params.limit) + 1 : undefined)
+    if (page !== undefined) query.append('page', page.toString())
+    if (params?.offset !== undefined) query.append('offset', params.offset.toString())
     const queryString = query.toString()
     return useAdminFetch<any[]>(`/instant-orders${queryString ? `?${queryString}` : ''}`)
   },

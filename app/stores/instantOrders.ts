@@ -18,8 +18,9 @@ export const useInstantOrdersStore = defineStore('instantOrders', () => {
 
   // Pagination state
   const pagination = reactive({
-    limit: 25,
+    limit: 20,
     offset: 0,
+    page: 1,
     total: 0
   })
 
@@ -32,7 +33,7 @@ export const useInstantOrdersStore = defineStore('instantOrders', () => {
   // Actions - Fetch orders by business
   async function fetchOrdersByBusiness(
     businessId: string,
-    params?: { status?: string; search?: string; limit?: number; offset?: number }
+    params?: { status?: string; search?: string; limit?: number; offset?: number; page?: number }
   ) {
     loading.value = true
     error.value = null
@@ -48,9 +49,11 @@ export const useInstantOrdersStore = defineStore('instantOrders', () => {
       // Use orders directly as-is from API (no mapping needed)
       orders.value = ordersData
 
-      pagination.total = paginationData?.total || 0
-      pagination.limit = paginationData?.limit || 25
-      pagination.offset = paginationData?.offset || 0
+      pagination.total = paginationData?.total ?? ordersData.length ?? 0
+      pagination.limit = paginationData?.limit ?? params?.limit ?? 20
+      const currentPage = paginationData?.page ?? params?.page ?? (params?.offset !== undefined && pagination.limit ? Math.floor(params.offset / pagination.limit) + 1 : 1)
+      pagination.page = currentPage
+      pagination.offset = paginationData?.offset ?? ((currentPage - 1) * pagination.limit)
     } catch (err) {
       console.error('Failed to fetch instant orders:', err)
       if (err && typeof err === 'object' && 'statusCode' in err) {
@@ -207,8 +210,9 @@ export const useInstantOrdersStore = defineStore('instantOrders', () => {
     loading.value = false
     updating.value = false
     error.value = null
-    pagination.limit = 25
+    pagination.limit = 20
     pagination.offset = 0
+    pagination.page = 1
     pagination.total = 0
   }
 

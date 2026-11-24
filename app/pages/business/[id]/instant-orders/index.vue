@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import OrderPagination from '@/components/admin/OrderPagination.vue'
 import type { InstantOrderListItem } from '~/types/instantOrder'
 
 // Get route params
@@ -22,6 +23,11 @@ const {
   statusFilter,
   dateRange,
   filteredOrders,
+  paginatedOrders,
+  totalPages,
+  currentPage,
+  pagination,
+  updatePagination,
   formatPrice,
   formatDate,
   getStatusColor,
@@ -30,6 +36,28 @@ const {
   reset
 } = useInstantOrdersViewModel()
 
+function handlePageChange(page: number) {
+  updatePagination({ page })
+  loadOrders({ page })
+}
+
+function handleItemsPerPageChange(itemsPerPage: number) {
+  updatePagination({ page: 1, limit: itemsPerPage })
+  loadOrders({ page: 1, limit: itemsPerPage })
+}
+
+// Fetch orders with current filters and pagination
+async function loadOrders(params?: { page?: number; limit?: number }) {
+  const page = params?.page ?? pagination.value.page ?? 1
+  const limit = params?.limit ?? pagination.value.limit ?? 20
+  await fetchOrdersByBusiness(businessId.value, {
+    page,
+    limit,
+    status: statusFilter.value || undefined,
+    search: searchQuery.value || undefined
+  })
+}
+
 // Mobile UI state
 const showFilters = ref(false)
 const showSearch = ref(false)
@@ -37,13 +65,29 @@ const showSearch = ref(false)
 // Fetch business info
 const business = ref<any>(null)
 
+let searchTimeout: ReturnType<typeof setTimeout> | null = null
+
+// Refetch on search or filter change
+watch(searchQuery, () => {
+  if (searchTimeout) clearTimeout(searchTimeout)
+  searchTimeout = setTimeout(() => {
+    updatePagination({ page: 1 })
+    loadOrders({ page: 1 })
+  }, 350)
+})
+
+watch(statusFilter, () => {
+  updatePagination({ page: 1 })
+  loadOrders({ page: 1 })
+})
+
 // Fetch data on mount
 onMounted(async () => {
   try {
     const { adminNetwork } = await import('~/network/admin')
     const [businessData] = await Promise.all([
       adminNetwork.fetchBusinessById(businessId.value),
-      fetchOrdersByBusiness(businessId.value)
+      loadOrders({ page: 1, limit: pagination.value.limit || 20 })
     ])
     business.value = businessData
   } catch (err) {
@@ -61,13 +105,14 @@ if (import.meta.server) {
 
 // Reset state on unmount
 onUnmounted(() => {
+  if (searchTimeout) clearTimeout(searchTimeout)
   reset()
 })
 
 // Watch for businessId changes
 watch(businessId, (newId) => {
   if (newId) {
-    fetchOrdersByBusiness(newId)
+    loadOrders({ page: 1 })
   }
 })
 
@@ -160,7 +205,7 @@ const errorMessage = computed(() => {
         <!-- Orders Card List -->
         <div v-else class="flex flex-col gap-4">
           <InstantOrdersCard
-            v-for="order in filteredOrders"
+            v-for="order in paginatedOrders"
             :key="order.id"
             :order="order"
             :format-price="formatPrice"
@@ -168,6 +213,19 @@ const errorMessage = computed(() => {
             :get-status-label="getStatusLabel"
             :business="business"
             @click="handleRowClick"
+          />
+
+          <!-- Mobile Pagination -->
+          <OrderPagination
+            v-if="pagination.total > 0 || filteredOrders.length > 0"
+            :current-page="currentPage"
+            :total-pages="totalPages"
+            :items-per-page="pagination.limit"
+            :total-items="pagination.total || filteredOrders.length"
+            :loading="loading"
+            class="mt-2"
+            @page-change="handlePageChange"
+            @items-per-page-change="handleItemsPerPageChange"
           />
         </div>
       </InstantOrdersMobileHeader>
@@ -237,14 +295,26 @@ const errorMessage = computed(() => {
       <!-- Desktop Table -->
       <InstantOrdersTable
         v-if="!error"
-        :orders="filteredOrders"
+        :orders="paginatedOrders"
         :loading="loading"
         :format-price="formatPrice"
         :format-date="formatDate"
         :get-status-color="getStatusColor"
         :get-status-label="getStatusLabel"
-		:business="business"
+        :business="business"
         @row-click="handleRowClick"
+      />
+
+      <!-- Pagination Controls -->
+      <OrderPagination
+        v-if="!error && (pagination.total > 0 || filteredOrders.length > 0)"
+        :current-page="currentPage"
+        :total-pages="totalPages"
+        :items-per-page="pagination.limit"
+        :total-items="pagination.total || filteredOrders.length"
+        :loading="loading"
+        @page-change="handlePageChange"
+        @items-per-page-change="handleItemsPerPageChange"
       />
     </div>
   </div>
