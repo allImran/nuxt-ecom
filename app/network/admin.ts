@@ -207,7 +207,7 @@ export const adminNetwork = {
     const query = new URLSearchParams()
     query.append('business_id', businessId)
     if (params?.status) query.append('status', params.status)
-    if (params?.search) query.append('queryString', params.search)
+    if (params?.search) query.append('search', params.search)
     if (params?.limit) query.append('limit', params.limit.toString())
     const page = params?.page ?? (params?.offset !== undefined && params?.limit ? Math.floor(params.offset / params.limit) + 1 : undefined)
     if (page !== undefined) query.append('page', page.toString())
